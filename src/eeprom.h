@@ -13,7 +13,6 @@
 #include "stm32f4xx_hal_conf.h"
 #include <stm32f4xx_hal_i2c.h>
 #include <stm32f4xx.h>
-#include <stm32f4xx_nucleo.h>
 
 #define HAL_I2C_MODULE_ENABLED
 #define HAL_TIM_MODULE_ENABLED
