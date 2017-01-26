@@ -19,3 +19,5 @@ Controller board for DMX512 compatible devices, built around the STM32F4 process
 [Project BOM (Google Sheet)](https://docs.google.com/spreadsheets/d/1uzdcgw4f-ZZjT1LYJjgF0NQhJ87it6WEIzAiNTsZcQw/edit#gid=0)
 
 [Misc STM32F4 libraries](https://stm32f4-discovery.net/2014/05/all-stm32f429-libraries-at-one-place/)
+
+![Nucleo board](/images/nucleo.png)
