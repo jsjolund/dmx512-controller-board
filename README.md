@@ -20,4 +20,4 @@ Controller board for DMX512 compatible devices, built around the STM32F4 process
 
 [Misc STM32F4 libraries](https://stm32f4-discovery.net/2014/05/all-stm32f429-libraries-at-one-place/)
 
-![Nucleo board](/images/nucleo.png)
+![Nucleo board](/Images/nucleo_f411re.png)
