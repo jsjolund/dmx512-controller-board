@@ -73,19 +73,24 @@ clean:
 ##################
 # 	@mkdir $(subst /,\,$(dir $@)) 2> NUL || echo off
 $(OBJECT_DIR)/Src/main.o: Src/main.cpp
+	@mkdir -p $(dir $@)
 	$(CXX) $(CXXCOMPILER_FLAGS) Src/main.cpp -o $(OBJECT_DIR)/Src/main.o
 
 ##################
 # Implicit targets
 ##################
 $(OBJECT_DIR)/%.o: %.c
+	@mkdir -p $(dir $@)
 	$(CC) $(COMPILER_FLAGS) $< -o $@
 
 $(OBJECT_DIR)/%.o: %.cpp
+	@mkdir -p $(dir $@)
 	$(CXX) $(CXXCOMPILER_FLAGS) $< -o $@
 
 $(OBJECT_DIR)/%.o: %.s
+	@mkdir -p $(dir $@)
 	$(CC) $(ASSEMBLER_FLAGS) $< -o $@
 
 $(OBJECT_DIR)/%.o: %.S
+	@mkdir -p $(dir $@)
 	$(CC) $(ASSEMBLER_FLAGS) $< -o $@
