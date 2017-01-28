@@ -34,18 +34,17 @@
 #include "main.h"
 #include "stm32f4xx_hal.h"
 
-#include "eeprom.h"
-
 /* USER CODE BEGIN Includes */
-
+#include "serial.h"
+#include "eeprom.h"
 /* USER CODE END Includes */
 
 /* Private variables ---------------------------------------------------------*/
 I2C_HandleTypeDef hi2c1;
 
 UART_HandleTypeDef huart2;
-
-Eeprom eeprom;
+DMA_HandleTypeDef hdma_usart2_rx;
+DMA_HandleTypeDef hdma_usart2_tx;
 
 /* USER CODE BEGIN PV */
 /* Private variables ---------------------------------------------------------*/
@@ -56,6 +55,7 @@ Eeprom eeprom;
 void SystemClock_Config(void);
 void Error_Handler(void);
 static void MX_GPIO_Init(void);
+static void MX_DMA_Init(void);
 static void MX_I2C1_Init(void);
 static void MX_USART2_UART_Init(void);
 
@@ -84,41 +84,34 @@ int main(void) {
 
 	/* Initialize all configured peripherals */
 	MX_GPIO_Init();
+	MX_DMA_Init();
 	MX_I2C1_Init();
 	MX_USART2_UART_Init();
 
-	/* USER CODE BEGIN 2 */
-	eeprom.begin(&hi2c1);
+	SerialInit(&huart2);
 
+	Eeprom eeprom;
+	eeprom.begin(&hi2c1);
 	uint32_t result;
 	uint32_t data = 0xDEADBEEF;
 	eeprom.writeEEPROM(0x0000, (uint8_t*) &data, sizeof(uint32_t));
 	eeprom.readEEPROM(0x0000, (uint8_t*) &result, sizeof(uint32_t));
 	if (data == result)
 		HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_SET);
-
-	//	uint64_t result;
-	//	uint64_t data = 0xDEADBEEFDEADBEEF;
-	//	eeprom.writeEEPROM(0x0000, (uint8_t*) &data, sizeof(uint64_t));
-	//	eeprom.readEEPROM(0x0000, (uint8_t*) &result, sizeof(uint64_t));
+	/* USER CODE BEGIN 2 */
 
 	/* USER CODE END 2 */
-	const char* aMESSAGE = "WHATEVER!!\n\r";
-	const char* bMESSAGE = "0123456789\n\r";
+
+	/* Infinite loop */
+	/* USER CODE BEGIN WHILE */
+
+	/* USER CODE END 3 */
+
 	/* Infinite loop */
 	/* USER CODE BEGIN WHILE */
 	while (1) {
-		//	  HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_5);
-		//	  HAL_Delay(50);
-		//	  HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_5);
-		//	  HAL_Delay(200);
-		HAL_UART_Transmit(&huart2, aMESSAGE, 12, 0xFFF);
-		HAL_UART_Transmit(&huart2, bMESSAGE, 12, 0xFFF);
-		HAL_Delay(500);
 
 	}
-	/* USER CODE END 3 */
-
 }
 
 /** System Clock Configuration
@@ -202,6 +195,24 @@ static void MX_USART2_UART_Init(void) {
 	if (HAL_UART_Init(&huart2) != HAL_OK) {
 		Error_Handler();
 	}
+
+}
+
+/** 
+ * Enable DMA controller clock
+ */
+static void MX_DMA_Init(void) {
+	/* DMA controller clock enable */
+	__HAL_RCC_DMA1_CLK_ENABLE()
+	;
+
+	/* DMA interrupt init */
+	/* DMA1_Stream5_IRQn interrupt configuration */
+	HAL_NVIC_SetPriority(DMA1_Stream5_IRQn, 0, 0);
+	HAL_NVIC_EnableIRQ (DMA1_Stream5_IRQn);
+	/* DMA1_Stream6_IRQn interrupt configuration */
+	HAL_NVIC_SetPriority(DMA1_Stream6_IRQn, 0, 0);
+	HAL_NVIC_EnableIRQ (DMA1_Stream6_IRQn);
 
 }
 
