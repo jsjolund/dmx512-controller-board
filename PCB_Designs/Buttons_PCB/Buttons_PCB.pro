@@ -1,4 +1,4 @@
-update=2017-01-30 00:39:57
+update=2017-01-30 12:45:06
 version=1
 last_client=kicad
 [pcbnew]
@@ -27,7 +27,7 @@ NetIExt=net
 version=1
 [eeschema]
 version=1
-LibDir=E:/GitHub/dmx512-controller-board/PCB_Designs/LIBRARIES;E:/GitHub/dmx512-controller-board/PCB_Designs/FOOTPRINTS
+LibDir=../LIBRARIES;../FOOTPRINTS
 [eeschema/libraries]
 LibName1=Buttons_PCB-rescue
 LibName2=power
