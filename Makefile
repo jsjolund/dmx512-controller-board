@@ -21,9 +21,9 @@ LINKER_FLAGS = -lm -mthumb -mhard-float -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -Wl,--
 
 ASSEMBLER_FLAGS = -c -g -O0 -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mthumb -mhard-float -x assembler-with-cpp  $(INCLUDE_DIRS_PARAMS)
 
-COMPILER_FLAGS = -c -g -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -O0 -Wall -ffunction-sections -fdata-sections -mthumb -mhard-float -D"STM32F411xE" $(INCLUDE_DIRS_PARAMS)
+COMPILER_FLAGS = -fpermissive -c -g -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -O0 -Wall -ffunction-sections -fdata-sections -mthumb -mhard-float -D"STM32F411xE" $(INCLUDE_DIRS_PARAMS)
 
-CXXCOMPILER_FLAGS = -fno-threadsafe-statics -c -g -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -O0 -Wall -ffunction-sections -fdata-sections -mthumb -mhard-float -fno-exceptions -fno-rtti -D"STM32F411xE" $(INCLUDE_DIRS_PARAMS)
+CXXCOMPILER_FLAGS = -fpermissive -fno-threadsafe-statics -c -g -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -O0 -Wall -ffunction-sections -fdata-sections -mthumb -mhard-float -fno-exceptions -fno-rtti -D"STM32F411xE" $(INCLUDE_DIRS_PARAMS)
 
 # Define output directory
 OBJECT_DIR = Debug
@@ -73,19 +73,24 @@ clean:
 ##################
 # 	@mkdir $(subst /,\,$(dir $@)) 2> NUL || echo off
 $(OBJECT_DIR)/Src/main.o: Src/main.cpp
+	@mkdir -p $(dir $@)
 	$(CXX) $(CXXCOMPILER_FLAGS) Src/main.cpp -o $(OBJECT_DIR)/Src/main.o
 
 ##################
 # Implicit targets
 ##################
 $(OBJECT_DIR)/%.o: %.c
+	@mkdir -p $(dir $@)
 	$(CC) $(COMPILER_FLAGS) $< -o $@
 
 $(OBJECT_DIR)/%.o: %.cpp
+	@mkdir -p $(dir $@)
 	$(CXX) $(CXXCOMPILER_FLAGS) $< -o $@
 
 $(OBJECT_DIR)/%.o: %.s
+	@mkdir -p $(dir $@)
 	$(CC) $(ASSEMBLER_FLAGS) $< -o $@
 
 $(OBJECT_DIR)/%.o: %.S
+	@mkdir -p $(dir $@)
 	$(CC) $(ASSEMBLER_FLAGS) $< -o $@

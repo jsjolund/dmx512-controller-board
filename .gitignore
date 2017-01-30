@@ -27,3 +27,8 @@
 *.out
 *.app
 /Debug
+
+.cproject
+.mxproject
+.project
+.settings/

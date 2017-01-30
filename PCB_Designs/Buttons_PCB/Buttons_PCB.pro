@@ -1,4 +1,4 @@
-update=2017-01-26 11:01:47
+update=2017-01-30 12:45:06
 version=1
 last_client=kicad
 [pcbnew]
@@ -27,7 +27,7 @@ NetIExt=net
 version=1
 [eeschema]
 version=1
-LibDir=C:/Users/Daniel/Documents/KiCAD/LIBRARIES;C:/Users/Daniel/Documents/KiCAD/FOOTPRINTS
+LibDir=../LIBRARIES;../FOOTPRINTS
 [eeschema/libraries]
 LibName1=Buttons_PCB-rescue
 LibName2=power
@@ -59,6 +59,4 @@ LibName27=opto
 LibName28=atmel
 LibName29=contrib
 LibName30=valves
-LibName31=E:/KiCAD/LIBRARIES/Custom_ONE/mcdts2-4n
-LibName32=Custom_ONE/conn_01x06_Buttons
-LibName33=Custom_ONE/mcdts2-4n
+LibName31=Custom_ONE/Custom_Switches
