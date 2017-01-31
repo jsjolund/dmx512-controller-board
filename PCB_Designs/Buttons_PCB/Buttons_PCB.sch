@@ -81,9 +81,9 @@ Text Label 9000 1600 2    60   ~ 0
 VDD
 Text Label 9000 1700 2    60   ~ 0
 GND
-Text Label 9000 1800 2    60   ~ 0
-S_CLK_L
 Text Label 9000 1900 2    60   ~ 0
+S_CLK_L
+Text Label 9000 1800 2    60   ~ 0
 S_DAT_L
 Text Label 9000 2100 2    60   ~ 0
 intA
@@ -966,13 +966,13 @@ Wire Wire Line
 Wire Wire Line
 	4050 2250 4700 2250
 Wire Wire Line
-	4050 3250 4700 3250
+	4700 3250 4050 3250
 Wire Wire Line
-	4050 3750 4750 3750
+	4750 3750 4050 3750
 Wire Wire Line
-	4050 4250 4800 4250
+	4800 4250 4050 4250
 Wire Wire Line
-	4050 4750 4850 4750
+	4850 4750 4050 4750
 Wire Wire Line
 	4050 5250 4900 5250
 Wire Wire Line
@@ -984,13 +984,13 @@ Wire Wire Line
 Wire Wire Line
 	4750 1750 4750 2350
 Wire Wire Line
-	4700 3250 4700 3050
+	4700 3050 4700 3250
 Wire Wire Line
-	4750 3750 4750 3250
+	4750 3250 4750 3750
 Wire Wire Line
-	4800 4250 4800 3450
+	4800 3450 4800 4250
 Wire Wire Line
-	4850 4750 4850 3650
+	4850 3650 4850 4750
 Wire Notes Line
 	3350 5100 5350 5100
 Wire Notes Line
@@ -1143,7 +1143,7 @@ Connection ~ 4400 6550
 Connection ~ 4300 6550
 Connection ~ 4300 7050
 Wire Wire Line
-	4400 7050 4400 1350
+	4400 1350 4400 7050
 Connection ~ 4300 1250
 Connection ~ 4400 1550
 Wire Wire Line
@@ -1153,7 +1153,7 @@ Wire Wire Line
 Wire Wire Line
 	4300 2550 4400 2550
 Wire Wire Line
-	4300 7050 4400 7050
+	4400 7050 4300 7050
 Wire Wire Line
 	4300 6550 4400 6550
 Wire Wire Line
@@ -1210,4 +1210,52 @@ Connection ~ 6800 3850
 Connection ~ 6500 3850
 Connection ~ 6500 4150
 Connection ~ 6800 4150
+$Comp
+L CONN_01X01 P2
+U 1 1 588FBE14
+P 9800 2950
+F 0 "P2" H 9800 3050 50  0000 C CNN
+F 1 "CONN_01X01" V 9900 2950 50  0000 C CNN
+F 2 "Mounting_Holes:MountingHole_3mm" H 9800 2950 50  0001 C CNN
+F 3 "" H 9800 2950 50  0001 C CNN
+	1    9800 2950
+	1    0    0    1   
+$EndComp
+$Comp
+L CONN_01X01 P3
+U 1 1 588FBF5A
+P 9800 3150
+F 0 "P3" H 9800 3250 50  0000 C CNN
+F 1 "CONN_01X01" V 9900 3150 50  0000 C CNN
+F 2 "Mounting_Holes:MountingHole_3mm" H 9800 3150 50  0001 C CNN
+F 3 "" H 9800 3150 50  0001 C CNN
+	1    9800 3150
+	1    0    0    -1  
+$EndComp
+$Comp
+L CONN_01X01 P4
+U 1 1 588FC040
+P 9800 3350
+F 0 "P4" H 9800 3450 50  0000 C CNN
+F 1 "CONN_01X01" V 9900 3350 50  0000 C CNN
+F 2 "Mounting_Holes:MountingHole_3mm" H 9800 3350 50  0001 C CNN
+F 3 "" H 9800 3350 50  0001 C CNN
+	1    9800 3350
+	1    0    0    -1  
+$EndComp
+NoConn ~ 9600 2950
+NoConn ~ 9600 3150
+NoConn ~ 9600 3350
+Wire Notes Line
+	9450 2650 10100 2650
+Wire Notes Line
+	9450 2650 9450 3650
+Wire Notes Line
+	9450 3650 10100 3650
+Wire Notes Line
+	10100 3650 10100 2650
+Text Notes 10150 2950 0    60   ~ 0
+Mounting Holes
+Wire Notes Line
+	10100 2950 10900 2950
 $EndSCHEMATC

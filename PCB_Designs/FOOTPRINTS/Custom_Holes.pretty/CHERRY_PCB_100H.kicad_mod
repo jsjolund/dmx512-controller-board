@@ -1,0 +1,9 @@
+(module Keyboard:CHERRY_PCB_100H (layer F.Cu) (tedit 588FB719)
+  (fp_text reference ~ (at 0.45 -3.55) (layer F.SilkS)
+    (effects (font (size 1.27 1.524) (thickness 0.2032)))
+  )
+  (fp_text value ~ (at 0 1.85) (layer F.SilkS) hide
+    (effects (font (size 1.27 1.524) (thickness 0.2032)))
+  )
+  (pad HOLE np_thru_hole circle (at 0 0) (size 3.9878 3.9878) (drill 3.9878) (layers *.Cu))
+)
