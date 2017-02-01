@@ -1,7 +1,6 @@
 EESchema Schematic File Version 2
-LIBS:PTA6043
+LIBS:Custom_Switches
 LIBS:mcdts2-4n
-LIBS:conn_01x06_Buttons
 LIBS:power
 LIBS:device
 LIBS:transistors
@@ -31,6 +30,7 @@ LIBS:opto
 LIBS:atmel
 LIBS:contrib
 LIBS:valves
+LIBS:Slide_Potentiometer
 LIBS:Sliders_PCB-cache
 EELAYER 25 0
 EELAYER END
@@ -46,50 +46,6 @@ Comment2 ""
 Comment3 ""
 Comment4 ""
 $EndDescr
-$Comp
-L PTA6043 R4
-U 1 1 588B4999
-P 4650 3250
-F 0 "R4" H 4800 3100 60  0000 C CNN
-F 1 "10k" H 4900 3450 60  0000 C CNN
-F 2 "PTA6043:PTA6043" H 4650 3250 60  0001 C CNN
-F 3 "" H 4650 3250 60  0001 C CNN
-	1    4650 3250
-	-1   0    0    1   
-$EndComp
-$Comp
-L PTA6043 R3
-U 1 1 588B4A8C
-P 4650 2500
-F 0 "R3" H 4800 2350 60  0000 C CNN
-F 1 "10k" H 4900 2700 60  0000 C CNN
-F 2 "PTA6043:PTA6043" H 4650 2500 60  0001 C CNN
-F 3 "" H 4650 2500 60  0001 C CNN
-	1    4650 2500
-	-1   0    0    1   
-$EndComp
-$Comp
-L PTA6043 R2
-U 1 1 588B4AAC
-P 4650 1800
-F 0 "R2" H 4800 1650 60  0000 C CNN
-F 1 "10k" H 4900 2000 60  0000 C CNN
-F 2 "PTA6043:PTA6043" H 4650 1800 60  0001 C CNN
-F 3 "" H 4650 1800 60  0001 C CNN
-	1    4650 1800
-	-1   0    0    1   
-$EndComp
-$Comp
-L PTA6043 R1
-U 1 1 588B4B8B
-P 4650 1000
-F 0 "R1" H 4800 850 60  0000 C CNN
-F 1 "10k" H 4900 1200 60  0000 C CNN
-F 2 "PTA6043:PTA6043" H 4650 1000 60  0001 C CNN
-F 3 "" H 4650 1000 60  0001 C CNN
-	1    4650 1000
-	-1   0    0    1   
-$EndComp
 $Comp
 L CONN_01X06 P1
 U 1 1 588B4D25
@@ -131,9 +87,9 @@ F 3 "" H 6400 1250 50  0000 C CNN
 	1    6400 1250
 	1    0    0    -1  
 $EndComp
-Text Label 5050 1000 0    60   ~ 0
-VDD
 Text Label 4250 1000 2    60   ~ 0
+VDD
+Text Label 5050 1000 0    60   ~ 0
 GND
 Wire Wire Line
 	6200 1550 6400 1550
@@ -148,31 +104,15 @@ Wire Wire Line
 Connection ~ 4250 1800
 Connection ~ 4250 2500
 Wire Wire Line
-	4650 1250 4650 1500
+	4650 1200 4650 1500
 Wire Wire Line
 	4650 1500 5850 1500
 Wire Wire Line
-	5850 1500 5850 2250
-Wire Wire Line
-	5850 2250 6200 2250
-Wire Wire Line
-	6200 2350 5750 2350
-Wire Wire Line
-	5750 2350 5750 2050
+	5850 1500 5850 2350
 Wire Wire Line
 	5750 2050 4650 2050
 Wire Wire Line
-	4650 2750 5750 2750
-Wire Wire Line
-	5750 2750 5750 2450
-Wire Wire Line
-	5750 2450 6200 2450
-Wire Wire Line
-	6200 2550 5850 2550
-Wire Wire Line
-	5850 2550 5850 3500
-Wire Wire Line
-	5850 3500 4650 3500
+	4650 3500 6000 3500
 $Comp
 L PWR_FLAG #GND02
 U 1 1 588B6CB3
@@ -195,4 +135,86 @@ F 3 "" H 6400 1400 50  0000 C CNN
 	1    6400 1400
 	1    0    0    -1  
 $EndComp
+$Comp
+L PTA6043 R1
+U 1 1 589238E9
+P 4650 1000
+F 0 "R1" H 4775 850 60  0000 C CNN
+F 1 "PTA6043" H 4650 1150 60  0000 C CNN
+F 2 "Potentiometers_Bourne:Potentiometer_Bourns-PTA6043" H 4600 1375 60  0001 C CNN
+F 3 "" H 4600 1375 60  0001 C CNN
+	1    4650 1000
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	4250 1000 4350 1000
+Wire Wire Line
+	4950 1000 5050 1000
+$Comp
+L PTA6043 R2
+U 1 1 589239B0
+P 4650 1800
+F 0 "R2" H 4775 1650 60  0000 C CNN
+F 1 "PTA6043" H 4650 1950 60  0000 C CNN
+F 2 "Potentiometers_Bourne:Potentiometer_Bourns-PTA6043" H 4600 2175 60  0001 C CNN
+F 3 "" H 4600 2175 60  0001 C CNN
+	1    4650 1800
+	1    0    0    -1  
+$EndComp
+$Comp
+L PTA6043 R4
+U 1 1 589239FB
+P 4650 3250
+F 0 "R4" H 4775 3100 60  0000 C CNN
+F 1 "PTA6043" H 4650 3400 60  0000 C CNN
+F 2 "Potentiometers_Bourne:Potentiometer_Bourns-PTA6043" H 4600 3625 60  0001 C CNN
+F 3 "" H 4600 3625 60  0001 C CNN
+	1    4650 3250
+	1    0    0    -1  
+$EndComp
+$Comp
+L PTA6043 R3
+U 1 1 58923A9D
+P 4650 2500
+F 0 "R3" H 4775 2350 60  0000 C CNN
+F 1 "PTA6043" H 4650 2650 60  0000 C CNN
+F 2 "Potentiometers_Bourne:Potentiometer_Bourns-PTA6043" H 4600 2875 60  0001 C CNN
+F 3 "" H 4600 2875 60  0001 C CNN
+	1    4650 2500
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	4250 1800 4350 1800
+Wire Wire Line
+	4650 2050 4650 2000
+Wire Wire Line
+	4950 1800 5050 1800
+Wire Wire Line
+	4650 2700 4650 2750
+Wire Wire Line
+	4250 2500 4350 2500
+Wire Wire Line
+	4950 2500 5050 2500
+Wire Wire Line
+	4250 3250 4350 3250
+Wire Wire Line
+	4650 3500 4650 3450
+Wire Wire Line
+	5050 3250 4950 3250
+Wire Wire Line
+	5850 2350 6200 2350
+Wire Wire Line
+	5750 2050 5750 2250
+Wire Wire Line
+	5750 2250 6200 2250
+Wire Wire Line
+	4650 2750 5850 2750
+Wire Wire Line
+	5850 2750 5850 2450
+Wire Wire Line
+	5850 2450 6200 2450
+Wire Wire Line
+	6000 3500 6000 2550
+Wire Wire Line
+	6000 2550 6200 2550
 $EndSCHEMATC

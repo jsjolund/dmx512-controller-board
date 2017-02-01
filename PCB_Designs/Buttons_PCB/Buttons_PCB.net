@@ -1,7 +1,7 @@
 (export (version D)
   (design
     (source E:/GitHub/dmx512-controller-board/PCB_Designs/Buttons_PCB/Buttons_PCB.sch)
-    (date "2017-01-31 00:44:06")
+    (date "2017-02-01 20:40:31")
     (tool "Eeschema 4.0.4-stable")
     (sheet (number 1) (name /) (tstamps /)
       (title_block
@@ -568,12 +568,12 @@
         (pin (num 1) (name ~) (type passive))
         (pin (num 2) (name ~) (type passive)))))
   (libraries
-    (library (logical device)
-      (uri E:\Programs_E\KiCAD\share\kicad\library\device.lib))
     (library (logical conn)
       (uri E:\Programs_E\KiCAD\share\kicad\library\conn.lib))
     (library (logical microchip)
       (uri E:\Programs_E\KiCAD\share\kicad\library\microchip.lib))
+    (library (logical device)
+      (uri E:\Programs_E\KiCAD\share\kicad\library\device.lib))
     (library (logical Custom_Switches)
       (uri E:\GitHub\dmx512-controller-board\PCB_Designs\LIBRARIES\Custom_ONE\Custom_Switches.lib)))
   (nets
