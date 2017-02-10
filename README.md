@@ -10,6 +10,8 @@ Controller board for DMX512 compatible devices, built around the STM32F4 process
 
 [STM32F411 Programming Manual](http://www.st.com/resource/en/programming_manual/dm00046982.pdf)
 
+[Using the STM32F4 Series DMA controller](http://www.st.com/resource/en/application_note/dm00046011.pdf)
+
 ## IDE
 [System Workbench for STM32 - IDE which works on Linux (unlike TrueStudio...)](http://www.openstm32.org/System+Workbench+for+STM32)
 
