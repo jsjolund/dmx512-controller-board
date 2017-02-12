@@ -1,4 +1,4 @@
-update=2017-02-11 21:34:23
+update=2017-02-12 13:08:03
 version=1
 last_client=kicad
 [pcbnew]
@@ -64,3 +64,4 @@ LibName32=valves
 LibName33=C:/Program Files/KiCad/share/kicad/library/stm32
 LibName34=ft232rl
 LibName35=max3485e
+LibName36=DCDCconv
