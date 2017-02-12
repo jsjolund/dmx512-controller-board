@@ -1,4 +1,4 @@
-update=2017-02-10 17:25:31
+update=2017-02-11 21:34:23
 version=1
 last_client=kicad
 [pcbnew]
@@ -27,7 +27,7 @@ NetIExt=net
 version=1
 [eeschema]
 version=1
-LibDir=//afs/ltu.se/students/all/danbro-3/My Documents/KiCAD/LIBRARIES/Custom_one;//afs/ltu.se/students/all/danbro-3/My Documents/KiCAD/LIBRARIES
+LibDir=../LIBRARIES
 [eeschema/libraries]
 LibName1=Lab1-rescue
 LibName2=lm1117_adj
@@ -62,5 +62,5 @@ LibName30=atmel
 LibName31=contrib
 LibName32=valves
 LibName33=C:/Program Files/KiCad/share/kicad/library/stm32
-LibName34=//afs/ltu.se/students/all/johsjl-1/Desktop/PCB_Designs/LIBRARIES/max3485e
-LibName35=//afs/ltu.se/students/all/johsjl-1/Desktop/PCB_Designs/LIBRARIES/ft232rl
+LibName34=ft232rl
+LibName35=max3485e
