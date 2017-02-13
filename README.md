@@ -22,6 +22,8 @@ Controller board for DMX512 compatible devices, built around the STM32F4 process
 
 [Misc STM32F4 libraries](https://stm32f4-discovery.net/2014/05/all-stm32f429-libraries-at-one-place/)
 
+[LCD library (KS0108 driver)](http://en.radzio.dxp.pl/ks0108/)
+
 ![Nucleo board](/Images/nucleo_f411re.png)
 
 ![Used pins](/Images/used_pins.png)
