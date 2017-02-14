@@ -567,6 +567,12 @@ K DAC 4CH 8bit
 F http://www.ti.com/lit/ds/symlink/tlv5627.pdf
 $ENDCMP
 #
+$CMP TRACO_POWER_TEL_2-0511
+D Quad 8bit DAC, Separate Reference Voltage, PDIP-24
+K 8bit DAC 4CH
+F http://www.analog.com/static/imported-files/data_sheets/AD7225.pdf
+$ENDCMP
+#
 $CMP UVC3100
 D High Speed 30MHz Flash 8-bit ADC 10MHz 10-bit DAC, For CCD Digitizers
 K 8bit ADC 10bit DAC CCD
