@@ -77,13 +77,11 @@ U 1 1 5894F9E5
 P 7500 3250
 F 0 "P2" H 7500 4300 50  0000 C CNN
 F 1 "CONN_01X20" V 7600 3250 50  0000 C CNN
-F 2 "Pin_Headers:Pin_Header_Straight_1x20_Pitch2.00mm" H 7500 3250 50  0001 C CNN
+F 2 "Pin_Headers:Pin_Header_Straight_1x20_Pitch2.54mm" H 7500 3250 50  0001 C CNN
 F 3 "" H 7500 3250 50  0000 C CNN
 	1    7500 3250
 	1    0    0    -1  
 $EndComp
-Text Label 4550 2350 0    60   ~ 0
-VCC3
 Text Label 4550 4350 0    60   ~ 0
 GND
 Text Label 5050 2550 0    60   ~ 0
@@ -278,8 +276,6 @@ F 3 "" H 2500 4350 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 Connection ~ 2500 4150
-Text Label 2500 3950 0    60   ~ 0
-VCC3
 Text Label 2500 3650 0    60   ~ 0
 SCL#
 Text Label 2500 3750 0    60   ~ 0
@@ -290,8 +286,6 @@ Text Label 2500 3050 0    60   ~ 0
 INTA
 Text Label 2500 2950 0    60   ~ 0
 INTB
-Text Label 2000 2350 0    60   ~ 0
-VCC3
 Text Label 2000 4350 0    60   ~ 0
 GND
 Text Label 1500 3450 2    60   ~ 0
@@ -354,10 +348,6 @@ Text Label 3300 800  1    60   ~ 0
 GND
 Text Label 2700 800  1    60   ~ 0
 GND
-Text Label 2400 1450 1    60   ~ 0
-VCC3
-Text Label 3100 1450 1    60   ~ 0
-VCC3
 $Comp
 L C 100n2
 U 1 1 58951DBA
@@ -396,8 +386,6 @@ Wire Wire Line
 Text Label 4350 1750 0    60   ~ 0
 ENCODERSW
 Connection ~ 4200 1750
-Text Label 4200 1450 0    60   ~ 0
-VCC3
 Wire Wire Line
 	3700 1100 3300 1100
 $Comp
@@ -474,13 +462,11 @@ F 3 "" H 6000 1300 50  0000 C CNN
 $EndComp
 Text Label 5800 850  2    60   ~ 0
 VCC5
-Text Label 5800 950  2    60   ~ 0
-VCC3
-Text Label 5800 1150 2    60   ~ 0
+Text Label 5800 1450 2    60   ~ 0
 SCL#
 Text Label 5800 1250 2    60   ~ 0
 SDA#
-Text Label 5800 1350 2    60   ~ 0
+Text Label 4850 1150 2    60   ~ 0
 RST#
 Text Label 6550 3150 2    60   ~ 0
 VCC5DISP
@@ -515,25 +501,15 @@ Wire Wire Line
 	5500 3650 5500 3600
 Wire Wire Line
 	5050 3750 5500 3750
-Text Label 5800 3750 0    60   ~ 0
-VCC3
-Text Label 5800 3600 0    60   ~ 0
-VCC3
 Connection ~ 2000 2350
-NoConn ~ 5800 1050
-NoConn ~ 5800 1650
 NoConn ~ 5800 1750
-NoConn ~ 1500 3750
-NoConn ~ 1500 3850
 NoConn ~ 1500 3950
 NoConn ~ 1500 4050
 NoConn ~ 1500 4150
 Connection ~ 2500 3050
 Connection ~ 2500 2950
-Text Label 5800 1450 2    60   ~ 0
+Text Label 5800 1650 2    60   ~ 0
 INTA
-Text Label 5800 1550 2    60   ~ 0
-INTB
 Wire Wire Line
 	3100 1750 3400 1750
 $Comp
@@ -562,12 +538,12 @@ $EndComp
 $Comp
 L CHERRY-MX U3
 U 1 1 58A0D6D1
-P 7100 1450
-F 0 "U3" H 7100 1550 60  0000 C CNN
-F 1 "CHERRY-MX" H 7100 1625 60  0000 C CNN
-F 2 "" H 7100 1500 60  0001 C CNN
-F 3 "" H 7100 1500 60  0001 C CNN
-	1    7100 1450
+P 6700 1050
+F 0 "U3" H 6700 1150 60  0000 C CNN
+F 1 "CHERRY-MX" H 6700 1225 60  0000 C CNN
+F 2 "Keyboard:CHERRY_PCB_100H" H 6700 1100 60  0001 C CNN
+F 3 "" H 6700 1100 60  0001 C CNN
+	1    6700 1050
 	1    0    0    -1  
 $EndComp
 $Comp
@@ -576,9 +552,146 @@ U 1 1 58A0D728
 P 7100 1650
 F 0 "D1" H 7100 1750 50  0000 C CNN
 F 1 "LED_ALT" H 7100 1550 50  0000 C CNN
-F 2 "" H 7100 1650 50  0000 C CNN
+F 2 "Keyboard:CHERRY_MX_LED" H 7100 1650 50  0001 C CNN
 F 3 "" H 7100 1650 50  0000 C CNN
 	1    7100 1650
+	1    0    0    -1  
+$EndComp
+Text Label 1500 3750 2    60   ~ 0
+BUTTON_2
+Text Label 8000 1050 0    60   ~ 0
+BUTTON_2
+$Comp
+L GND #PWR07
+U 1 1 58A0E8E0
+P 6950 1650
+F 0 "#PWR07" H 6950 1400 50  0001 C CNN
+F 1 "GND" H 6950 1500 50  0000 C CNN
+F 2 "" H 6950 1650 50  0000 C CNN
+F 3 "" H 6950 1650 50  0000 C CNN
+	1    6950 1650
+	0    1    1    0   
+$EndComp
+Text Label 1500 3850 2    60   ~ 0
+BUTT_LED
+Text Label 7550 1650 0    60   ~ 0
+BUTT_LED
+$Comp
+L R R2
+U 1 1 58A0F212
+P 7400 1650
+F 0 "R2" V 7480 1650 50  0000 C CNN
+F 1 "150" V 7400 1650 50  0000 C CNN
+F 2 "Resistors_SMD:R_0603_HandSoldering" V 7330 1650 50  0001 C CNN
+F 3 "" H 7400 1650 50  0000 C CNN
+	1    7400 1650
+	0    -1   -1   0   
+$EndComp
+$Comp
+L GND #PWR08
+U 1 1 58A0F70D
+P 5800 1050
+F 0 "#PWR08" H 5800 800 50  0001 C CNN
+F 1 "GND" H 5800 900 50  0000 C CNN
+F 2 "" H 5800 1050 50  0000 C CNN
+F 3 "" H 5800 1050 50  0000 C CNN
+	1    5800 1050
+	0    1    1    0   
+$EndComp
+Text Label 5800 950  2    60   ~ 0
+LCD_BACKLIGHT
+NoConn ~ 5800 1150
+NoConn ~ 5800 1350
+NoConn ~ 5800 1550
+Text Label 4200 1450 2    60   ~ 0
+VCC5
+Text Label 2400 1450 2    60   ~ 0
+VCC5
+Text Label 3100 1450 2    60   ~ 0
+VCC5
+Text Label 5800 3600 0    60   ~ 0
+VCC5
+Text Label 5800 3750 0    60   ~ 0
+VCC5
+Text Label 2500 3950 0    60   ~ 0
+VCC5
+Text Label 4550 2350 0    60   ~ 0
+VCC5
+Text Label 2000 2350 0    60   ~ 0
+VCC5
+$Comp
+L R R3
+U 1 1 58A1093F
+P 7550 800
+F 0 "R3" V 7630 800 50  0000 C CNN
+F 1 "10k" V 7550 800 50  0000 C CNN
+F 2 "Resistors_SMD:R_0603_HandSoldering" V 7480 800 50  0001 C CNN
+F 3 "" H 7550 800 50  0000 C CNN
+	1    7550 800 
+	1    0    0    -1  
+$EndComp
+$Comp
+L R R4
+U 1 1 58A10992
+P 7850 1050
+F 0 "R4" V 7930 1050 50  0000 C CNN
+F 1 "10k" V 7850 1050 50  0000 C CNN
+F 2 "Resistors_SMD:R_0603_HandSoldering" V 7780 1050 50  0001 C CNN
+F 3 "" H 7850 1050 50  0000 C CNN
+	1    7850 1050
+	0    -1   -1   0   
+$EndComp
+$Comp
+L C C1
+U 1 1 58A10A2C
+P 7550 1200
+F 0 "C1" H 7575 1300 50  0000 L CNN
+F 1 "100n" H 7575 1100 50  0000 L CNN
+F 2 "Capacitors_SMD:C_0603_HandSoldering" H 7588 1050 50  0001 C CNN
+F 3 "" H 7550 1200 50  0000 C CNN
+	1    7550 1200
+	1    0    0    -1  
+$EndComp
+$Comp
+L R R1
+U 1 1 58A10B27
+P 7250 1050
+F 0 "R1" V 7330 1050 50  0000 C CNN
+F 1 "100" V 7250 1050 50  0000 C CNN
+F 2 "Resistors_SMD:R_0603_HandSoldering" V 7180 1050 50  0001 C CNN
+F 3 "" H 7250 1050 50  0000 C CNN
+	1    7250 1050
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	6900 1050 7100 1050
+Wire Wire Line
+	7400 1050 7700 1050
+Wire Wire Line
+	7550 1050 7550 950 
+Connection ~ 7550 1050
+Text Label 7550 650  2    60   ~ 0
+VCC5
+$Comp
+L GND #PWR09
+U 1 1 58A10FD4
+P 6500 1050
+F 0 "#PWR09" H 6500 800 50  0001 C CNN
+F 1 "GND" H 6500 900 50  0000 C CNN
+F 2 "" H 6500 1050 50  0000 C CNN
+F 3 "" H 6500 1050 50  0000 C CNN
+	1    6500 1050
+	0    1    1    0   
+$EndComp
+$Comp
+L GND #PWR010
+U 1 1 58A1101A
+P 7550 1350
+F 0 "#PWR010" H 7550 1100 50  0001 C CNN
+F 1 "GND" H 7550 1200 50  0000 C CNN
+F 2 "" H 7550 1350 50  0000 C CNN
+F 3 "" H 7550 1350 50  0000 C CNN
+	1    7550 1350
 	1    0    0    -1  
 $EndComp
 $EndSCHEMATC

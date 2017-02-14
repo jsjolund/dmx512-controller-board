@@ -84,8 +84,6 @@ F 3 "" H 7500 3250 50  0000 C CNN
 $EndComp
 Text Label 4550 4350 0    60   ~ 0
 GND
-Text Label 5050 2550 0    60   ~ 0
-RST#
 Wire Wire Line
 	5050 3950 5150 3950
 Wire Wire Line
@@ -185,27 +183,8 @@ Text Label 7300 3900 2    60   ~ 0
 RST
 Text Label 7300 4000 2    60   ~ 0
 VEE
-Text Label 7300 4100 2    60   ~ 0
-LED+
 Text Label 7300 4200 2    60   ~ 0
 LED-
-$Comp
-L R 0.1k1
-U 1 1 58950747
-P 6000 4250
-F 0 "0.1k1" V 6080 4250 50  0000 C CNN
-F 1 "100" V 6000 4250 50  0000 C CNN
-F 2 "Resistors_SMD:R_0603_HandSoldering" V 5930 4250 50  0001 C CNN
-F 3 "" H 6000 4250 50  0000 C CNN
-	1    6000 4250
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	6000 4550 6000 4400
-Text Label 6000 4100 0    60   ~ 0
-LED+
-Text Label 6000 4550 0    60   ~ 0
-VCC5
 $Comp
 L GND #PWR03
 U 1 1 589508C9
@@ -280,8 +259,6 @@ Text Label 2500 3650 0    60   ~ 0
 SCL#
 Text Label 2500 3750 0    60   ~ 0
 SDA#
-Text Label 2500 2550 0    60   ~ 0
-RST#
 Text Label 2500 3050 0    60   ~ 0
 INTA
 Text Label 2500 2950 0    60   ~ 0
@@ -694,4 +671,8 @@ F 3 "" H 7550 1350 50  0000 C CNN
 	1    7550 1350
 	1    0    0    -1  
 $EndComp
+Text Label 7300 4100 2    60   ~ 0
+LCD_BACKLIGHT
+NoConn ~ 5050 2550
+NoConn ~ 2500 2550
 $EndSCHEMATC
