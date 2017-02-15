@@ -1,0 +1,3 @@
+(fp_lib_table
+  (lib (name LIBRARIES)(type KiCad)(uri /home/user/code/dmx512-controller-board/PCB_Designs/LIBRARIES)(options "")(descr ""))
+)
