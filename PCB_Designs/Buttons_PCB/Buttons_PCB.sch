@@ -77,18 +77,10 @@ F 3 "" H 7100 4000 50  0001 C CNN
 	1    7100 4000
 	1    0    0    -1  
 $EndComp
-Text Label 9000 1600 2    60   ~ 0
+Text Label 8800 1600 2    60   ~ 0
 VDD
-Text Label 9000 1700 2    60   ~ 0
+Text Label 8800 1700 2    60   ~ 0
 GND
-Text Label 9000 1900 2    60   ~ 0
-S_CLK_L
-Text Label 9000 1800 2    60   ~ 0
-S_DAT_L
-Text Label 9000 2100 2    60   ~ 0
-intA
-Text Label 9000 2000 2    60   ~ 0
-intB
 Text Label 6950 1850 0    60   ~ 0
 VDD
 Text Label 7400 4300 0    60   ~ 0
@@ -108,14 +100,6 @@ F 3 "" H 7050 6150 50  0001 C CNN
 $EndComp
 Text Label 6800 6150 0    60   ~ 0
 GND
-Text Label 7300 4850 0    60   ~ 0
-intA
-Text Label 7300 2550 0    60   ~ 0
-intA
-Text Label 7300 2450 0    60   ~ 0
-intB
-Text Label 7300 4750 0    60   ~ 0
-intB
 Text Label 7300 3450 0    60   ~ 0
 GND
 Text Label 7300 3550 0    60   ~ 0
@@ -342,7 +326,7 @@ U 1 1 588A5E45
 P 7400 4000
 F 0 "C15" H 7200 4100 50  0000 L CNN
 F 1 "4.7u" H 7200 3900 50  0000 L CNN
-F 2 "Capacitors_SMD:CP_Elec_4x4.5" H 7438 3850 50  0001 C CNN
+F 2 "Capacitors_Tantalum_SMD:CP_Tantalum_Case-A_EIA-3216-18_Reflow" H 7438 3850 50  0001 C CNN
 F 3 "" H 7400 4000 50  0000 C CNN
 	1    7400 4000
 	-1   0    0    1   
@@ -992,9 +976,9 @@ Wire Wire Line
 Wire Notes Line
 	3050 7250 3050 1100
 Wire Notes Line
-	9350 2200 8600 2200
+	9350 2200 8450 2200
 Wire Notes Line
-	8600 2200 8600 1450
+	8450 2200 8450 1450
 Wire Notes Line
 	8600 1450 9350 1450
 Wire Notes Line
@@ -1184,19 +1168,6 @@ Text Notes 10150 2950 0    60   ~ 0
 Mounting Holes
 Wire Notes Line
 	10100 2950 10900 2950
-$Comp
-L CONN_01X05 P1
-U 1 1 589F628B
-P 9200 1800
-F 0 "P1" H 9200 2100 50  0000 C CNN
-F 1 "CONN_01X05" V 9300 1800 50  0000 C CNN
-F 2 "Socket_Strips:Socket_Strip_Straight_1x05_Pitch2.54mm" H 9200 1800 50  0001 C CNN
-F 3 "" H 9200 1800 50  0001 C CNN
-	1    9200 1800
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	9000 2100 9000 2000
 Wire Wire Line
 	4850 4750 4850 3650
 Wire Wire Line
@@ -1475,4 +1446,59 @@ Connection ~ 3300 5750
 Wire Wire Line
 	3300 6750 3400 6750
 Connection ~ 3300 6250
+$Comp
+L CONN_02X05 P1
+U 1 1 58A4C90A
+P 9050 1800
+F 0 "P1" H 9050 2100 50  0000 C CNN
+F 1 "CONN_02X05" H 9050 1500 50  0000 C CNN
+F 2 "Connectors_Multicomp:Multicomp_MC9A22-1034_2x05x2.54mm_Angled" H 9050 600 50  0001 C CNN
+F 3 "" H 9050 600 50  0000 C CNN
+	1    9050 1800
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	9300 2000 9300 1950
+Wire Wire Line
+	9300 1950 8800 1950
+Wire Wire Line
+	9300 1900 9300 1850
+Wire Wire Line
+	9300 1850 8800 1850
+Wire Wire Line
+	8800 1850 8800 1900
+Wire Wire Line
+	8800 1800 8800 1750
+Wire Wire Line
+	8800 1750 9300 1750
+Wire Wire Line
+	9300 1750 9300 1800
+Wire Wire Line
+	9300 1700 9300 1650
+Wire Wire Line
+	9300 1650 8800 1650
+Wire Wire Line
+	8800 1650 8800 1700
+Wire Wire Line
+	8800 1600 8800 1550
+Wire Wire Line
+	8800 1550 9300 1550
+Wire Wire Line
+	9300 1550 9300 1600
+Text Label 8800 1900 2    60   ~ 0
+S_CLK_L
+Text Label 8800 1800 2    60   ~ 0
+S_DAT_L
+Wire Wire Line
+	7300 2550 7300 2450
+Wire Wire Line
+	7300 4750 7300 4850
+Wire Wire Line
+	8800 1950 8800 2000
+Text Label 8800 2000 2    60   ~ 0
+INT
+Text Label 7300 2550 0    60   ~ 0
+INT
+Text Label 7300 4850 0    60   ~ 0
+INT
 $EndSCHEMATC
