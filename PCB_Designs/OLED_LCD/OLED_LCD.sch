@@ -261,8 +261,6 @@ Text Label 2500 3750 0    60   ~ 0
 SDA#
 Text Label 2500 3050 0    60   ~ 0
 INTA
-Text Label 2500 2950 0    60   ~ 0
-INTB
 Text Label 2000 4350 0    60   ~ 0
 GND
 Text Label 1500 3450 2    60   ~ 0
@@ -432,7 +430,7 @@ U 1 1 58954043
 P 6000 1300
 F 0 "P1" H 6000 1850 50  0000 C CNN
 F 1 "CONN_01X10" V 6100 1300 50  0000 C CNN
-F 2 "Connectors:IDC_Header_Straight_10pins" H 6000 1300 50  0001 C CNN
+F 2 "Connectors_Multicomp:Multicomp_MC9A22-1034_2x05x2.54mm_Angled" H 6000 1300 50  0001 C CNN
 F 3 "" H 6000 1300 50  0000 C CNN
 	1    6000 1300
 	1    0    0    -1  
@@ -443,8 +441,6 @@ Text Label 5800 1450 2    60   ~ 0
 SCL#
 Text Label 5800 1250 2    60   ~ 0
 SDA#
-Text Label 4850 1150 2    60   ~ 0
-RST#
 Text Label 6550 3150 2    60   ~ 0
 VCC5DISP
 Wire Wire Line
@@ -479,12 +475,10 @@ Wire Wire Line
 Wire Wire Line
 	5050 3750 5500 3750
 Connection ~ 2000 2350
-NoConn ~ 5800 1750
 NoConn ~ 1500 3950
 NoConn ~ 1500 4050
 NoConn ~ 1500 4150
 Connection ~ 2500 3050
-Connection ~ 2500 2950
 Text Label 5800 1650 2    60   ~ 0
 INTA
 Wire Wire Line
@@ -577,9 +571,6 @@ F 3 "" H 5800 1050 50  0000 C CNN
 $EndComp
 Text Label 5800 950  2    60   ~ 0
 LCD_BACKLIGHT
-NoConn ~ 5800 1150
-NoConn ~ 5800 1350
-NoConn ~ 5800 1550
 Text Label 4200 1450 2    60   ~ 0
 VCC5
 Text Label 2400 1450 2    60   ~ 0
@@ -675,4 +666,14 @@ Text Label 7300 4100 2    60   ~ 0
 LCD_BACKLIGHT
 NoConn ~ 5050 2550
 NoConn ~ 2500 2550
+NoConn ~ 2500 2950
+NoConn ~ 2800 2950
+Wire Wire Line
+	5800 1050 5800 1150
+Wire Wire Line
+	5800 1250 5800 1350
+Wire Wire Line
+	5800 1450 5800 1550
+Wire Wire Line
+	5800 1650 5800 1750
 $EndSCHEMATC
