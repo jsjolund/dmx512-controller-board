@@ -10,6 +10,6 @@
 
 #include "../framework/Controller.h"
 
-void SunlightFrame( usercmd_t uCmd );
+void SunlightFrame( const usercmd_t uCmd );
 
 #endif

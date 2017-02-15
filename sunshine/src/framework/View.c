@@ -6,7 +6,7 @@
 ========================================================*/
 #include "View.h"
 
-int updateView = 0;
+
 
 void ViewSet() {
 	

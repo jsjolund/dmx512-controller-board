@@ -10,13 +10,16 @@
 
 
 
+
+
+
 /*========================================================
 	Description: This function will react to a incoming 
 	user command and set the Dmx and View output.
 
 	======================================================
 */
-void SunlightFrame( usercmd_t uCmd ) {
+void SunlightFrame( const usercmd_t uCmd ) {
 
 	
 	
@@ -41,6 +44,4 @@ void SunlightFrame( usercmd_t uCmd ) {
 	
 
 
-
-		
 }

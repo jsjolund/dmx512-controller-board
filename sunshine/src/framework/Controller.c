@@ -12,7 +12,7 @@
 // NOTE: Two different key binding maps for the two states of
 // the program. The user button command generated will differ 
 // depending on which state the program is running in.
-usercmdkey_t usercmdKeysModeA[] = {
+volatile usercmdkey_t usercmdKeysModeA[] = {
 	{ slider_a,		ub_sliderA },
 	{ slider_b,		ub_sliderB },
 	{ slider_c,		ub_sliderC },
@@ -26,7 +26,7 @@ usercmdkey_t usercmdKeysModeA[] = {
 };
 
 //
-usercmdkey_t usercmdKeysModeB[] = {
+volatile usercmdkey_t usercmdKeysModeB[] = {
 	{ slider_a,		ub_sliderA },
 	{ slider_b,		ub_sliderB },
 	{ slider_c,		ub_sliderC },
@@ -45,14 +45,20 @@ usercmdkey_t usercmdKeysModeB[] = {
 #define Mode_A 25638
 #define Mode_B 78965
 
-int controllerMode = 25638;
+volatile int controllerMode = 25638;
 
-usercmd_t usercmdQue[128];
+volatile usercmd_t usercmdQue[128];
 
-signed int usercmdQueSize = 0;
+volatile signed int usercmdQueSize = 0;
 
-inputcmds_t newInputCmd;
-inputcmds_t oldInputCmd;
+volatile slidercmds_t 	newSliders;		// slider states
+volatile slidercmds_t 	oldSliders;		
+
+volatile keycmds_t		newKeys;		// key states on the key card
+volatile keycmds_t		oldKeys;		
+
+volatile padcmds_t		newPadkeys;		// rotary key and back key states
+volatile padcmds_t		oldPadkeys;		
 
 /*======================================
 	Private
@@ -73,8 +79,8 @@ void UserCmdQuePushBack( usercmd_t uCmd ) {
 
 	====================================
 */
-void ControllerGenUserCmds() {
-	// check if inputs cmds have changed
+inline void ControllerGenUserCmds() {
+	// check if inputs cmds have changed both for analog and i2c buttons		// this should have mutex lock on because inturrepts can set 
 	
 	
 	// if cmd have changed generate user commands and buffer them in que
@@ -93,7 +99,7 @@ void ControllerGenUserCmds() {
 	Time-Complexity: Linear
 	====================================
 */
-usercmd_t ControllerPopUserCmd() {
+inline usercmd_t ControllerPopUserCmd() {
 	
 	usercmd_t uCmd;
 	
@@ -124,6 +130,8 @@ usercmd_t ControllerPopUserCmd() {
 
 	======================================================
 */
-void ControllerPollAnalogInput(){
+inline void ControllerPollAnalogInput(){
+	
+	
 	
 }
