@@ -43,5 +43,4 @@
 <listEntry value="4" />
 </listAttribute>
 <stringAttribute key="org.eclipse.dsf.launch.MEMORY_BLOCKS" value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; standalone=&quot;no&quot;?&gt;&#xD;&#xA;&lt;memoryBlockExpressionList context=&quot;reserved-for-future-use&quot;/&gt;&#xD;&#xA;" />
-<stringAttribute key="process_factory_id" value="org.eclipse.cdt.dsf.gdb.GdbProcessFactory" />
 </launchConfiguration>
