@@ -14,7 +14,7 @@ INCLUDE_DIRS = Inc \
 INCLUDE_DIRS_PARAMS = $(foreach d, $(INCLUDE_DIRS), -I$d)
 
 # Assembler, Compiler and Linker flags and linker script settings
-# -lc_s -lm -lstdc++_s -lsupc++_s 
+# -lc_s -lm -lstdc++_s -lsupc++_s
 LINK_SCRIPT = "STM32F411RE_FLASH.ld"
 
 LINKER_FLAGS = -lm -mthumb -mhard-float -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -Wl,--gc-sections -T$(LINK_SCRIPT) -static  -Wl,--start-group -Wl,--end-group -Wl,-cref "-Wl,-Map=$(BIN_DIR)/dmx512-controller-board.map" -Wl,--defsym=malloc_getpagesize_P=0x1000
@@ -72,9 +72,9 @@ clean:
 # Specific targets
 ##################
 # 	@mkdir $(subst /,\,$(dir $@)) 2> NUL || echo off
-$(OBJECT_DIR)/Src/main.o: Src/main.cpp
+$(OBJECT_DIR)/Src/main.o: Src/main.c
 	@mkdir -p $(dir $@)
-	$(CXX) $(CXXCOMPILER_FLAGS) Src/main.cpp -o $(OBJECT_DIR)/Src/main.o
+	$(CXX) $(CXXCOMPILER_FLAGS) Src/main.c -o $(OBJECT_DIR)/Src/main.o
 
 ##################
 # Implicit targets
