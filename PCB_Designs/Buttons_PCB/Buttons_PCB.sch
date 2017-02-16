@@ -980,7 +980,7 @@ Wire Notes Line
 Wire Notes Line
 	8450 2200 8450 1450
 Wire Notes Line
-	8600 1450 9350 1450
+	8450 1450 9350 1450
 Wire Notes Line
 	9350 1450 9350 2200
 Wire Wire Line
@@ -1126,7 +1126,7 @@ U 1 1 588FBE14
 P 9800 2950
 F 0 "P2" H 9800 3050 50  0000 C CNN
 F 1 "CONN_01X01" V 9900 2950 50  0000 C CNN
-F 2 "Socket_Strips:Socket_Strip_Straight_1x01_Pitch2.54mm" H 9800 2950 50  0001 C CNN
+F 2 "Mounting_Holes:MountingHole_2.2mm_M2_DIN965_Pad" H 9800 2950 50  0001 C CNN
 F 3 "" H 9800 2950 50  0001 C CNN
 	1    9800 2950
 	1    0    0    1   
@@ -1137,7 +1137,7 @@ U 1 1 588FBF5A
 P 9800 3150
 F 0 "P3" H 9800 3250 50  0000 C CNN
 F 1 "CONN_01X01" V 9900 3150 50  0000 C CNN
-F 2 "Socket_Strips:Socket_Strip_Straight_1x01_Pitch2.54mm" H 9800 3150 50  0001 C CNN
+F 2 "Mounting_Holes:MountingHole_2.2mm_M2_DIN965_Pad" H 9800 3150 50  0001 C CNN
 F 3 "" H 9800 3150 50  0001 C CNN
 	1    9800 3150
 	1    0    0    -1  
@@ -1148,7 +1148,7 @@ U 1 1 588FC040
 P 9800 3350
 F 0 "P4" H 9800 3450 50  0000 C CNN
 F 1 "CONN_01X01" V 9900 3350 50  0000 C CNN
-F 2 "Socket_Strips:Socket_Strip_Straight_1x01_Pitch2.54mm" H 9800 3350 50  0001 C CNN
+F 2 "Mounting_Holes:MountingHole_2.2mm_M2_DIN965_Pad" H 9800 3350 50  0001 C CNN
 F 3 "" H 9800 3350 50  0001 C CNN
 	1    9800 3350
 	1    0    0    -1  
