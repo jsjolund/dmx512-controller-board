@@ -81,10 +81,6 @@ Text Label 8800 1600 2    60   ~ 0
 VDD
 Text Label 8800 1700 2    60   ~ 0
 GND
-Text Label 8800 2100 2    60   ~ 0
-intA
-Text Label 8800 2000 2    60   ~ 0
-intB
 Text Label 6950 1850 0    60   ~ 0
 VDD
 Text Label 7400 4300 0    60   ~ 0
@@ -104,14 +100,6 @@ F 3 "" H 7050 6150 50  0001 C CNN
 $EndComp
 Text Label 6800 6150 0    60   ~ 0
 GND
-Text Label 7300 4850 0    60   ~ 0
-intA
-Text Label 7300 2550 0    60   ~ 0
-intA
-Text Label 7300 2450 0    60   ~ 0
-intB
-Text Label 7300 4750 0    60   ~ 0
-intB
 Text Label 7300 3450 0    60   ~ 0
 GND
 Text Label 7300 3550 0    60   ~ 0
@@ -988,9 +976,9 @@ Wire Wire Line
 Wire Notes Line
 	3050 7250 3050 1100
 Wire Notes Line
-	9350 2200 8600 2200
+	9350 2200 8450 2200
 Wire Notes Line
-	8600 2200 8600 1450
+	8450 2200 8450 1450
 Wire Notes Line
 	8600 1450 9350 1450
 Wire Notes Line
@@ -1470,8 +1458,6 @@ F 3 "" H 9050 600 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	8800 1950 8800 2100
-Wire Wire Line
 	9300 2000 9300 1950
 Wire Wire Line
 	9300 1950 8800 1950
@@ -1499,5 +1485,20 @@ Wire Wire Line
 	8800 1550 9300 1550
 Wire Wire Line
 	9300 1550 9300 1600
-Connection ~ 8800 2000
+Text Label 8800 1900 2    60   ~ 0
+S_CLK_L
+Text Label 8800 1800 2    60   ~ 0
+S_DAT_L
+Wire Wire Line
+	7300 2550 7300 2450
+Wire Wire Line
+	7300 4750 7300 4850
+Wire Wire Line
+	8800 1950 8800 2000
+Text Label 8800 2000 2    60   ~ 0
+INT
+Text Label 7300 2550 0    60   ~ 0
+INT
+Text Label 7300 4850 0    60   ~ 0
+INT
 $EndSCHEMATC
