@@ -10,6 +10,8 @@
 
 #include "stm32f4xx_hal.h"
 
+
 void SerialInit(UART_HandleTypeDef *huart2);
+void SerialTransmit(char *ptr, int len);
 
 #endif /* SERIAL_H_ */
