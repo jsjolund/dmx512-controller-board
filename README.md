@@ -2,7 +2,7 @@
 Controller board for DMX512 compatible devices, built around the STM32F4 processor
 
 ## STM32F411 docs
-[STM32F411 Nucleo board documentation](http://www.st.com/web/en/resource/technical/document/user_manual/DM00105823.pdf)
+[Nucleo-64 board documentation](http://www.st.com/web/en/resource/technical/document/user_manual/DM00105823.pdf)
 
 [STM32F411 Datasheet](http://www.st.com/resource/en/datasheet/stm32f411re.pdf)
 
