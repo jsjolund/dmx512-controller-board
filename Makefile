@@ -6,7 +6,6 @@ RM = rm -rf
 
 # Includes
 INCLUDE_DIRS = Inc \
-			Src \
 			Drivers/CMSIS/Include \
 			Drivers/CMSIS/Device/ST/STM32F4xx/Include \
 			Drivers/STM32F4xx_HAL_Driver/Inc
@@ -14,16 +13,15 @@ INCLUDE_DIRS = Inc \
 INCLUDE_DIRS_PARAMS = $(foreach d, $(INCLUDE_DIRS), -I$d)
 
 # Assembler, Compiler and Linker flags and linker script settings
-# -lc_s -lm -lstdc++_s -lsupc++_s
 LINK_SCRIPT = "STM32F411RE_FLASH.ld"
 
 LINKER_FLAGS = -lm -mthumb -mhard-float -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -Wl,--gc-sections -T$(LINK_SCRIPT) -static  -Wl,--start-group -Wl,--end-group -Wl,-cref "-Wl,-Map=$(BIN_DIR)/dmx512-controller-board.map" -Wl,--defsym=malloc_getpagesize_P=0x1000
 
 ASSEMBLER_FLAGS = -c -g -O0 -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mthumb -mhard-float -x assembler-with-cpp  $(INCLUDE_DIRS_PARAMS)
 
-COMPILER_FLAGS = -fpermissive -c -g -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -O0 -Wall -ffunction-sections -fdata-sections -mthumb -mhard-float -D"STM32F411xE" $(INCLUDE_DIRS_PARAMS)
+COMPILER_FLAGS = -c -fpermissive  -g -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -O0 -Wall -ffunction-sections -fdata-sections -mthumb -mhard-float -D"STM32F411xE" $(INCLUDE_DIRS_PARAMS)
 
-CXXCOMPILER_FLAGS = -fpermissive -fno-threadsafe-statics -c -g -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -O0 -Wall -ffunction-sections -fdata-sections -mthumb -mhard-float -fno-exceptions -fno-rtti -D"STM32F411xE" $(INCLUDE_DIRS_PARAMS)
+CXXCOMPILER_FLAGS = -c -fpermissive -fno-threadsafe-statics -g -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -O0 -Wall -ffunction-sections -fdata-sections -mthumb -mhard-float -fno-exceptions -fno-rtti -D"STM32F411xE" $(INCLUDE_DIRS_PARAMS)
 
 # Define output directory
 OBJECT_DIR = Debug
@@ -71,10 +69,9 @@ clean:
 ##################
 # Specific targets
 ##################
-# 	@mkdir $(subst /,\,$(dir $@)) 2> NUL || echo off
 $(OBJECT_DIR)/Src/main.o: Src/main.c
 	@mkdir -p $(dir $@)
-	$(CXX) $(CXXCOMPILER_FLAGS) Src/main.c -o $(OBJECT_DIR)/Src/main.o
+	$(CC) $(COMPILER_FLAGS) Src/main.c -o $(OBJECT_DIR)/Src/main.o
 
 ##################
 # Implicit targets
