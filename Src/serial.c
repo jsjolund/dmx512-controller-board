@@ -78,7 +78,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
 	int i;
 	if (usbRxBuffer == '\r' || usbRxBuffer == '\n') {
 		// Echo carriage return
-		SerialTransmit((uint8_t *) "\r\n", 2);
+		SerialTransmit("\r\n", 2);
 
 		usbRxString[usbRxIndex] = 0;
 		// FIXME: Send a command to usb line?
@@ -90,7 +90,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
 			usbRxString[i] = 0;
 	} else {
 		// Echo the character
-		SerialTransmit((uint8_t *) &usbRxBuffer, 1);
+		SerialTransmit((char *) &usbRxBuffer, 1);
 
 		// Append character and increment cursor
 		usbRxString[usbRxIndex] = usbRxBuffer;

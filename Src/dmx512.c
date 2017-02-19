@@ -6,18 +6,6 @@
  */
 #include "dmx512.h"
 
-#define STATE_MBB 1
-#define STATE_BREAK 2
-#define STATE_MAB 4
-
-#define MARK_BEFORE_BREAK 12
-#define MARK_BREAK 100
-#define MARK_AFTER_BREAK 12
-
-#define DMX_CHANNELS 512
-
-#define DMX_START_CODE 0
-
 uint16_t dmxCurrentChannel = 0;
 uint8_t dmxData[DMX_CHANNELS];
 uint8_t dmxSendState;
@@ -73,8 +61,6 @@ void Dmx512Init(TIM_HandleTypeDef *htim2, UART_HandleTypeDef *huart1) {
 	HAL_TIM_Base_Init(dmxHtim);
 	HAL_TIM_Base_Start_IT(dmxHtim);
 }
-
-
 
 // https://github.com/Lora-net/LoRaMac-node/issues/96
 void USART1_IRQHandler(void) {
