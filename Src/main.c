@@ -107,8 +107,6 @@ int main(void) {
 
 	/* Infinite loop */
 	while (1) {
-		printf("test\r\n");
-		HAL_Delay(500);
 	}
 }
 

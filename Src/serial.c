@@ -11,97 +11,91 @@
 #define RX_BUFFER_MAX 100
 #define TX_BUFFER_MAX 100
 
-int rxIndex = 0;
-uint8_t rxBuffer = 0;
-uint8_t rxString[RX_BUFFER_MAX];
+int usbRxIndex = 0;
+uint8_t usbRxBuffer = 0;
+uint8_t usbRxString[RX_BUFFER_MAX];
 
-uint8_t txBuffer = 0;
-uint8_t txString[TX_BUFFER_MAX];
-int txIn, txOut;
+uint8_t usbTxString[TX_BUFFER_MAX];
+int usbTxIndex, usbTxOutdex;
 
-UART_HandleTypeDef *huart;
+UART_HandleTypeDef *usbHuart;
 
 int QueuePut(uint8_t new) {
-	if (txIn == ((txOut - 1 + TX_BUFFER_MAX) % TX_BUFFER_MAX))
+	if (usbTxIndex == ((usbTxOutdex - 1 + TX_BUFFER_MAX) % TX_BUFFER_MAX))
 		return 0;
-	txString[txIn] = new;
-	txIn = (txIn + 1) % TX_BUFFER_MAX;
+	usbTxString[usbTxIndex] = new;
+	usbTxIndex = (usbTxIndex + 1) % TX_BUFFER_MAX;
 	return 1;
 }
 
 int QueueGet(uint8_t *old) {
-	if (txIn == txOut)
+	if (usbTxIndex == usbTxOutdex)
 		return 0;
-	*old = txString[txOut];
-	txOut = (txOut + 1) % TX_BUFFER_MAX;
+	*old = usbTxString[usbTxOutdex];
+	usbTxOutdex = (usbTxOutdex + 1) % TX_BUFFER_MAX;
 	return 1;
 }
 
 void SerialInit(UART_HandleTypeDef *huart2) {
-	huart = huart2;
-	txIn = txOut = 0;
+	usbHuart = huart2;
+	usbTxIndex = usbTxOutdex = 0;
 
 	HAL_NVIC_EnableIRQ(USART2_IRQn);
 	HAL_NVIC_SetPriority(USART2_IRQn, 0, 0);
 
-	HAL_UART_Receive_DMA(huart, &rxBuffer, sizeof(rxBuffer));
+	HAL_UART_Receive_DMA(usbHuart, &usbRxBuffer, sizeof(usbRxBuffer));
 }
 
 void USART2_IRQHandler(void) {
-	HAL_UART_IRQHandler(huart);
-	__HAL_UART_ENABLE_IT(huart, UART_IT_TC);
+	HAL_UART_IRQHandler(usbHuart);
+	if (USART_SR_TXE & USART2->SR) {
+		uint8_t c;
+		if (QueueGet(&c)) {
+			HAL_UART_IRQHandler(usbHuart);
+			HAL_UART_Transmit_DMA(usbHuart, &c, 1);
+		}
+	}
 }
 
 void SerialTransmit(char *ptr, int len) {
-	HAL_UART_Transmit(huart, (uint8_t *) ptr, len, 100);
+	int i = 0;
+	for (i = 0; i < len; i++)
+		QueuePut(ptr[i]);
 
-//	int i = 0;
-//	for (i = 0; i < len; i++)
-//		QueuePut(*ptr);
-//
-//	if (USART_SR_TXE & USART2->SR) {
-//		uint8_t c;
-//		QueueGet(&c);
-//		HAL_UART_Transmit_DMA(huart, &c, 1, 100);
-//	}
-}
-
-void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart) {
 	if (USART_SR_TXE & USART2->SR) {
-//		HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
-//		HAL_UART_IRQHandler(huart);
-//		HAL_UART_Transmit_DMA(huart, (uint8_t *) "a", 1);
+		uint8_t c;
+		QueueGet(&c);
+		HAL_UART_IRQHandler(usbHuart);
+		HAL_UART_Transmit_DMA(usbHuart, &c, 1);
 	}
 }
 
 void SerialExecute() {
-	HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
+
 }
 
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
 	int i;
-	if (rxBuffer == '\r' || rxBuffer == '\n') {
+	if (usbRxBuffer == '\r' || usbRxBuffer == '\n') {
 		// Echo carriage return
-		HAL_UART_IRQHandler(huart);
-		HAL_UART_Transmit_DMA(huart, (uint8_t *) "\r\n", 2);
+		SerialTransmit((uint8_t *) "\r\n", 2);
 
-		rxString[rxIndex] = 0;
-		// FIXME: Send a command to DMX line?
+		usbRxString[usbRxIndex] = 0;
+		// FIXME: Send a command to usb line?
 		SerialExecute();
 
 		// Clear the buffer
-		rxIndex = 0;
+		usbRxIndex = 0;
 		for (i = 0; i < RX_BUFFER_MAX; i++)
-			rxString[i] = 0;
+			usbRxString[i] = 0;
 	} else {
 		// Echo the character
-		HAL_UART_IRQHandler(huart);
-		HAL_UART_Transmit_DMA(huart, (uint8_t *) &rxBuffer, 1);
+		SerialTransmit((uint8_t *) &usbRxBuffer, 1);
 
 		// Append character and increment cursor
-		rxString[rxIndex] = rxBuffer;
-		if (rxIndex < RX_BUFFER_MAX - 1)
-			rxIndex++;
+		usbRxString[usbRxIndex] = usbRxBuffer;
+		if (usbRxIndex < RX_BUFFER_MAX - 1)
+			usbRxIndex++;
 
 	}
 }
