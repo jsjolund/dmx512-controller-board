@@ -71,31 +71,30 @@ void SerialTransmit(char *ptr, int len) {
 }
 
 void SerialExecute() {
-
+	printf("OK\r\n");
 }
 
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
-	int i;
-	if (usbRxBuffer == '\r' || usbRxBuffer == '\n') {
-		// Echo carriage return
-		SerialTransmit("\r\n", 2);
-
-		usbRxString[usbRxIndex] = 0;
-		// FIXME: Send a command to usb line?
-		SerialExecute();
-
-		// Clear the buffer
-		usbRxIndex = 0;
-		for (i = 0; i < RX_BUFFER_MAX; i++)
-			usbRxString[i] = 0;
-	} else {
-		// Echo the character
-		SerialTransmit((char *) &usbRxBuffer, 1);
-
-		// Append character and increment cursor
-		usbRxString[usbRxIndex] = usbRxBuffer;
-		if (usbRxIndex < RX_BUFFER_MAX - 1)
-			usbRxIndex++;
-
+	if (huart == usbHuart) {
+		int i;
+		if (usbRxBuffer == '\r' || usbRxBuffer == '\n') {
+			// Echo carriage return
+			printf("\r\n");
+			// Add null terminator
+			usbRxString[usbRxIndex] = 0;
+			// TODO: Send a command to DMX line?
+			SerialExecute();
+			// Clear the buffer
+			usbRxIndex = 0;
+			for (i = 0; i < RX_BUFFER_MAX; i++)
+				usbRxString[i] = 0;
+		} else {
+			// Echo the character
+			SerialTransmit((char *) &usbRxBuffer, 1);
+			// Append character and increment cursor
+			usbRxString[usbRxIndex] = usbRxBuffer;
+			if (usbRxIndex < RX_BUFFER_MAX - 1)
+				usbRxIndex++;
+		}
 	}
 }

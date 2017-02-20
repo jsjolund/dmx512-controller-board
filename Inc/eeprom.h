@@ -23,9 +23,9 @@
 #define EEPROM_TIMEOUT		5*EEPROM_WRITE  //timeout while writing
 #define EEPROM_SECTIONSIZE	64
 
-void EEPROMInit(I2C_HandleTypeDef* i2cPort);
-HAL_StatusTypeDef EEPROMwrite(uint16_t address, uint8_t* MemTarget, uint16_t Size);
-HAL_StatusTypeDef EEPROMread(uint16_t address, uint8_t* MemTarget, uint16_t Size);
+void EEPROMInit(I2C_HandleTypeDef* hi2c);
+void EEPROMwrite(uint16_t address, uint8_t* MemTarget, uint16_t Size);
+void EEPROMread(uint16_t address, uint8_t* MemTarget, uint16_t Size);
 //	void readObject(structObject* settings, int section);
 //	void saveObject(structObject* settings, int section);
 

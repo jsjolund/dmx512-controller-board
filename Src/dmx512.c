@@ -42,7 +42,8 @@ void Dmx512Init(TIM_HandleTypeDef *htim2, UART_HandleTypeDef *huart1) {
 
 	int i;
 	for (i = 0; i < DMX_CHANNELS; i++) {
-		dmxData[i] = 0b01010101;
+//		dmxData[i] = 0b01010101;
+		dmxData[i] = (i + 1) % 256;
 	}
 
 	dmxSendState = STATE_BREAK;
