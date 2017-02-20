@@ -6,19 +6,23 @@
  */
 #include "dmx512.h"
 
-uint16_t dmxCurrentChannel = 0;
-uint8_t dmxData[DMX_CHANNELS];
-uint8_t dmxSendState;
+static volatile uint16_t dmxCurrentChannel = 0;
+static volatile uint8_t dmxData[DMX_CHANNELS];
+static volatile uint8_t dmxSendState;
 
-TIM_HandleTypeDef *dmxHtim;
-UART_HandleTypeDef *dmxHuart;
+static TIM_HandleTypeDef *dmxHtim;
+static UART_HandleTypeDef *dmxHuart;
 
-GPIO_InitTypeDef dmx_GPIO_InitStruct;
+static GPIO_InitTypeDef dmx_GPIO_InitStruct;
 
 int Dmx512SetChannelValue(uint16_t channel, uint8_t value) {
 	if (channel >= DMX_CHANNELS)
 		return 0;
+	while (HAL_UART_DMAPause(dmxHuart) != HAL_OK)
+		;
 	dmxData[channel] = value;
+	while (HAL_UART_DMAResume(dmxHuart) != HAL_OK)
+		;
 	return 1;
 }
 

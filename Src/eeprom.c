@@ -7,13 +7,13 @@
 
 #include "eeprom.h"
 
-I2C_HandleTypeDef *eepromHi2c;
-volatile uint8_t eepromWrite;
-volatile uint8_t eepromBusy;
-volatile uint16_t eepromAddress;
-uint8_t *eepromTarget;
-volatile uint16_t eepromTargetSize;
-volatile uint16_t eepromCounter;
+static I2C_HandleTypeDef *eepromHi2c;
+static volatile uint8_t eepromWrite;
+static volatile uint8_t eepromBusy;
+static volatile uint16_t eepromAddress;
+static uint8_t *eepromTarget;
+static volatile uint16_t eepromTargetSize;
+static volatile uint16_t eepromCounter;
 
 void EEPROMInit(I2C_HandleTypeDef *hi2c) {
 	eepromHi2c = hi2c;
@@ -24,14 +24,12 @@ void EEPROMreadDMA(void) {
 		uint16_t sizeDiff = eepromTargetSize - eepromCounter;
 		if (sizeDiff >= EEPROM_MAXPKT) {
 			// Larger than page read size
-			HAL_I2C_Mem_Read_DMA(eepromHi2c, EEPROM_ADDRESS, eepromAddress + eepromCounter, I2C_MEMADD_SIZE_16BIT,
-					&eepromTarget[eepromCounter], EEPROM_MAXPKT);
+			HAL_I2C_Mem_Read_DMA(eepromHi2c, EEPROM_ADDRESS, eepromAddress + eepromCounter, I2C_MEMADD_SIZE_16BIT, &eepromTarget[eepromCounter], EEPROM_MAXPKT);
 			HAL_DMA_IRQHandler(eepromHi2c->hdmatx);
 			eepromCounter += EEPROM_MAXPKT;
 		} else {
 			// Smaller than page read size
-			HAL_I2C_Mem_Read_DMA(eepromHi2c, EEPROM_ADDRESS, eepromAddress + eepromCounter, I2C_MEMADD_SIZE_16BIT,
-					&eepromTarget[eepromCounter], sizeDiff);
+			HAL_I2C_Mem_Read_DMA(eepromHi2c, EEPROM_ADDRESS, eepromAddress + eepromCounter, I2C_MEMADD_SIZE_16BIT, &eepromTarget[eepromCounter], sizeDiff);
 			HAL_DMA_IRQHandler(eepromHi2c->hdmatx);
 			eepromCounter += sizeDiff;
 		}
@@ -43,14 +41,12 @@ void EEPROMwriteDMA(void) {
 		uint16_t sizeDiff = eepromTargetSize - eepromCounter;
 		if (sizeDiff >= EEPROM_MAXPKT) {
 			// Larger than page read size
-			HAL_I2C_Mem_Write_DMA(eepromHi2c, EEPROM_ADDRESS, eepromAddress + eepromCounter, I2C_MEMADD_SIZE_16BIT,
-					&eepromTarget[eepromCounter], EEPROM_MAXPKT);
+			HAL_I2C_Mem_Write_DMA(eepromHi2c, EEPROM_ADDRESS, eepromAddress + eepromCounter, I2C_MEMADD_SIZE_16BIT, &eepromTarget[eepromCounter], EEPROM_MAXPKT);
 			HAL_DMA_IRQHandler(eepromHi2c->hdmatx);
 			eepromCounter += EEPROM_MAXPKT;
 		} else {
 			// Smaller than page read size
-			HAL_I2C_Mem_Write_DMA(eepromHi2c, EEPROM_ADDRESS, eepromAddress + eepromCounter, I2C_MEMADD_SIZE_16BIT,
-					&eepromTarget[eepromCounter], sizeDiff);
+			HAL_I2C_Mem_Write_DMA(eepromHi2c, EEPROM_ADDRESS, eepromAddress + eepromCounter, I2C_MEMADD_SIZE_16BIT, &eepromTarget[eepromCounter], sizeDiff);
 			HAL_DMA_IRQHandler(eepromHi2c->hdmatx);
 			eepromCounter += sizeDiff;
 		}

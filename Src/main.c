@@ -126,16 +126,16 @@ int main(void) {
 	Dmx512Init(&htim2, &huart1);
 	EEPROMInit(&hi2c2);
 
-	uint64_t result;
-	uint64_t data = 0xDEADBEEFDEADBEEF;
-	EEPROMwrite(0x0016, (uint8_t*) &data, sizeof(uint64_t));
-	while (EEPROMbusy())
-		;
-	EEPROMread(0x0016, (uint8_t*) &result, sizeof(uint64_t));
-	while (EEPROMbusy())
-		;
-	if (data == result)
-		HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_SET);
+//	uint64_t result;
+//	uint64_t data = 0xDEADBEEFDEADBEEF;
+//	EEPROMwrite(0x0016, (uint8_t*) &data, sizeof(uint64_t));
+//	while (EEPROMbusy())
+//		;
+//	EEPROMread(0x0016, (uint8_t*) &result, sizeof(uint64_t));
+//	while (EEPROMbusy())
+//		;
+//	if (data == result)
+//		HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_SET);
 	/* USER CODE END 2 */
 
 	/* Infinite loop */
