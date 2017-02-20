@@ -24,8 +24,9 @@
 #define EEPROM_SECTIONSIZE	64
 
 void EEPROMInit(I2C_HandleTypeDef* hi2c);
-void EEPROMwrite(uint16_t address, uint8_t* MemTarget, uint16_t Size);
-void EEPROMread(uint16_t address, uint8_t* MemTarget, uint16_t Size);
+int EEPROMwrite(uint16_t address, uint8_t* MemTarget, uint16_t Size);
+int EEPROMread(uint16_t address, uint8_t* MemTarget, uint16_t Size);
+int EEPROMbusy(void);
 //	void readObject(structObject* settings, int section);
 //	void saveObject(structObject* settings, int section);
 

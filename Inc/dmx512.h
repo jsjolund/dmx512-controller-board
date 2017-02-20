@@ -24,6 +24,7 @@
 
 #define DMX_START_CODE 0
 
+int Dmx512SetChannelValue(uint16_t channel, uint8_t value);
 void Dmx512Init(TIM_HandleTypeDef *htim2, UART_HandleTypeDef *huart1);
 void Dmx512Update(TIM_HandleTypeDef *htim2);
 
