@@ -81,6 +81,7 @@
 #define LCD_SDA_GPIO_Port GPIOB
 #define EEPROM_SDA_Pin GPIO_PIN_9
 #define EEPROM_SDA_GPIO_Port GPIOB
+
 /* USER CODE BEGIN Private defines */
 #define EEPROM_IRQ_EV I2C2_EV_IRQn
 #define EEPROM_IRQ_TX DMA1_Stream7_IRQn
@@ -92,8 +93,10 @@
 #define BUTTONS_IRQ_TX DMA1_Stream4_IRQn
 #define BUTTONS_IRQ_RX DMA1_Stream2_IRQn
 #define USB_USART_IRQ USART2_IRQn
-#define DMX512_USART_IRQ USART1_IRQn
-#define DMX512_TIM_IRQ TIM2_IRQn
+#define USB_USART USART2
+#define DMX_USART_IRQ USART1_IRQn
+#define DMX_TIM_IRQ TIM2_IRQn
+#define DMX_USART USART1
 /* USER CODE END Private defines */
 
 /**

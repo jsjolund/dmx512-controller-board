@@ -15,17 +15,18 @@
 #define STATE_MBB 1
 #define STATE_BREAK 2
 #define STATE_MAB 4
+#define STATE_DMA 8
 
-#define MARK_BEFORE_BREAK 12
-#define MARK_BREAK 100
-#define MARK_AFTER_BREAK 12
+#define MARK_BEFORE_BREAK 24
+#define MARK_BREAK 176
+#define MARK_AFTER_BREAK 24
 
 #define DMX_CHANNELS 512
 
 #define DMX_START_CODE 0
 
 int Dmx512SetChannelValue(uint16_t channel, uint8_t value);
-void Dmx512Init(TIM_HandleTypeDef *htim2, UART_HandleTypeDef *huart1);
-void Dmx512Update(TIM_HandleTypeDef *htim2);
+void Dmx512Init(TIM_HandleTypeDef *htimHandle, UART_HandleTypeDef *huartHandle);
+void Dmx512Update(TIM_HandleTypeDef *htimHandle);
 
 #endif /* DMX512_H_ */

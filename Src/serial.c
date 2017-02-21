@@ -39,8 +39,8 @@ int SerialQueueGet(uint8_t *old) {
 	return 1;
 }
 
-void SerialInit(UART_HandleTypeDef *huart2) {
-	usbHuart = huart2;
+void SerialInit(UART_HandleTypeDef *huartHandle) {
+	usbHuart = huartHandle;
 	usbTxIndex = usbTxOutdex = 0;
 
 	HAL_NVIC_EnableIRQ(USB_USART_IRQ);
@@ -84,7 +84,6 @@ void SerialExecute(char* string) {
 		}
 		if (iChn == 0 || iVal == 0)
 			fail = 1;
-
 		if (!fail) {
 			int channel = atoi(strChn);
 			int value = atoi(strVal);
@@ -94,7 +93,6 @@ void SerialExecute(char* string) {
 			} else {
 				printf("Maximum values exceeded\r\n");
 			}
-
 		}
 	} else {
 		fail = 1;
@@ -110,27 +108,31 @@ void SerialTransmit(char *ptr, int len) {
 	for (i = 0; i < len; i++)
 		SerialQueuePut(ptr[i]);
 
-	if (USART_SR_TC & USART2->SR) {
+	if (USART_SR_TC & USB_USART->SR) {
 		uint8_t c;
 		SerialQueueGet(&c);
-		HAL_UART_Transmit_DMA(usbHuart, &c, 1);
+		while (HAL_UART_Transmit_DMA(usbHuart, &c, 1) != HAL_OK)
+			;
 		HAL_UART_IRQHandler(usbHuart);
 	}
 }
 
-void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huartHandle) {
 
-	if (huart == usbHuart) {
+	if (huartHandle == usbHuart) {
 		int i;
+
 		if (usbRxBuffer == 127 || usbRxBuffer == 8) {
 			// Backspace or delete
-			HAL_UART_Transmit_DMA(usbHuart, &usbRxBuffer, 1);
+			while (HAL_UART_Transmit_DMA(usbHuart, &usbRxBuffer, 1) != HAL_OK)
+				;
 			usbRxIndex = (usbRxIndex > 0) ? usbRxIndex - 1 : 0;
 			usbRxString[usbRxIndex] = 0;
 
 		} else if (usbRxBuffer == '\r' || usbRxBuffer == '\n') {
 			// Echo carriage return
-			HAL_UART_Transmit_DMA(usbHuart, (uint8_t *) "\r\n", 2);
+			while (HAL_UART_Transmit_DMA(usbHuart, (uint8_t *) "\r\n", 2) != HAL_OK)
+				;
 			// Add null terminator
 			usbRxString[usbRxIndex] = '\0';
 			// TODO: Send a command to DMX line?
@@ -142,7 +144,8 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
 
 		} else {
 			// Echo the character
-			HAL_UART_Transmit_DMA(usbHuart, &usbRxBuffer, 1);
+			while (HAL_UART_Transmit_DMA(usbHuart, &usbRxBuffer, 1) != HAL_OK)
+				;
 			// Append character and increment cursor
 			usbRxString[usbRxIndex] = usbRxBuffer;
 			if (usbRxIndex < RX_BUFFER_MAX - 1)
@@ -154,7 +157,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
 void USART2_IRQHandler(void) {
 	HAL_UART_IRQHandler(usbHuart);
 
-	if (USART_SR_TXE & USART2->SR) {
+	if (USART_SR_TXE & USB_USART->SR) {
 		uint8_t c;
 		if (SerialQueueGet(&c)) {
 			HAL_UART_Transmit_DMA(usbHuart, &c, 1);

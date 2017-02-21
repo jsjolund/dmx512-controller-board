@@ -126,6 +126,10 @@ int main(void) {
 	Dmx512Init(&htim2, &huart1);
 	EEPROMInit(&hi2c2);
 
+	// Blue button interrupt
+	HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
+	HAL_NVIC_SetPriority(EXTI15_10_IRQn, 0, 0);
+
 //	uint64_t result;
 //	uint64_t data = 0xDEADBEEFDEADBEEF;
 //	EEPROMwrite(0x0016, (uint8_t*) &data, sizeof(uint64_t));
@@ -150,6 +154,12 @@ int main(void) {
 
 	//	asm volatile("" ::: "memory");
 	//	asm volatile("isb" :::);
+}
+
+void EXTI15_10_IRQHandler(void) {
+	// Blue button interrupt
+	HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
+	EXTI->PR |= (1<<13);
 }
 
 /** System Clock Configuration
@@ -464,7 +474,7 @@ static void MX_GPIO_Init(void) {
 
 	/*Configure GPIO pins : B1_Pin B2_Pin B3_Pin */
 	GPIO_InitStruct.Pin = B1_Pin | B2_Pin | B3_Pin;
-	GPIO_InitStruct.Mode = GPIO_MODE_EVT_RISING;
+	GPIO_InitStruct.Mode = GPIO_MODE_IT_FALLING;
 	GPIO_InitStruct.Pull = GPIO_NOPULL;
 	HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
@@ -477,12 +487,15 @@ static void MX_GPIO_Init(void) {
 
 	/*Configure GPIO pin : B0_Pin */
 	GPIO_InitStruct.Pin = B0_Pin;
-	GPIO_InitStruct.Mode = GPIO_MODE_EVT_RISING;
+	GPIO_InitStruct.Mode = GPIO_MODE_IT_FALLING;
 	GPIO_InitStruct.Pull = GPIO_NOPULL;
 	HAL_GPIO_Init(B0_GPIO_Port, &GPIO_InitStruct);
 
 	/*Configure GPIO pin Output Level */
-	HAL_GPIO_WritePin(GPIOA, LD2_Pin | DMX_EN_Pin, GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_RESET);
+
+	/*Configure GPIO pin Output Level */
+	HAL_GPIO_WritePin(DMX_EN_GPIO_Port, DMX_EN_Pin, GPIO_PIN_SET);
 
 }
 

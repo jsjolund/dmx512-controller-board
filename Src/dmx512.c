@@ -6,8 +6,7 @@
  */
 #include "dmx512.h"
 
-static volatile uint16_t dmxCurrentChannel = 0;
-static volatile uint8_t dmxData[DMX_CHANNELS];
+static uint8_t dmxData[DMX_CHANNELS + 1];
 static volatile uint8_t dmxSendState;
 
 static TIM_HandleTypeDef *dmxHtim;
@@ -20,54 +19,53 @@ int Dmx512SetChannelValue(uint16_t channel, uint8_t value) {
 		return 0;
 	while (HAL_UART_DMAPause(dmxHuart) != HAL_OK)
 		;
-	dmxData[channel] = value;
+	dmxData[channel + 1] = value;
 	while (HAL_UART_DMAResume(dmxHuart) != HAL_OK)
 		;
 	return 1;
 }
 
 void Dmx512DisableUart(UART_HandleTypeDef *huart1) {
-	HAL_NVIC_DisableIRQ(DMX512_USART_IRQ);
+	HAL_NVIC_DisableIRQ(DMX_USART_IRQ);
 
 	dmx_GPIO_InitStruct.Pin = DMX_TX_Pin | DMX_RX_Pin;
 	dmx_GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
 	dmx_GPIO_InitStruct.Pull = GPIO_NOPULL;
 	dmx_GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
-	HAL_GPIO_Init(GPIOA, &dmx_GPIO_InitStruct);
+	HAL_GPIO_Init(DMX_TX_GPIO_Port, &dmx_GPIO_InitStruct);
 }
 
 void Dmx512EnableUart(UART_HandleTypeDef *huart1) {
-	HAL_NVIC_EnableIRQ(DMX512_USART_IRQ);
+	HAL_NVIC_EnableIRQ(DMX_USART_IRQ);
 
 	dmx_GPIO_InitStruct.Pin = DMX_TX_Pin | DMX_RX_Pin;
 	dmx_GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
 	dmx_GPIO_InitStruct.Pull = GPIO_PULLUP;
 	dmx_GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
 	dmx_GPIO_InitStruct.Alternate = GPIO_AF7_USART1;
-	HAL_GPIO_Init(GPIOA, &dmx_GPIO_InitStruct);
+	HAL_GPIO_Init(DMX_TX_GPIO_Port, &dmx_GPIO_InitStruct);
 }
 
-void Dmx512Init(TIM_HandleTypeDef *htim2, UART_HandleTypeDef *huart1) {
-	dmxHtim = htim2;
-	dmxHuart = huart1;
+void Dmx512Init(TIM_HandleTypeDef *htimHandle, UART_HandleTypeDef *huartHandle) {
+	dmxHtim = htimHandle;
+	dmxHuart = huartHandle;
 
 	int i;
-	for (i = 0; i < DMX_CHANNELS; i++) {
-		dmxData[i] = (i + 1) % 256;
-	}
+	for (i = 0; i < DMX_CHANNELS; i++)
+		dmxData[i] = (i) % 256;
 
 	dmxSendState = STATE_BREAK;
 	dmxHtim->Init.Period = MARK_BREAK;
 
-	HAL_NVIC_EnableIRQ(DMX512_USART_IRQ);
-	HAL_NVIC_SetPriority(DMX512_USART_IRQ, 0, 0);
+	HAL_NVIC_EnableIRQ(DMX_USART_IRQ);
+	HAL_NVIC_SetPriority(DMX_USART_IRQ, 0, 0);
 
 	Dmx512DisableUart(dmxHuart);
 
 	HAL_GPIO_WritePin(DMX_TX_GPIO_Port, DMX_TX_Pin, GPIO_PIN_RESET);
 
-	HAL_NVIC_SetPriority(DMX512_TIM_IRQ, 0, 0);
-	HAL_NVIC_EnableIRQ(DMX512_TIM_IRQ);
+	HAL_NVIC_SetPriority(DMX_TIM_IRQ, 0, 0);
+	HAL_NVIC_EnableIRQ(DMX_TIM_IRQ);
 
 	HAL_TIM_Base_Init(dmxHtim);
 	HAL_TIM_Base_Start_IT(dmxHtim);
@@ -76,62 +74,56 @@ void Dmx512Init(TIM_HandleTypeDef *htim2, UART_HandleTypeDef *huart1) {
 void USART1_IRQHandler(void) {
 	HAL_UART_IRQHandler(dmxHuart);
 
-	if (USART_SR_TXE & USART1->SR) {
-		if (dmxCurrentChannel < DMX_CHANNELS) {
-			// Send a byte using DMA.
-			uint8_t d = dmxData[dmxCurrentChannel];
-			HAL_UART_Transmit_DMA(dmxHuart, &d, 1);
-			dmxCurrentChannel++;
+	if (USART_SR_TC & USART1->SR) {
+		// Finished sending data over USART. Next is Mark Before Break. Set TX high.
+		// Account for the time it takes to setup GPIO output mode.
 
-		} else {
-			// Finished sending data over USART. Next is Mark Before Break. Set TX high.
-			// Account for the time it takes to setup GPIO output mode.
-			dmxHtim->Instance->CNT = 0;
+		dmxHtim->Instance->CNT = 0;
+		while (HAL_TIM_Base_Start(dmxHtim)!= HAL_OK);
 
-			dmxCurrentChannel = 0;
-			HAL_NVIC_EnableIRQ(DMX512_TIM_IRQ);
-			Dmx512DisableUart(dmxHuart);
-			HAL_GPIO_WritePin(DMX_TX_GPIO_Port, DMX_TX_Pin, GPIO_PIN_SET);
+		dmxSendState = STATE_MBB;
 
-			long time = MARK_BEFORE_BREAK - 1 - dmxHtim->Instance->CNT;
-			dmxHtim->Instance->ARR = (time > 0) ? time : 0;
-		}
+		Dmx512DisableUart(dmxHuart);
+		HAL_GPIO_WritePin(DMX_TX_GPIO_Port, DMX_TX_Pin, GPIO_PIN_SET);
+
+		uint32_t elapsedTime = dmxHtim->Instance->CNT;
+		long time = MARK_BEFORE_BREAK - 1 - elapsedTime;
+		dmxHtim->Instance->ARR = (time > 0) ? time : MARK_BEFORE_BREAK;
+		HAL_NVIC_EnableIRQ(DMX_TIM_IRQ);
 	}
 }
 
-void Dmx512Update(TIM_HandleTypeDef *htim2) {
+void Dmx512Update(TIM_HandleTypeDef *htimHandle) {
 	if (dmxSendState == STATE_MBB) {
 		// Mark Before Break finished. Next state is Break. Set TX Low.
 		dmxSendState = STATE_BREAK;
 
-		dmxHtim->Instance->CNT = 0;
-
 		HAL_GPIO_WritePin(DMX_TX_GPIO_Port, DMX_TX_Pin, GPIO_PIN_RESET);
 
 		long time = MARK_BREAK - 1 - dmxHtim->Instance->CNT;
-		dmxHtim->Instance->ARR = (time > 0) ? time : 0;
+		dmxHtim->Instance->ARR = (time > 0) ? time : MARK_BREAK;
 
 	} else if (dmxSendState == STATE_BREAK) {
 		// Break finished. Next state is Mark After Break. Set TX high.
 		// Account for the time it takes to setup GPIO alternate function mode.
 		dmxSendState = STATE_MAB;
 
-		dmxHtim->Instance->CNT = 0;
-
 		HAL_GPIO_WritePin(DMX_TX_GPIO_Port, DMX_TX_Pin, GPIO_PIN_SET);
 		Dmx512EnableUart(dmxHuart);
 
 		long time = MARK_AFTER_BREAK - 1 - dmxHtim->Instance->CNT;
-		dmxHtim->Instance->ARR = (time > 0) ? time : 0;
+		dmxHtim->Instance->ARR = (time > 0) ? time : MARK_AFTER_BREAK;
 
 	} else if (dmxSendState == STATE_MAB) {
 		// Mark After Break finished. Next send data over USART, then state Mark Before Break.
-		dmxSendState = STATE_MBB;
-		HAL_NVIC_DisableIRQ(DMX512_TIM_IRQ);
+		dmxSendState = STATE_DMA;
+		HAL_NVIC_DisableIRQ(DMX_TIM_IRQ);
 
-		uint8_t startCode = DMX_START_CODE;
+		while (HAL_TIM_Base_Stop(dmxHtim)!= HAL_OK);
+
 		HAL_UART_IRQHandler(dmxHuart);
-		HAL_UART_Transmit_DMA(dmxHuart, &startCode, 1);
+		HAL_UART_Transmit_DMA(dmxHuart, dmxData, DMX_CHANNELS + 1);
+		HAL_UART_IRQHandler(dmxHuart);
 	}
 }
 
