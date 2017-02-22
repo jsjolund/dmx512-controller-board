@@ -62,6 +62,7 @@ DMA_HandleTypeDef hdma_i2c3_tx;
 
 TIM_HandleTypeDef htim2;
 TIM_HandleTypeDef htim3;
+TIM_HandleTypeDef htim4;
 
 UART_HandleTypeDef huart1;
 UART_HandleTypeDef huart2;
@@ -87,6 +88,7 @@ static void MX_TIM2_Init(void);
 static void MX_TIM3_Init(void);
 static void MX_USART1_UART_Init(void);
 static void MX_USART2_UART_Init(void);
+static void MX_TIM4_Init(void);
 
 void HAL_TIM_MspPostInit(TIM_HandleTypeDef *htim);
 
@@ -124,13 +126,16 @@ int main(void) {
 	MX_TIM3_Init();
 	MX_USART1_UART_Init();
 	MX_USART2_UART_Init();
+	MX_TIM4_Init();
 
 	/* USER CODE BEGIN 2 */
 	SerialInit(&huart2);
 	Dmx512Init(&htim2, &huart1);
 	EEPROMInit(&hi2c2);
+	LCDinit(&htim4);
 
-	LCDinit();
+	HAL_TIM_Base_Start(&htim3);
+	HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_1);
 
 	// Blue button interrupt
 	HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
@@ -160,10 +165,10 @@ int main(void) {
 		LCDwrite("Have a good day!");
 		LCDcursorPos(2, 0);
 		num += 1;
-		itoa(num, buf, 10);
+		snprintf(buf, 33, "%d", num);
 		buf[32] = '\0';
 		LCDwrite(buf);
-		HAL_Delay(10);
+		HAL_Delay(1);
 		/* USER CODE BEGIN 3 */
 
 	}
@@ -328,7 +333,7 @@ static void MX_TIM2_Init(void) {
 	htim2.Instance = TIM2;
 	htim2.Init.Prescaler = 79;
 	htim2.Init.CounterMode = TIM_COUNTERMODE_UP;
-	htim2.Init.Period = 999999;
+	htim2.Init.Period = 0xFFFFFFFF;
 	htim2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
 	if (HAL_TIM_Base_Init(&htim2) != HAL_OK) {
 		Error_Handler();
@@ -355,9 +360,9 @@ static void MX_TIM3_Init(void) {
 	TIM_OC_InitTypeDef sConfigOC;
 
 	htim3.Instance = TIM3;
-	htim3.Init.Prescaler = 79;
+	htim3.Init.Prescaler = 0;
 	htim3.Init.CounterMode = TIM_COUNTERMODE_UP;
-	htim3.Init.Period = 0;
+	htim3.Init.Period = 1000;
 	htim3.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
 	if (HAL_TIM_Base_Init(&htim3) != HAL_OK) {
 		Error_Handler();
@@ -379,14 +384,43 @@ static void MX_TIM3_Init(void) {
 	}
 
 	sConfigOC.OCMode = TIM_OCMODE_PWM1;
-	sConfigOC.Pulse = 0;
+	sConfigOC.OCIdleState = TIM_OCIDLESTATE_SET;
+	sConfigOC.Pulse = 1000;
 	sConfigOC.OCPolarity = TIM_OCPOLARITY_HIGH;
-	sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;
+	sConfigOC.OCFastMode = TIM_OCFAST_ENABLE;
 	if (HAL_TIM_PWM_ConfigChannel(&htim3, &sConfigOC, TIM_CHANNEL_1) != HAL_OK) {
 		Error_Handler();
 	}
 
 	HAL_TIM_MspPostInit(&htim3);
+
+}
+
+/* TIM4 init function */
+static void MX_TIM4_Init(void) {
+
+	TIM_ClockConfigTypeDef sClockSourceConfig;
+	TIM_MasterConfigTypeDef sMasterConfig;
+
+	htim4.Instance = TIM4;
+	htim4.Init.Prescaler = 79;
+	htim4.Init.CounterMode = TIM_COUNTERMODE_UP;
+	htim4.Init.Period = 0xFFFF;
+	htim4.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+	if (HAL_TIM_Base_Init(&htim4) != HAL_OK) {
+		Error_Handler();
+	}
+
+	sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
+	if (HAL_TIM_ConfigClockSource(&htim4, &sClockSourceConfig) != HAL_OK) {
+		Error_Handler();
+	}
+
+	sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
+	sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+	if (HAL_TIMEx_MasterConfigSynchronization(&htim4, &sMasterConfig) != HAL_OK) {
+		Error_Handler();
+	}
 
 }
 
@@ -490,7 +524,7 @@ static void MX_GPIO_Init(void) {
 	;
 
 	/*Configure GPIO pins : B1_Pin B2_Pin B3_Pin */
-	GPIO_InitStruct.Pin = B1_Pin | B2_Pin | B3_Pin;
+	GPIO_InitStruct.Pin = B1_Pin | B2_Pin | B3_Pin | LCD_BL_Pin;
 	GPIO_InitStruct.Mode = GPIO_MODE_IT_FALLING;
 	GPIO_InitStruct.Pull = GPIO_NOPULL;
 	HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);

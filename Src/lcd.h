@@ -8,7 +8,7 @@
 #ifndef LCD_H_
 #define LCD_H_
 
-void LCDinit(void);
+void LCDinit(TIM_HandleTypeDef *htimHandle);
 void LCDwrite(char *string);
 void LCDcursorPos(uint8_t row, uint8_t column);
 
