@@ -34,9 +34,13 @@
 #include "main.h"
 #include "stm32f4xx_hal.h"
 
+#include <stdio.h>
+#include <stdlib.h>
+
 #include "serial.h"
 #include "dmx512.h"
 #include "eeprom.h"
+#include "lcd.h"
 
 /* USER CODE BEGIN Includes */
 
@@ -126,6 +130,8 @@ int main(void) {
 	Dmx512Init(&htim2, &huart1);
 	EEPROMInit(&hi2c2);
 
+	LCDinit();
+
 	// Blue button interrupt
 	HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
 	HAL_NVIC_SetPriority(EXTI15_10_IRQn, 0, 0);
@@ -144,9 +150,20 @@ int main(void) {
 
 	/* Infinite loop */
 	/* USER CODE BEGIN WHILE */
+	int num = 0;
+	char buf[33];
 	while (1) {
 		/* USER CODE END WHILE */
-
+		LCDcursorPos(0, 0);
+		LCDwrite("Hello world!");
+		LCDcursorPos(1, 0);
+		LCDwrite("Have a good day!");
+		LCDcursorPos(2, 0);
+		num += 1;
+		itoa(num, buf, 10);
+		buf[32] = '\0';
+		LCDwrite(buf);
+		HAL_Delay(10);
 		/* USER CODE BEGIN 3 */
 
 	}
@@ -159,7 +176,7 @@ int main(void) {
 void EXTI15_10_IRQHandler(void) {
 	// Blue button interrupt
 	HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
-	EXTI->PR |= (1<<13);
+	EXTI->PR |= (1 << 13);
 }
 
 /** System Clock Configuration
