@@ -52,7 +52,7 @@ void Dmx512Init(TIM_HandleTypeDef *htimHandle, UART_HandleTypeDef *huartHandle) 
 
 	int i;
 	for (i = 0; i < DMX_CHANNELS; i++)
-		dmxData[i] = (i) % 256;
+		Dmx512SetChannelValue(i, 0);
 
 	dmxSendState = STATE_BREAK;
 	dmxHtim->Init.Period = MARK_BREAK;

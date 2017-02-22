@@ -53,6 +53,10 @@ int isDigit(char c) {
 	return ('0' <= c && c <= '9');
 }
 
+int isLetter(char c) {
+	return ('a' <= c && c <= 'z') || ('A' <= c && c <= 'Z') || (c == ' ');
+}
+
 void SerialExecute(char* string) {
 	// Parse a user command
 	uint8_t fail = 0;
@@ -121,15 +125,15 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huartHandle) {
 
 	if (huartHandle == usbHuart) {
 		int i;
-
-		if (usbRxBuffer == 127 || usbRxBuffer == 8) {
+		uint8_t usbRxChar = usbRxBuffer;
+		if (usbRxChar == 127 || usbRxChar == 8) {
 			// Backspace or delete
-			while (HAL_UART_Transmit_DMA(usbHuart, &usbRxBuffer, 1) != HAL_OK)
+			while (HAL_UART_Transmit_DMA(usbHuart, &usbRxChar, 1) != HAL_OK)
 				;
 			usbRxIndex = (usbRxIndex > 0) ? usbRxIndex - 1 : 0;
 			usbRxString[usbRxIndex] = 0;
 
-		} else if (usbRxBuffer == '\r' || usbRxBuffer == '\n') {
+		} else if (usbRxChar == '\r' || usbRxChar == '\n') {
 			// Echo carriage return
 			while (HAL_UART_Transmit_DMA(usbHuart, (uint8_t *) "\r\n", 2) != HAL_OK)
 				;
@@ -142,12 +146,12 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huartHandle) {
 			for (i = 0; i < RX_BUFFER_MAX; i++)
 				usbRxString[i] = 0;
 
-		} else {
+		} else if (isDigit(usbRxChar) || isLetter(usbRxChar)) {
 			// Echo the character
-			while (HAL_UART_Transmit_DMA(usbHuart, &usbRxBuffer, 1) != HAL_OK)
+			while (HAL_UART_Transmit_DMA(usbHuart, &usbRxChar, 1) != HAL_OK)
 				;
 			// Append character and increment cursor
-			usbRxString[usbRxIndex] = usbRxBuffer;
+			usbRxString[usbRxIndex] = usbRxChar;
 			if (usbRxIndex < RX_BUFFER_MAX - 1)
 				usbRxIndex++;
 		}
