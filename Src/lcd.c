@@ -32,14 +32,9 @@
 static TIM_HandleTypeDef *microSecondHtim;
 static TIM_HandleTypeDef *pwmHtim;
 
-//void __attribute__((optimize("O0"))) Delay(uint64_t delay) {
-//	while (delay--)
-//		;
-//}
-
 void MicroDelay(uint16_t micros) {
 	uint32_t start = microSecondHtim->Instance->CNT;
-	while ((uint32_t) microSecondHtim->Instance->CNT - start < micros)
+	while (microSecondHtim->Instance->CNT - start < micros)
 		;
 }
 
@@ -90,11 +85,21 @@ void LCDbrightness(uint8_t percent) {
 	pwmHtim->Instance->CCR1 = percent;
 }
 
-//void LCDfadeOut(uint32_t milliseconds)
-
 void LCDwrite(char *string) {
 	while (*string)
 		LCDsendChar(*string++);
+}
+
+void LCDclear(void) {
+	LCDsendCmd(LCD_CMD_CLEAR);
+	HAL_Delay(4); // >3 ms
+}
+
+void LCDclearRow(uint8_t row) {
+	LCDcursorPos(row, 0);
+	int i;
+	for (i = 0; i < 16; i++)
+		LCDsendChar(' ');
 }
 
 void LCDinit(TIM_HandleTypeDef *microSecondHtimHandle, TIM_HandleTypeDef *pwmHtimHandle) {
@@ -176,7 +181,7 @@ void LCDinit(TIM_HandleTypeDef *microSecondHtimHandle, TIM_HandleTypeDef *pwmHti
 	LCDsendCmd(LCD_CMD_ON_CURSOR_OFF);
 	MicroDelay(100); // >53 us
 	LCDsendCmd(LCD_CMD_CLEAR);
-	HAL_Delay(10); // >3 ms
+	HAL_Delay(6); // >3 ms
 	LCDsendCmd(LCD_CMD_CURSOR_RIGHT_NO_SHIFT);
 	MicroDelay(100); // >53 us
 	LCDsendCmd(LCD_CMD_CURSOR_HOME);

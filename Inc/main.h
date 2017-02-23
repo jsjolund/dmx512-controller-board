@@ -81,7 +81,6 @@
 #define LCD_SDA_GPIO_Port GPIOB
 #define EEPROM_SDA_Pin GPIO_PIN_9
 #define EEPROM_SDA_GPIO_Port GPIOB
-
 /* USER CODE BEGIN Private defines */
 #define EEPROM_IRQ_EV I2C2_EV_IRQn
 #define EEPROM_IRQ_TX DMA1_Stream7_IRQn

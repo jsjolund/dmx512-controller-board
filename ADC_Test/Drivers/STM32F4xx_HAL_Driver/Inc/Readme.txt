@@ -1,1 +1,0 @@
-Atollic TrueSTUDIO - Add STM32411 HAL Drivers here.

@@ -12,5 +12,5 @@ void LCDinit(TIM_HandleTypeDef *microSecondHtimHandle, TIM_HandleTypeDef *pwmHti
 void LCDwrite(char *string);
 void LCDcursorPos(uint8_t row, uint8_t column);
 void LCDbrightness(uint8_t percent);
-
+void LCDclear(void);
 #endif /* LCD_H_ */

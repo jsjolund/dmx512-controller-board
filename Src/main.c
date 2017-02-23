@@ -34,6 +34,7 @@
 #include "main.h"
 #include "stm32f4xx_hal.h"
 
+/* USER CODE BEGIN Includes */
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -41,9 +42,6 @@
 #include "dmx512.h"
 #include "eeprom.h"
 #include "lcd.h"
-
-/* USER CODE BEGIN Includes */
-
 /* USER CODE END Includes */
 
 /* Private variables ---------------------------------------------------------*/
@@ -72,7 +70,9 @@ DMA_HandleTypeDef hdma_usart2_tx;
 
 /* USER CODE BEGIN PV */
 /* Private variables ---------------------------------------------------------*/
-
+volatile uint8_t adcFinished = 1;
+volatile uint8_t adcValues[4];
+volatile uint16_t selectedDmxChannels[4] = { 0, 1, 2, 3 };
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -98,7 +98,38 @@ void HAL_TIM_MspPostInit(TIM_HandleTypeDef *htim);
 /* USER CODE END PFP */
 
 /* USER CODE BEGIN 0 */
+void EXTI15_10_IRQHandler(void) {
+	// Blue button interrupt
+	if (HAL_GPIO_ReadPin(B1_GPIO_Port, B1_Pin) == GPIO_PIN_RESET) {
+		selectedDmxChannels[0] += 4;
+		selectedDmxChannels[1] += 4;
+		selectedDmxChannels[2] += 4;
+		selectedDmxChannels[3] += 4;
+	}
+	EXTI->PR |= B1_Pin;
+	// HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
+}
 
+void HAL_ADCEx_InjectedConvCpltCallback(ADC_HandleTypeDef* hadc) {
+	adcValues[0] = HAL_ADCEx_InjectedGetValue(&hadc1, ADC_INJECTED_RANK_1);
+	adcValues[1] = HAL_ADCEx_InjectedGetValue(&hadc1, ADC_INJECTED_RANK_2);
+	adcValues[2] = HAL_ADCEx_InjectedGetValue(&hadc1, ADC_INJECTED_RANK_3);
+	adcValues[3] = HAL_ADCEx_InjectedGetValue(&hadc1, ADC_INJECTED_RANK_4);
+	adcFinished = 1;
+}
+
+void testEEPROM() {
+	uint64_t result;
+	uint64_t data = 0xDEADBEEFDEADBEEF;
+	EEPROMwrite(0x0016, (uint8_t*) &data, sizeof(uint64_t));
+	while (EEPROMbusy())
+		;
+	EEPROMread(0x0016, (uint8_t*) &result, sizeof(uint64_t));
+	while (EEPROMbusy())
+		;
+	if (data == result)
+		HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_SET);
+}
 /* USER CODE END 0 */
 
 int main(void) {
@@ -133,52 +164,36 @@ int main(void) {
 	Dmx512Init(&htim2, &huart1);
 	EEPROMInit(&hi2c2);
 	LCDinit(&htim4, &htim3);
+	HAL_ADC_Start(&hadc1);
 
 	// Blue button interrupt
 	HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
 	HAL_NVIC_SetPriority(EXTI15_10_IRQn, 0, 0);
 
-//	uint64_t result;
-//	uint64_t data = 0xDEADBEEFDEADBEEF;
-//	EEPROMwrite(0x0016, (uint8_t*) &data, sizeof(uint64_t));
-//	while (EEPROMbusy())
-//		;
-//	EEPROMread(0x0016, (uint8_t*) &result, sizeof(uint64_t));
-//	while (EEPROMbusy())
-//		;
-//	if (data == result)
-//		HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_SET);
 	/* USER CODE END 2 */
 
 	/* Infinite loop */
 	/* USER CODE BEGIN WHILE */
-	int num = 0;
-	char buf[33];
+	int i;
+	char charBuffer[17];
 	while (1) {
 		/* USER CODE END WHILE */
-		LCDcursorPos(0, 0);
-		LCDwrite("Hello world!");
-		LCDcursorPos(1, 0);
-		LCDwrite("Have a good day!");
-		LCDcursorPos(2, 0);
-		num += 1;
-		snprintf(buf, 33, "%d", num);
-		buf[32] = '\0';
-		LCDwrite(buf);
-		HAL_Delay(1);
-		/* USER CODE BEGIN 3 */
 
+		/* USER CODE BEGIN 3 */
+		if (adcFinished) {
+			adcFinished = 0;
+			HAL_ADCEx_InjectedStart_IT(&hadc1);
+
+			for (i = 0; i < 4; i++) {
+				Dmx512SetChannelValue(selectedDmxChannels[i], adcValues[i]);
+				LCDcursorPos(i, 0);
+				snprintf(charBuffer, 17, "Channel %03d: %03d", selectedDmxChannels[i], adcValues[i]);
+				LCDwrite(charBuffer);
+			}
+		}
 	}
 	/* USER CODE END 3 */
 
-	//	asm volatile("" ::: "memory");
-	//	asm volatile("isb" :::);
-}
-
-void EXTI15_10_IRQHandler(void) {
-	// Blue button interrupt
-	HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
-	EXTI->PR |= (1 << 13);
 }
 
 /** System Clock Configuration
@@ -236,32 +251,100 @@ void SystemClock_Config(void) {
 /* ADC1 init function */
 static void MX_ADC1_Init(void) {
 
-	ADC_ChannelConfTypeDef sConfig;
+//  ADC_ChannelConfTypeDef sConfig;
+	ADC_InjectionConfTypeDef sConfigInjected;
 
 	/**Configure the global features of the ADC (Clock, Resolution, Data Alignment and number of conversion)
 	 */
 	hadc1.Instance = ADC1;
 	hadc1.Init.ClockPrescaler = ADC_CLOCK_SYNC_PCLK_DIV4;
 	hadc1.Init.Resolution = ADC_RESOLUTION_8B;
-	hadc1.Init.ScanConvMode = DISABLE;
+	hadc1.Init.ScanConvMode = ENABLE;
 	hadc1.Init.ContinuousConvMode = DISABLE;
 	hadc1.Init.DiscontinuousConvMode = DISABLE;
 	hadc1.Init.ExternalTrigConvEdge = ADC_EXTERNALTRIGCONVEDGE_NONE;
 	hadc1.Init.ExternalTrigConv = ADC_SOFTWARE_START;
 	hadc1.Init.DataAlign = ADC_DATAALIGN_RIGHT;
-	hadc1.Init.NbrOfConversion = 1;
-	hadc1.Init.DMAContinuousRequests = DISABLE;
-	hadc1.Init.EOCSelection = ADC_EOC_SINGLE_CONV;
+	hadc1.Init.NbrOfConversion = 4;
+	hadc1.Init.DMAContinuousRequests = ENABLE;
+	hadc1.Init.EOCSelection = ADC_EOC_SEQ_CONV;
 	if (HAL_ADC_Init(&hadc1) != HAL_OK) {
 		Error_Handler();
 	}
 
-	/**Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time.
+//    /**Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time.
+//    */
+//  sConfig.Channel = ADC_CHANNEL_10;
+//  sConfig.Rank = 1;
+//  sConfig.SamplingTime = ADC_SAMPLETIME_3CYCLES;
+//  if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
+//  {
+//    Error_Handler();
+//  }
+//
+//    /**Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time.
+//    */
+//  sConfig.Channel = ADC_CHANNEL_11;
+//  sConfig.Rank = 2;
+//  if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
+//  {
+//    Error_Handler();
+//  }
+//
+//    /**Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time.
+//    */
+//  sConfig.Channel = ADC_CHANNEL_12;
+//  sConfig.Rank = 3;
+//  if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
+//  {
+//    Error_Handler();
+//  }
+//
+//    /**Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time.
+//    */
+//  sConfig.Channel = ADC_CHANNEL_13;
+//  sConfig.Rank = 4;
+//  if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
+//  {
+//    Error_Handler();
+//  }
+
+	/**Configures for the selected ADC injected channel its corresponding rank in the sequencer and its sample time
 	 */
-	sConfig.Channel = ADC_CHANNEL_10;
-	sConfig.Rank = 1;
-	sConfig.SamplingTime = ADC_SAMPLETIME_3CYCLES;
-	if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK) {
+	sConfigInjected.InjectedChannel = ADC_CHANNEL_10;
+	sConfigInjected.InjectedRank = 1;
+	sConfigInjected.InjectedNbrOfConversion = 4;
+	sConfigInjected.InjectedSamplingTime = ADC_SAMPLETIME_84CYCLES;
+	sConfigInjected.ExternalTrigInjecConvEdge = ADC_EXTERNALTRIGINJECCONVEDGE_NONE;
+	sConfigInjected.ExternalTrigInjecConv = ADC_INJECTED_SOFTWARE_START;
+	sConfigInjected.AutoInjectedConv = DISABLE;
+	sConfigInjected.InjectedDiscontinuousConvMode = DISABLE;
+	sConfigInjected.InjectedOffset = 0;
+	if (HAL_ADCEx_InjectedConfigChannel(&hadc1, &sConfigInjected) != HAL_OK) {
+		Error_Handler();
+	}
+
+	/**Configures for the selected ADC injected channel its corresponding rank in the sequencer and its sample time
+	 */
+	sConfigInjected.InjectedChannel = ADC_CHANNEL_11;
+	sConfigInjected.InjectedRank = 2;
+	if (HAL_ADCEx_InjectedConfigChannel(&hadc1, &sConfigInjected) != HAL_OK) {
+		Error_Handler();
+	}
+
+	/**Configures for the selected ADC injected channel its corresponding rank in the sequencer and its sample time
+	 */
+	sConfigInjected.InjectedChannel = ADC_CHANNEL_12;
+	sConfigInjected.InjectedRank = 3;
+	if (HAL_ADCEx_InjectedConfigChannel(&hadc1, &sConfigInjected) != HAL_OK) {
+		Error_Handler();
+	}
+
+	/**Configures for the selected ADC injected channel its corresponding rank in the sequencer and its sample time
+	 */
+	sConfigInjected.InjectedChannel = ADC_CHANNEL_13;
+	sConfigInjected.InjectedRank = 4;
+	if (HAL_ADCEx_InjectedConfigChannel(&hadc1, &sConfigInjected) != HAL_OK) {
 		Error_Handler();
 	}
 
@@ -359,7 +442,7 @@ static void MX_TIM3_Init(void) {
 	htim3.Instance = TIM3;
 	htim3.Init.Prescaler = 0;
 	htim3.Init.CounterMode = TIM_COUNTERMODE_UP;
-	htim3.Init.Period = 1000;
+	htim3.Init.Period = 100;
 	htim3.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
 	if (HAL_TIM_Base_Init(&htim3) != HAL_OK) {
 		Error_Handler();
@@ -381,10 +464,9 @@ static void MX_TIM3_Init(void) {
 	}
 
 	sConfigOC.OCMode = TIM_OCMODE_PWM1;
-	sConfigOC.OCIdleState = TIM_OCIDLESTATE_SET;
-	sConfigOC.Pulse = 1000;
+	sConfigOC.Pulse = 100;
 	sConfigOC.OCPolarity = TIM_OCPOLARITY_HIGH;
-	sConfigOC.OCFastMode = TIM_OCFAST_ENABLE;
+	sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;
 	if (HAL_TIM_PWM_ConfigChannel(&htim3, &sConfigOC, TIM_CHANNEL_1) != HAL_OK) {
 		Error_Handler();
 	}
@@ -521,7 +603,7 @@ static void MX_GPIO_Init(void) {
 	;
 
 	/*Configure GPIO pins : B1_Pin B2_Pin B3_Pin */
-	GPIO_InitStruct.Pin = B1_Pin | B2_Pin | B3_Pin | LCD_BL_Pin;
+	GPIO_InitStruct.Pin = B1_Pin | B2_Pin | B3_Pin;
 	GPIO_InitStruct.Mode = GPIO_MODE_IT_FALLING;
 	GPIO_InitStruct.Pull = GPIO_NOPULL;
 	HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
