@@ -132,10 +132,7 @@ int main(void) {
 	SerialInit(&huart2);
 	Dmx512Init(&htim2, &huart1);
 	EEPROMInit(&hi2c2);
-	LCDinit(&htim4);
-
-	HAL_TIM_Base_Start(&htim3);
-	HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_1);
+	LCDinit(&htim4, &htim3);
 
 	// Blue button interrupt
 	HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);

@@ -29,7 +29,8 @@
 #define LCD_CMD_ON_CURSOR_STEADY 0x0E
 #define LCD_CMD_ON_CURSOR_BLINK 0x0F
 
-static TIM_HandleTypeDef *lcdHtim;
+static TIM_HandleTypeDef *microSecondHtim;
+static TIM_HandleTypeDef *pwmHtim;
 
 //void __attribute__((optimize("O0"))) Delay(uint64_t delay) {
 //	while (delay--)
@@ -37,8 +38,8 @@ static TIM_HandleTypeDef *lcdHtim;
 //}
 
 void MicroDelay(uint16_t micros) {
-	uint32_t start = lcdHtim->Instance->CNT;
-	while ((uint32_t) lcdHtim->Instance->CNT - start < micros)
+	uint32_t start = microSecondHtim->Instance->CNT;
+	while ((uint32_t) microSecondHtim->Instance->CNT - start < micros)
 		;
 }
 
@@ -85,14 +86,28 @@ void LCDcursorPos(uint8_t row, uint8_t column) {
 	}
 }
 
+void LCDbrightness(uint8_t percent) {
+	pwmHtim->Instance->CCR1 = percent;
+}
+
+//void LCDfadeOut(uint32_t milliseconds)
+
 void LCDwrite(char *string) {
 	while (*string)
 		LCDsendChar(*string++);
 }
 
-void LCDinit(TIM_HandleTypeDef *htimHandle) {
-	lcdHtim = htimHandle;
-	HAL_TIM_Base_Start(lcdHtim);
+void LCDinit(TIM_HandleTypeDef *microSecondHtimHandle, TIM_HandleTypeDef *pwmHtimHandle) {
+
+	microSecondHtim = microSecondHtimHandle;
+	HAL_TIM_Base_Start(microSecondHtim);
+
+	pwmHtim = pwmHtimHandle;
+	HAL_TIM_Base_Start(pwmHtim);
+	HAL_TIM_PWM_Start(pwmHtim, LCD_PWM_CHANNEL);
+	pwmHtim->Instance->ARR = 100; // Period
+	pwmHtim->Instance->CCR1 = 100; // Pulse
+
 	__HAL_RCC_GPIOB_CLK_ENABLE()
 	;
 	__HAL_RCC_GPIOC_CLK_ENABLE()
@@ -105,37 +120,37 @@ void LCDinit(TIM_HandleTypeDef *htimHandle) {
 	GPIO_InitStruct.Pin = LCD_RS_Pin;
 	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
 	GPIO_InitStruct.Pull = GPIO_NOPULL;
-	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
 	HAL_GPIO_Init(LCD_RS_GPIO_Port, &GPIO_InitStruct);
 
 	GPIO_InitStruct.Pin = LCD_E_Pin;
 	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
 	GPIO_InitStruct.Pull = GPIO_NOPULL;
-	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
 	HAL_GPIO_Init(LCD_E_GPIO_Port, &GPIO_InitStruct);
 
 	GPIO_InitStruct.Pin = LCD_D4_Pin;
 	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
 	GPIO_InitStruct.Pull = GPIO_NOPULL;
-	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
 	HAL_GPIO_Init(LCD_D4_GPIO_Port, &GPIO_InitStruct);
 
 	GPIO_InitStruct.Pin = LCD_D5_Pin;
 	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
 	GPIO_InitStruct.Pull = GPIO_NOPULL;
-	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
 	HAL_GPIO_Init(LCD_D5_GPIO_Port, &GPIO_InitStruct);
 
 	GPIO_InitStruct.Pin = LCD_D6_Pin;
 	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
 	GPIO_InitStruct.Pull = GPIO_NOPULL;
-	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
 	HAL_GPIO_Init(LCD_D6_GPIO_Port, &GPIO_InitStruct);
 
 	GPIO_InitStruct.Pin = LCD_D7_Pin;
 	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
 	GPIO_InitStruct.Pull = GPIO_NOPULL;
-	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
 	HAL_GPIO_Init(LCD_D7_GPIO_Port, &GPIO_InitStruct);
 
 	HAL_GPIO_WritePin(LCD_RS_GPIO_Port, LCD_RS_Pin, GPIO_PIN_RESET);
@@ -167,4 +182,3 @@ void LCDinit(TIM_HandleTypeDef *htimHandle) {
 	LCDsendCmd(LCD_CMD_CURSOR_HOME);
 	MicroDelay(100);
 }
-
