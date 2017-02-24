@@ -10,10 +10,10 @@
 static I2C_HandleTypeDef *eepromHi2c;
 static volatile uint8_t eepromWrite;
 static volatile uint8_t eepromBusy;
-static volatile uint16_t eepromAddress;
-static uint8_t *eepromTarget;
-static volatile uint16_t eepromTargetSize;
-static volatile uint16_t eepromCounter;
+static volatile uint16_t eepromAddress = 0;
+static uint8_t *eepromTarget = 0;
+static volatile uint16_t eepromTargetSize = 0;
+static volatile uint16_t eepromCounter = 0;
 
 void EEPROMInit(I2C_HandleTypeDef *hi2c) {
 	eepromHi2c = hi2c;
@@ -58,7 +58,6 @@ int EEPROMbusy(void) {
 }
 
 int EEPROMread(uint16_t address, uint8_t *target, uint16_t targetSize) {
-	asm volatile("" ::: "memory");
 	if (eepromBusy)
 		return 0;
 	eepromWrite = 0;
@@ -72,7 +71,6 @@ int EEPROMread(uint16_t address, uint8_t *target, uint16_t targetSize) {
 }
 
 int EEPROMwrite(uint16_t address, uint8_t *target, uint16_t targetSize) {
-	asm volatile("" ::: "memory");
 	if (eepromBusy)
 		return 0;
 	eepromWrite = 1;
@@ -86,23 +84,21 @@ int EEPROMwrite(uint16_t address, uint8_t *target, uint16_t targetSize) {
 }
 
 void HAL_I2C_MemRxCpltCallback(I2C_HandleTypeDef *hi2c) {
-	HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_SET);
 	if (hi2c == eepromHi2c) {
-		if (eepromCounter >= eepromTargetSize) {
-			eepromBusy = 0;
-		} else if (!eepromWrite) {
+		if (eepromCounter < eepromTargetSize && !eepromWrite) {
 			EEPROMreadDMA();
+		} else if (!eepromWrite) {
+			eepromBusy = 0;
 		}
 	}
 }
 
 void HAL_I2C_MemTxCpltCallback(I2C_HandleTypeDef *hi2c) {
-	HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_SET);
 	if (hi2c == eepromHi2c) {
-		if (eepromCounter >= eepromTargetSize) {
-			eepromBusy = 0;
-		} else if (eepromWrite) {
+		if (eepromCounter < eepromTargetSize && eepromWrite) {
 			EEPROMwriteDMA();
+		} else if (eepromWrite) {
+			eepromBusy = 0;
 		}
 	}
 }
