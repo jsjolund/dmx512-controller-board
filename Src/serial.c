@@ -8,18 +8,19 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
 #include "serial.h"
 #include "dmx512.h"
 
 #define RX_BUFFER_MAX 20
-#define TX_BUFFER_MAX 40
+#define TX_BUFFER_MAX 50
 
-static int usbRxIndex = 0;
+static volatile int usbRxIndex = 0;
 static uint8_t usbRxBuffer = 0;
-static uint8_t usbRxString[RX_BUFFER_MAX];
+static volatile uint8_t usbRxString[RX_BUFFER_MAX];
 
-static uint8_t usbTxString[TX_BUFFER_MAX];
-static int usbTxIndex, usbTxOutdex;
+static volatile uint8_t usbTxString[TX_BUFFER_MAX];
+static volatile int usbTxIndex, usbTxOutdex;
 
 static UART_HandleTypeDef *usbHuart;
 
@@ -44,7 +45,7 @@ void SerialInit(UART_HandleTypeDef *huartHandle) {
 	usbTxIndex = usbTxOutdex = 0;
 
 	HAL_NVIC_EnableIRQ(USB_USART_IRQ);
-	HAL_NVIC_SetPriority(USB_USART_IRQ, 0, 0);
+	HAL_NVIC_SetPriority(USB_USART_IRQ, 15, 0);
 
 	HAL_UART_Receive_DMA(usbHuart, &usbRxBuffer, sizeof(usbRxBuffer));
 }
@@ -104,42 +105,45 @@ void SerialExecute(char* string) {
 	if (fail) {
 		printf("ERROR, could not parse %s\r\n", string);
 	}
+}
 
+void SerialSendNextByte(void) {
+	HAL_UART_StateTypeDef uartState = HAL_UART_GetState(usbHuart);
+	if ((uartState == HAL_UART_STATE_READY) || (uartState == HAL_UART_STATE_BUSY_RX)) {
+		uint8_t c;
+		if (SerialQueueGet(&c))
+			while (HAL_UART_Transmit_DMA(usbHuart, &c, 1) != HAL_OK)
+				;
+	}
 }
 
 void SerialTransmit(char *ptr, int len) {
 	int i = 0;
 	for (i = 0; i < len; i++)
 		SerialQueuePut(ptr[i]);
+	SerialSendNextByte();
+}
 
-	if (USART_SR_TC & USB_USART->SR) {
-		uint8_t c;
-		SerialQueueGet(&c);
-		while (HAL_UART_Transmit_DMA(usbHuart, &c, 1) != HAL_OK)
-			;
-		HAL_UART_IRQHandler(usbHuart);
-	}
+void USART2_IRQHandler(void) {
+	HAL_UART_IRQHandler(usbHuart);
+	SerialSendNextByte();
 }
 
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huartHandle) {
-
 	if (huartHandle == usbHuart) {
 		int i;
-		uint8_t usbRxChar = usbRxBuffer;
+		char usbRxChar = (char) usbRxBuffer;
 		if (usbRxChar == 127 || usbRxChar == 8) {
 			// Backspace or delete
-			while (HAL_UART_Transmit_DMA(usbHuart, &usbRxChar, 1) != HAL_OK)
-				;
+			SerialTransmit(&usbRxChar, 1);
 			usbRxIndex = (usbRxIndex > 0) ? usbRxIndex - 1 : 0;
 			usbRxString[usbRxIndex] = 0;
 
 		} else if (usbRxChar == '\r' || usbRxChar == '\n') {
 			// Echo carriage return
-			while (HAL_UART_Transmit_DMA(usbHuart, (uint8_t *) "\r\n", 2) != HAL_OK)
-				;
+			SerialTransmit("\r\n", 2);
 			// Add null terminator
 			usbRxString[usbRxIndex] = '\0';
-			// TODO: Send a command to DMX line?
 			SerialExecute((char *) &usbRxString);
 			// Clear the buffer
 			usbRxIndex = 0;
@@ -148,24 +152,11 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huartHandle) {
 
 		} else if (isDigit(usbRxChar) || isLetter(usbRxChar)) {
 			// Echo the character
-			while (HAL_UART_Transmit_DMA(usbHuart, &usbRxChar, 1) != HAL_OK)
-				;
+			SerialTransmit(&usbRxChar, 1);
 			// Append character and increment cursor
 			usbRxString[usbRxIndex] = usbRxChar;
 			if (usbRxIndex < RX_BUFFER_MAX - 1)
 				usbRxIndex++;
-		}
-	}
-}
-
-void USART2_IRQHandler(void) {
-	HAL_UART_IRQHandler(usbHuart);
-
-	if (USART_SR_TXE & USB_USART->SR) {
-		uint8_t c;
-		if (SerialQueueGet(&c)) {
-			HAL_UART_Transmit_DMA(usbHuart, &c, 1);
-			HAL_UART_IRQHandler(usbHuart);
 		}
 	}
 }
