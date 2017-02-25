@@ -107,7 +107,6 @@ void EXTI15_10_IRQHandler(void) {
 		selectedDmxChannels[3] += 4;
 	}
 	EXTI->PR |= B1_Pin;
-	// HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
 }
 
 void HAL_ADCEx_InjectedConvCpltCallback(ADC_HandleTypeDef* hadc) {
@@ -163,7 +162,7 @@ int main(void) {
 	SerialInit(&huart2);
 	Dmx512Init(&htim2, &huart1);
 	EEPROMInit(&hi2c2);
-	LCDinit(&htim4, &htim3);
+	LCDinit(&htim4, &htim3, &hi2c1);
 	HAL_ADC_Start(&hadc1);
 
 	// Blue button interrupt

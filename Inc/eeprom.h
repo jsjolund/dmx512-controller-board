@@ -29,5 +29,6 @@ int EEPROMread(uint16_t address, uint8_t* MemTarget, uint16_t Size);
 int EEPROMbusy(void);
 //	void readObject(structObject* settings, int section);
 //	void saveObject(structObject* settings, int section);
-
+void EEPROM_HAL_I2C_MemRxCpltCallback(I2C_HandleTypeDef *hi2c);
+void EEPROM_HAL_I2C_MemTxCpltCallback(I2C_HandleTypeDef *hi2c);
 #endif /* EEPROM_H_ */
