@@ -13,7 +13,12 @@ Controller board for DMX512 compatible devices, built around the STM32F4 process
 [Using the STM32F4 Series DMA controller](http://www.st.com/resource/en/application_note/dm00046011.pdf)
 
 ## Other docs
-[I/O Expander](http://ww1.microchip.com/downloads/en/DeviceDoc/21952b.pdf)
+[MCP23017 I/O Expander](http://ww1.microchip.com/downloads/en/DeviceDoc/21952b.pdf)
+
+[24AA1026 EEPROM](http://ww1.microchip.com/downloads/en/DeviceDoc/22270A.pdf)
+
+[MAX481CSA](http://datasheets.maximintegrated.com/en/ds/MAX1487-MAX491.pdf)
+
 ## IDE
 [System Workbench for STM32 - IDE which works on Linux (unlike TrueStudio...)](http://www.openstm32.org/System+Workbench+for+STM32)
 
