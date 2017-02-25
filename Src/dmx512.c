@@ -17,11 +17,7 @@ static GPIO_InitTypeDef dmx_GPIO_InitStruct;
 int Dmx512SetChannelValue(uint16_t channel, uint8_t value) {
 	if (channel >= DMX_CHANNELS)
 		return 0;
-	while (HAL_UART_DMAPause(dmxHuart) != HAL_OK)
-		;
 	dmxData[channel + 1] = value;
-	while (HAL_UART_DMAResume(dmxHuart) != HAL_OK)
-		;
 	return 1;
 }
 
