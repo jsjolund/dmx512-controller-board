@@ -27,6 +27,6 @@
 
 int Dmx512SetChannelValue(uint16_t channel, uint8_t value);
 void Dmx512Init(TIM_HandleTypeDef *htimHandle, UART_HandleTypeDef *huartHandle);
-void Dmx512Update(TIM_HandleTypeDef *htimHandle);
+void Dmx512_TIM_IRQHandler(TIM_HandleTypeDef *htimHandle);
 
 #endif /* DMX512_H_ */

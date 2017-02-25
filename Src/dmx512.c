@@ -21,7 +21,7 @@ int Dmx512SetChannelValue(uint16_t channel, uint8_t value) {
 	return 1;
 }
 
-void Dmx512DisableUart(UART_HandleTypeDef *huart1) {
+void Dmx512DisableUsart(UART_HandleTypeDef *huart1) {
 	HAL_NVIC_DisableIRQ(DMX_USART_IRQ);
 
 	dmx_GPIO_InitStruct.Pin = DMX_TX_Pin | DMX_RX_Pin;
@@ -31,7 +31,7 @@ void Dmx512DisableUart(UART_HandleTypeDef *huart1) {
 	HAL_GPIO_Init(DMX_TX_GPIO_Port, &dmx_GPIO_InitStruct);
 }
 
-void Dmx512EnableUart(UART_HandleTypeDef *huart1) {
+void Dmx512EnableUsart(UART_HandleTypeDef *huart1) {
 	HAL_NVIC_EnableIRQ(DMX_USART_IRQ);
 
 	dmx_GPIO_InitStruct.Pin = DMX_TX_Pin | DMX_RX_Pin;
@@ -56,7 +56,7 @@ void Dmx512Init(TIM_HandleTypeDef *htimHandle, UART_HandleTypeDef *huartHandle) 
 	HAL_NVIC_EnableIRQ(DMX_USART_IRQ);
 	HAL_NVIC_SetPriority(DMX_USART_IRQ, 0, 0);
 
-	Dmx512DisableUart(dmxHuart);
+	Dmx512DisableUsart(dmxHuart);
 
 	HAL_GPIO_WritePin(DMX_TX_GPIO_Port, DMX_TX_Pin, GPIO_PIN_RESET);
 
@@ -68,6 +68,7 @@ void Dmx512Init(TIM_HandleTypeDef *htimHandle, UART_HandleTypeDef *huartHandle) 
 }
 
 void USART1_IRQHandler(void) {
+	// This function is called on USART interrupt
 	HAL_UART_IRQHandler(dmxHuart);
 
 	if (USART_SR_TC & DMX_USART->SR) {
@@ -78,7 +79,7 @@ void USART1_IRQHandler(void) {
 
 		dmxSendState = STATE_MBB;
 
-		Dmx512DisableUart(dmxHuart);
+		Dmx512DisableUsart(dmxHuart);
 		HAL_GPIO_WritePin(DMX_TX_GPIO_Port, DMX_TX_Pin, GPIO_PIN_SET);
 
 		uint32_t elapsedTime = dmxHtim->Instance->CNT;
@@ -88,7 +89,8 @@ void USART1_IRQHandler(void) {
 	}
 }
 
-void Dmx512Update(TIM_HandleTypeDef *htimHandle) {
+void Dmx512_TIM_IRQHandler(TIM_HandleTypeDef *htimHandle) {
+	// This function is called on timer interrupt.
 	if (dmxSendState == STATE_MBB) {
 		// Mark Before Break finished. Next state is Break. Set TX Low.
 		dmxSendState = STATE_BREAK;
@@ -104,7 +106,7 @@ void Dmx512Update(TIM_HandleTypeDef *htimHandle) {
 		dmxSendState = STATE_MAB;
 		dmxHtim->Instance->CNT = 0;
 		HAL_GPIO_WritePin(DMX_TX_GPIO_Port, DMX_TX_Pin, GPIO_PIN_SET);
-		Dmx512EnableUart(dmxHuart);
+		Dmx512EnableUsart(dmxHuart);
 
 		long time = MARK_AFTER_BREAK - 1 - dmxHtim->Instance->CNT;
 		dmxHtim->Instance->ARR = (time > 0) ? time : MARK_AFTER_BREAK;
