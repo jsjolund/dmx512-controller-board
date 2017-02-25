@@ -5,15 +5,10 @@
  *      Author: user
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "serial.h"
-#include "dmx512.h"
 
 #define RX_BUFFER_MAX 20
-#define TX_BUFFER_MAX 50
+#define TX_BUFFER_MAX 60
 
 static volatile int usbRxIndex = 0;
 static uint8_t usbRxBuffer = 0;
@@ -23,6 +18,14 @@ static volatile uint8_t usbTxString[TX_BUFFER_MAX];
 static volatile int usbTxIndex, usbTxOutdex;
 
 static UART_HandleTypeDef *usbHuart;
+
+int isDigit(char c) {
+	return ('0' <= c && c <= '9');
+}
+
+int isLetter(char c) {
+	return ('a' <= c && c <= 'z') || ('A' <= c && c <= 'Z') || (c == ' ');
+}
 
 int SerialQueuePut(uint8_t new) {
 	if (usbTxIndex == ((usbTxOutdex - 1 + TX_BUFFER_MAX) % TX_BUFFER_MAX))
@@ -48,63 +51,6 @@ void SerialInit(UART_HandleTypeDef *huartHandle) {
 	HAL_NVIC_SetPriority(USB_USART_IRQ, 15, 0);
 
 	HAL_UART_Receive_DMA(usbHuart, &usbRxBuffer, sizeof(usbRxBuffer));
-}
-
-int isDigit(char c) {
-	return ('0' <= c && c <= '9');
-}
-
-int isLetter(char c) {
-	return ('a' <= c && c <= 'z') || ('A' <= c && c <= 'Z') || (c == ' ');
-}
-
-void SerialExecute(char* string) {
-	// Parse a user command
-	uint8_t fail = 0;
-	char *cmd = "set ";
-	if (strncmp(string, cmd, strlen(cmd)) == 0 && strlen(string) > strlen(cmd)) {
-		int iStr, iChn, iVal;
-		iChn = iVal = 0;
-		char strChn[4] = { '\0', '\0', '\0', '\0' };
-		char strVal[4] = { '\0', '\0', '\0', '\0' };
-
-		for (iStr = strlen(cmd); iStr < strlen(string); iStr++) {
-			char c = string[iStr];
-			if (isDigit(c)) {
-				if (iChn >= 0 && iChn < 3) {
-					strChn[iChn] = c;
-					iChn++;
-				} else if (iChn == -1 && iVal < 3) {
-					strVal[iVal] = c;
-					iVal++;
-				} else {
-					fail = 1;
-				}
-			} else if (c == ' ') {
-				iChn = -1;
-			} else {
-				fail = 1;
-				break;
-			}
-		}
-		if (iChn == 0 || iVal == 0)
-			fail = 1;
-		if (!fail) {
-			int channel = atoi(strChn);
-			int value = atoi(strVal);
-			if (channel < 512 && value < 256) {
-				printf("Setting channel %d to %d\r\n", channel, value);
-				Dmx512SetChannelValue(channel, value);
-			} else {
-				printf("Maximum values exceeded\r\n");
-			}
-		}
-	} else {
-		fail = 1;
-	}
-	if (fail) {
-		printf("ERROR, could not parse %s\r\n", string);
-	}
 }
 
 void SerialSendNextByte(void) {
@@ -144,7 +90,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huartHandle) {
 			SerialTransmit("\r\n", 2);
 			// Add null terminator
 			usbRxString[usbRxIndex] = '\0';
-			SerialExecute((char *) &usbRxString);
+			ShellExecute((char *) &usbRxString);
 			// Clear the buffer
 			usbRxIndex = 0;
 			for (i = 0; i < RX_BUFFER_MAX; i++)

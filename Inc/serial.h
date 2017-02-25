@@ -9,7 +9,8 @@
 #define SERIAL_H_
 
 #include "stm32f4xx_hal.h"
-
+#include "dmx512.h"
+#include "shell.h"
 
 void SerialInit(UART_HandleTypeDef *huart2);
 void SerialTransmit(char *ptr, int len);

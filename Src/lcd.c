@@ -59,11 +59,11 @@ uint8_t LCDgetBrightness(void) {
 void LCDfadeBrightness(uint8_t percent, uint8_t secondsFade) {
 	targetBrightness = percent;
 	if (secondsFade == 0) {
-		LCDsetBrightness(percent);
+		LCDsetBrightness(targetBrightness);
 	} else {
 		uint8_t currentBrightness = pwmHtim->Instance->CCR1;
-		uint8_t diff = (percent > currentBrightness) ? percent - currentBrightness : currentBrightness - percent;
-		microSecondHtim->Instance->ARR = 1000000 / (diff) * secondsFade;
+		uint8_t steps = (targetBrightness > currentBrightness) ? targetBrightness - currentBrightness : currentBrightness - targetBrightness;
+		microSecondHtim->Instance->ARR = 1000000 / (steps) * secondsFade;
 		HAL_NVIC_EnableIRQ(LCD_TIM_IRQ);
 		HAL_NVIC_SetPriority(LCD_TIM_IRQ, 5, 0);
 	}
