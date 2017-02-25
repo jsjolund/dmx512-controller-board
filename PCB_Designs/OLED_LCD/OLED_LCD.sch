@@ -71,17 +71,6 @@ Text Label 4050 3150 2    60   ~ 0
 D6
 Text Label 4050 3250 2    60   ~ 0
 D7
-$Comp
-L CONN_01X20 P2
-U 1 1 5894F9E5
-P 7500 3250
-F 0 "P2" H 7500 4300 50  0000 C CNN
-F 1 "CONN_01X20" V 7600 3250 50  0000 C CNN
-F 2 "Pin_Headers:Pin_Header_Straight_1x20_Pitch2.54mm" H 7500 3250 50  0001 C CNN
-F 3 "" H 7500 3250 50  0000 C CNN
-	1    7500 3250
-	1    0    0    -1  
-$EndComp
 Text Label 4550 4350 0    60   ~ 0
 GND
 Wire Wire Line
@@ -108,82 +97,66 @@ $EndComp
 $Comp
 L GND #PWR02
 U 1 1 5894FCE6
-P 6550 3800
-F 0 "#PWR02" H 6550 3550 50  0001 C CNN
-F 1 "GND" H 6550 3650 50  0000 C CNN
-F 2 "" H 6550 3800 50  0000 C CNN
-F 3 "" H 6550 3800 50  0000 C CNN
-	1    6550 3800
+P 6300 3250
+F 0 "#PWR02" H 6300 3000 50  0001 C CNN
+F 1 "GND" H 6300 3100 50  0000 C CNN
+F 2 "" H 6300 3250 50  0000 C CNN
+F 3 "" H 6300 3250 50  0000 C CNN
+	1    6300 3250
 	1    0    0    -1  
 $EndComp
 $Comp
 L C 100n3
 U 1 1 5894FD05
-P 6550 3500
-F 0 "100n3" H 6575 3600 50  0000 L CNN
-F 1 "100n" H 6575 3400 50  0000 L CNN
-F 2 "Capacitors_SMD:C_0603_HandSoldering" H 6588 3350 50  0001 C CNN
-F 3 "" H 6550 3500 50  0000 C CNN
-	1    6550 3500
+P 6300 2950
+F 0 "100n3" H 6325 3050 50  0000 L CNN
+F 1 "100n" H 6325 2850 50  0000 L CNN
+F 2 "Capacitors_SMD:C_0603_HandSoldering" H 6338 2800 50  0001 C CNN
+F 3 "" H 6300 2950 50  0000 C CNN
+	1    6300 2950
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	6550 3800 6550 3650
-Text Label 6550 3350 0    60   ~ 0
+	6300 3250 6300 3100
+Text Label 6300 2800 0    60   ~ 0
 VCC5
 Text Label 5050 3650 0    60   ~ 0
 SCL#
 Text Label 5050 3750 0    60   ~ 0
 SDA#
-Text Label 4050 3450 2    60   ~ 0
-CS1
-Text Label 4050 3550 2    60   ~ 0
-CS2
 Text Label 4050 3650 2    60   ~ 0
 RS
 Text Label 4050 3750 2    60   ~ 0
 RW
 Text Label 4050 3850 2    60   ~ 0
 E
-Text Label 4050 3950 2    60   ~ 0
-RST
 Text Label 7300 2300 2    60   ~ 0
-CS1
-Text Label 7300 2400 2    60   ~ 0
-CS2
-Text Label 7300 2500 2    60   ~ 0
 GND
-Text Label 7300 2600 2    60   ~ 0
+Text Label 7300 2400 2    60   ~ 0
 VCC5DISP
-Text Label 7300 2700 2    60   ~ 0
-V0
-Text Label 7300 2800 2    60   ~ 0
+Text Label 7300 2600 2    60   ~ 0
 RS
-Text Label 7300 2900 2    60   ~ 0
+Text Label 7300 2700 2    60   ~ 0
 RW
-Text Label 7300 3000 2    60   ~ 0
+Text Label 7300 2800 2    60   ~ 0
 E
-Text Label 7300 3100 2    60   ~ 0
+Text Label 7300 2900 2    60   ~ 0
 D0
-Text Label 7300 3200 2    60   ~ 0
+Text Label 7300 3000 2    60   ~ 0
 D1
-Text Label 7300 3300 2    60   ~ 0
+Text Label 7300 3100 2    60   ~ 0
 D2
-Text Label 7300 3400 2    60   ~ 0
+Text Label 7300 3200 2    60   ~ 0
 D3
-Text Label 7300 3500 2    60   ~ 0
+Text Label 7300 3300 2    60   ~ 0
 D4
-Text Label 7300 3600 2    60   ~ 0
+Text Label 7300 3400 2    60   ~ 0
 D5
-Text Label 7300 3700 2    60   ~ 0
+Text Label 7300 3500 2    60   ~ 0
 D6
-Text Label 7300 3800 2    60   ~ 0
+Text Label 7300 3600 2    60   ~ 0
 D7
-Text Label 7300 3900 2    60   ~ 0
-RST
-Text Label 7300 4000 2    60   ~ 0
-VEE
-Text Label 7300 4200 2    60   ~ 0
+Text Label 7300 3800 2    60   ~ 0
 LED-
 $Comp
 L GND #PWR03
@@ -201,35 +174,14 @@ GND
 $Comp
 L GND #PWR04
 U 1 1 58950905
-P 7150 4350
-F 0 "#PWR04" H 7150 4100 50  0001 C CNN
-F 1 "GND" H 7150 4200 50  0000 C CNN
-F 2 "" H 7150 4350 50  0000 C CNN
-F 3 "" H 7150 4350 50  0000 C CNN
-	1    7150 4350
+P 7100 3900
+F 0 "#PWR04" H 7100 3650 50  0001 C CNN
+F 1 "GND" H 7100 3750 50  0000 C CNN
+F 2 "" H 7100 3900 50  0000 C CNN
+F 3 "" H 7100 3900 50  0000 C CNN
+	1    7100 3900
 	1    0    0    -1  
 $EndComp
-Wire Wire Line
-	7300 4200 7150 4200
-Wire Wire Line
-	7150 4200 7150 4350
-$Comp
-L POT 10k8
-U 1 1 58950B2C
-P 6150 2600
-F 0 "10k8" V 5975 2600 50  0000 C CNN
-F 1 "10k" V 6050 2600 50  0000 C CNN
-F 2 "Potentiometers:Potentiometer_Trimmer-EVM3E" H 6150 2600 50  0001 C CNN
-F 3 "" H 6150 2600 50  0000 C CNN
-	1    6150 2600
-	0    1    1    0   
-$EndComp
-Text Label 6300 2600 0    60   ~ 0
-VEE
-Text Label 6000 2600 2    60   ~ 0
-GND
-Text Label 6150 2750 0    60   ~ 0
-V0
 $Comp
 L MCP23017 U1
 U 1 1 58950F84
@@ -394,7 +346,7 @@ Wire Wire Line
 	3300 1100 3300 1250
 Wire Wire Line
 	2700 1100 2700 1250
-Connection ~ 6550 3650
+Connection ~ 6300 3100
 Connection ~ 5050 3950
 Connection ~ 5050 4050
 Connection ~ 5050 4150
@@ -406,12 +358,9 @@ Connection ~ 4050 2850
 Connection ~ 4050 2750
 Connection ~ 4050 2650
 Connection ~ 4050 2550
-Connection ~ 4050 3450
-Connection ~ 4050 3550
 Connection ~ 4050 3650
 Connection ~ 4050 3750
 Connection ~ 4050 3850
-Connection ~ 4050 3950
 NoConn ~ 4050 4050
 NoConn ~ 4050 4150
 NoConn ~ 5050 2950
@@ -441,11 +390,11 @@ Text Label 5800 1450 2    60   ~ 0
 SCL#
 Text Label 5800 1250 2    60   ~ 0
 SDA#
-Text Label 6550 3150 2    60   ~ 0
+Text Label 6300 2600 2    60   ~ 0
 VCC5DISP
 Wire Wire Line
-	6550 3150 6550 3350
-Connection ~ 6550 3350
+	6300 2600 6300 2800
+Connection ~ 6300 2800
 $Comp
 L R 10k6
 U 1 1 58954D3B
@@ -662,7 +611,7 @@ F 3 "" H 7550 1350 50  0000 C CNN
 	1    7550 1350
 	1    0    0    -1  
 $EndComp
-Text Label 7300 4100 2    60   ~ 0
+Text Label 7300 3700 2    60   ~ 0
 LCD_BACKLIGHT
 NoConn ~ 5050 2550
 NoConn ~ 2500 2550
@@ -734,4 +683,24 @@ Wire Notes Line
 	2800 4850 2800 5600
 Wire Notes Line
 	2800 5600 3700 5600
+NoConn ~ 7300 2500
+Wire Wire Line
+	7100 3900 7100 3800
+Wire Wire Line
+	7100 3800 7300 3800
+Connection ~ 7300 3800
+$Comp
+L CONN_01X16 P2
+U 1 1 58B162AE
+P 7500 3050
+F 0 "P2" H 7500 3900 50  0000 C CNN
+F 1 "CONN_01X16" V 7600 3050 50  0000 C CNN
+F 2 "Pin_Headers:Pin_Header_Straight_1x16_Pitch2.54mm" H 7500 3050 50  0001 C CNN
+F 3 "" H 7500 3050 50  0000 C CNN
+	1    7500 3050
+	1    0    0    -1  
+$EndComp
+NoConn ~ 4050 3450
+NoConn ~ 4050 3550
+NoConn ~ 4050 3950
 $EndSCHEMATC
