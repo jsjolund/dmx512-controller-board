@@ -100,11 +100,18 @@ void HAL_TIM_MspPostInit(TIM_HandleTypeDef *htim);
 /* USER CODE BEGIN 0 */
 void EXTI15_10_IRQHandler(void) {
 	// Blue button interrupt
+//	if (HAL_GPIO_ReadPin(B1_GPIO_Port, B1_Pin) == GPIO_PIN_RESET) {
+//		selectedDmxChannels[0] += 4;
+//		selectedDmxChannels[1] += 4;
+//		selectedDmxChannels[2] += 4;
+//		selectedDmxChannels[3] += 4;
+//	}
 	if (HAL_GPIO_ReadPin(B1_GPIO_Port, B1_Pin) == GPIO_PIN_RESET) {
-		selectedDmxChannels[0] += 4;
-		selectedDmxChannels[1] += 4;
-		selectedDmxChannels[2] += 4;
-		selectedDmxChannels[3] += 4;
+		uint8_t brightness = LCDgetBrightness();
+		if (brightness == 100)
+			LCDfadeBrightness(0, 4);
+		else if (brightness == 0)
+			LCDfadeBrightness(100, 1);
 	}
 	EXTI->PR |= B1_Pin;
 }
@@ -163,6 +170,7 @@ int main(void) {
 	Dmx512Init(&htim2, &huart1);
 	EEPROMInit(&hi2c2);
 	LCDinit(&htim4, &htim3, &hi2c1);
+	LCDfadeBrightness(100, 1);
 	HAL_ADC_Start(&hadc1);
 
 	// Blue button interrupt
@@ -463,7 +471,7 @@ static void MX_TIM3_Init(void) {
 	}
 
 	sConfigOC.OCMode = TIM_OCMODE_PWM1;
-	sConfigOC.Pulse = 100;
+	sConfigOC.Pulse = 0;
 	sConfigOC.OCPolarity = TIM_OCPOLARITY_HIGH;
 	sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;
 	if (HAL_TIM_PWM_ConfigChannel(&htim3, &sConfigOC, TIM_CHANNEL_1) != HAL_OK) {

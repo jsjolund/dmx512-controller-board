@@ -26,6 +26,8 @@ static TIM_HandleTypeDef *microSecondHtim;
 static TIM_HandleTypeDef *pwmHtim;
 static I2C_HandleTypeDef *lcdHi2c;
 
+static volatile uint8_t targetBrightness;
+
 void LCD_HAL_I2C_MemRxCpltCallback(I2C_HandleTypeDef *hi2cHandle) {
 
 }
@@ -34,10 +36,37 @@ void LCD_HAL_I2C_MemTxCpltCallback(I2C_HandleTypeDef *hi2cHandle) {
 
 }
 
-void MicroDelay(uint16_t micros) {
-	uint32_t start = microSecondHtim->Instance->CNT;
-	while (microSecondHtim->Instance->CNT - start < micros)
-		;
+void LCD_TIM_IRQHandler(TIM_HandleTypeDef *htimHandle) {
+	uint8_t currentBrightness = pwmHtim->Instance->CCR1;
+	if (currentBrightness < targetBrightness) {
+		pwmHtim->Instance->CCR1 = currentBrightness + 1;
+	} else if (currentBrightness > targetBrightness) {
+		pwmHtim->Instance->CCR1 = currentBrightness - 1;
+	} else {
+		HAL_NVIC_DisableIRQ(LCD_TIM_IRQ);
+	}
+}
+
+void LCDsetBrightness(uint8_t percent) {
+	targetBrightness = percent;
+	pwmHtim->Instance->CCR1 = percent;
+}
+
+uint8_t LCDgetBrightness(void) {
+	return pwmHtim->Instance->CCR1;
+}
+
+void LCDfadeBrightness(uint8_t percent, uint8_t secondsFade) {
+	targetBrightness = percent;
+	if (secondsFade == 0) {
+		LCDsetBrightness(percent);
+	} else {
+		uint8_t currentBrightness = pwmHtim->Instance->CCR1;
+		uint8_t diff = (percent > currentBrightness) ? percent - currentBrightness : currentBrightness - percent;
+		microSecondHtim->Instance->ARR = 1000000 / (diff) * secondsFade;
+		HAL_NVIC_EnableIRQ(LCD_TIM_IRQ);
+		HAL_NVIC_SetPriority(LCD_TIM_IRQ, 5, 0);
+	}
 }
 
 void LCDsendBytes(uint8_t rs, uint8_t bytes) {
@@ -80,10 +109,6 @@ void LCDcursorPos(uint8_t row, uint8_t column) {
 	}
 }
 
-void LCDbrightness(uint8_t percent) {
-	pwmHtim->Instance->CCR1 = percent;
-}
-
 void LCDwrite(char *string) {
 	while (*string)
 		LCDsendChar(*string++);
@@ -117,20 +142,21 @@ void LCDinit(TIM_HandleTypeDef *microSecondHtimHandle, TIM_HandleTypeDef *pwmHti
 	while (HAL_I2C_Mem_Write(lcdHi2c, IOEXP_ADDRESS, IOEXP_GPIOA, I2C_MEMADD_SIZE_8BIT, (uint8_t *) &levels, sizeof(levels), 100) != HAL_OK)
 		;
 
-	microSecondHtim = microSecondHtimHandle;
-	HAL_TIM_Base_Start(microSecondHtim);
-
 	pwmHtim = pwmHtimHandle;
 	HAL_TIM_Base_Start(pwmHtim);
 	HAL_TIM_PWM_Start(pwmHtim, LCD_PWM_CHANNEL);
 	pwmHtim->Instance->ARR = 100; // Period
-	pwmHtim->Instance->CCR1 = 100; // Pulse
+	pwmHtim->Instance->CCR1 = 0; // Pulse
+
+	microSecondHtim = microSecondHtimHandle;
+	HAL_TIM_Base_Init(microSecondHtim);
+	HAL_TIM_Base_Start_IT(microSecondHtim);
 
 	HAL_Delay(200); // Wait for LCD to power on fully
 	LCDsendCmd(LCD_CMD_INIT);
-	MicroDelay(200);
+	HAL_Delay(1);
 	LCDsendCmd(LCD_CMD_ON_CURSOR_OFF);
-	MicroDelay(100);
+	HAL_Delay(1);
 	LCDsendCmd(LCD_CMD_CLEAR);
 	HAL_Delay(5);
 }
