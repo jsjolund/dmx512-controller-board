@@ -20,17 +20,20 @@ int main() {
 
 
 	// Includera dina inits
-
-
-
-
-
-
-
-
-
-	CommonInit();
-	CommonFrame();
 	
+	
+	
+	
+	CommonInit();
+
+	while(1)
+
+		// updatera saker 
+
+
+
+
+		CommonFrame();
+	}
     return 0;
 }

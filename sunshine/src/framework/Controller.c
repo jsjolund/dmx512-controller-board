@@ -4,8 +4,7 @@
 	
 	Author: Sam Karimi
 ========================================================*/
-
-#include "Controller.h"
+#include "../sunlib/precompiled.h"
 
 
 // key bindings

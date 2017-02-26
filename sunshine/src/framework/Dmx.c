@@ -4,8 +4,7 @@
 	
 	Author: Sam Karimi
 ========================================================*/
-
-#include "Dmx.h"
+#include "../sunlib/precompiled.h"
 
 
 
