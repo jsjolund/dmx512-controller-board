@@ -7,22 +7,29 @@
 
 
 
-// ta emot slider values
+//Get slider Values
 
 
 
-// ta emot knapp values
+//Get i2C key values
 
 
 
+//LCD
+//----------------------
+// Set LCD
 
-// Skicka till lcd
+// Update LCD
 
 
 
+//DMX
+//----------------------
+//Set All
 
-// skicka till DMx
+//Set lamp
 
+//Update DMX
 
 
 

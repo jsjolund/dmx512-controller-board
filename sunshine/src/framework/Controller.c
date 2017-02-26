@@ -61,9 +61,9 @@ volatile padcmds_t		newPadkeys;		// rotary key and back key states
 volatile padcmds_t		oldPadkeys;		
 
 /*======================================
-	Private
-
-	====================================
+	Private							   
+									   
+  ======================================
 */
 void UserCmdQuePushBack( usercmd_t uCmd ) {
 	if ( usercmdQueSize < USER_CMD_QUE_MAX ){
@@ -77,8 +77,7 @@ void UserCmdQuePushBack( usercmd_t uCmd ) {
 
 /*======================================
 
-	====================================
-*/
+======================================*/
 inline void ControllerGenUserCmds() {
 	// check if inputs cmds have changed both for analog and i2c buttons		// this should have mutex lock on because inturrepts can set 
 	
@@ -128,7 +127,7 @@ inline usercmd_t ControllerPopUserCmd() {
 /*========================================================
 	
 
-	======================================================
+  ========================================================
 */
 inline void ControllerPollAnalogInput(){
 	
