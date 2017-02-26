@@ -5,8 +5,7 @@
 	Author: Sam Karimi
 ========================================================*/
 
-#include "Sunlight.h"
-#include "../framework/View.h"
+#include "../sunlib/precompiled.h"
 
 
 
