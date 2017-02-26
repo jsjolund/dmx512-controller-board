@@ -13,9 +13,9 @@
 
 
 /*========================================================
-	Description: This function will react to a incoming 
-	user command and set the Dmx and View output.
-
+	Description: This is where the logic happens.
+	React to a incoming user user command 
+	and generates Dmx and View commands.
 	======================================================
 */
 void SunlightFrame( const usercmd_t uCmd ) {
@@ -23,6 +23,7 @@ void SunlightFrame( const usercmd_t uCmd ) {
 	
 	
 	
+	// update and set new states based on incoming user command.
 	
 	
 	
@@ -32,14 +33,13 @@ void SunlightFrame( const usercmd_t uCmd ) {
 	
 	
 	
-	
-	// Set DMX
-	// NOTE: Controls the state of the lamps and DMX peripherals	
+	// Generate DMX cmd
 
 
 
 
-	// Set LCD
+
+	// Generate LCD cmd
 	
 
 
