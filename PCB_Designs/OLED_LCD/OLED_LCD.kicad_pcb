@@ -1,4 +1,4 @@
-(kicad_pcb (version 4) (host pcbnew 4.0.5)
+(kicad_pcb (version 4) (host pcbnew 4.0.4-stable)
 
   (general
     (links 70)
@@ -37,7 +37,7 @@
   )
 
   (setup
-    (last_trace_width 1.5)
+    (last_trace_width 0.8)
     (user_trace_width 0.6)
     (user_trace_width 0.7)
     (user_trace_width 0.8)
@@ -1113,7 +1113,7 @@
   )
 
   (module Mounting_Holes:MountingHole_2.2mm_M2_DIN965_Pad (layer F.Cu) (tedit 56D1B4CB) (tstamp 58A4BC78)
-    (at 186.436 130.302)
+    (at 186.42 140.92)
     (descr "Mounting Hole 2.2mm, M2, DIN965")
     (tags "mounting hole 2.2mm m2 din965")
     (path /58A4C0C0)
