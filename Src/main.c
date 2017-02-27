@@ -125,17 +125,27 @@ void HAL_ADCEx_InjectedConvCpltCallback(ADC_HandleTypeDef* hadc) {
 }
 
 void testEEPROM() {
-	uint64_t result;
-	uint64_t data = 0xDEADBEEFDEADBEEF;
-	EEPROMwrite(0x0016, (uint8_t*) &data, sizeof(uint64_t));
+	//
+	uint16_t len = 128;
+	uint8_t data[len];
+	uint8_t result[len];
+	uint16_t i;
+	for (i = 0; i < len; i++)
+		data[i] = 0xFF & i;
+	EEPROMwrite(0x00, &data[0], len);
 	while (EEPROMbusy())
 		;
-	EEPROMread(0x0016, (uint8_t*) &result, sizeof(uint64_t));
+	HAL_Delay(20);
+	EEPROMread(0x00, &result[0], len);
 	while (EEPROMbusy())
 		;
-	if (data == result)
-		HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_SET);
+	HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_SET);
+	for (i = 0; i < len; i++) {
+		if (data != result)
+			HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_RESET);
+	}
 }
+
 /* USER CODE END 0 */
 
 int main(void) {
@@ -169,6 +179,7 @@ int main(void) {
 	SerialInit(&huart2);
 	Dmx512Init(&htim2, &huart1);
 	EEPROMInit(&hi2c2);
+//	testEEPROM();
 	LCDinit(&htim4, &htim3, &hi2c1);
 	LCDfadeBrightness(100, 1);
 	HAL_ADC_Start(&hadc1);
@@ -361,7 +372,7 @@ static void MX_ADC1_Init(void) {
 static void MX_I2C1_Init(void) {
 
 	hi2c1.Instance = I2C1;
-	hi2c1.Init.ClockSpeed = 400000;
+	hi2c1.Init.ClockSpeed = 100000;
 	hi2c1.Init.DutyCycle = I2C_DUTYCYCLE_2;
 	hi2c1.Init.OwnAddress1 = 0;
 	hi2c1.Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
@@ -379,7 +390,7 @@ static void MX_I2C1_Init(void) {
 static void MX_I2C2_Init(void) {
 
 	hi2c2.Instance = I2C2;
-	hi2c2.Init.ClockSpeed = 400000;
+	hi2c2.Init.ClockSpeed = 100000;
 	hi2c2.Init.DutyCycle = I2C_DUTYCYCLE_2;
 	hi2c2.Init.OwnAddress1 = 0;
 	hi2c2.Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
@@ -397,7 +408,7 @@ static void MX_I2C2_Init(void) {
 static void MX_I2C3_Init(void) {
 
 	hi2c3.Instance = I2C3;
-	hi2c3.Init.ClockSpeed = 400000;
+	hi2c3.Init.ClockSpeed = 100000;
 	hi2c3.Init.DutyCycle = I2C_DUTYCYCLE_2;
 	hi2c3.Init.OwnAddress1 = 0;
 	hi2c3.Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
@@ -531,7 +542,7 @@ static void MX_USART1_UART_Init(void) {
 static void MX_USART2_UART_Init(void) {
 
 	huart2.Instance = USART2;
-	huart2.Init.BaudRate = 9600;
+	huart2.Init.BaudRate = 115200;
 	huart2.Init.WordLength = UART_WORDLENGTH_8B;
 	huart2.Init.StopBits = UART_STOPBITS_1;
 	huart2.Init.Parity = UART_PARITY_NONE;

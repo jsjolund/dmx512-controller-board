@@ -17,9 +17,9 @@
 #define STATE_MAB 4
 #define STATE_DMA 8
 
-#define MARK_BEFORE_BREAK 24
+#define MARK_BEFORE_BREAK 16
 #define MARK_BREAK 176
-#define MARK_AFTER_BREAK 24
+#define MARK_AFTER_BREAK 16
 
 #define DMX_CHANNELS 512
 

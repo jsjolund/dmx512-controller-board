@@ -74,18 +74,17 @@ void USART1_IRQHandler(void) {
 	if (USART_SR_TC & DMX_USART->SR) {
 		// Finished sending data over USART. Next is Mark Before Break. Set TX high.
 		// Account for the time it takes to setup GPIO output mode.
-
-		dmxHtim->Instance->CNT = 0;
-
 		dmxSendState = STATE_MBB;
-
+		HAL_TIM_Base_Start(dmxHtim);
+		dmxHtim->Instance->CNT = 0;
 		Dmx512DisableUsart(dmxHuart);
 		HAL_GPIO_WritePin(DMX_TX_GPIO_Port, DMX_TX_Pin, GPIO_PIN_SET);
-
+		HAL_TIM_Base_Stop(dmxHtim);
 		uint32_t elapsedTime = dmxHtim->Instance->CNT;
 		long time = MARK_BEFORE_BREAK - 1 - elapsedTime;
-		dmxHtim->Instance->ARR = (time > 0) ? time : MARK_BEFORE_BREAK;
+		dmxHtim->Instance->ARR = (time > 0) ? time : 1;
 		HAL_NVIC_EnableIRQ(DMX_TIM_IRQ);
+		HAL_TIM_Base_Start_IT(dmxHtim);
 	}
 }
 
@@ -94,26 +93,27 @@ void Dmx512_TIM_IRQHandler(TIM_HandleTypeDef *htimHandle) {
 	if (dmxSendState == STATE_MBB) {
 		// Mark Before Break finished. Next state is Break. Set TX Low.
 		dmxSendState = STATE_BREAK;
-		dmxHtim->Instance->CNT = 0;
 		HAL_GPIO_WritePin(DMX_TX_GPIO_Port, DMX_TX_Pin, GPIO_PIN_RESET);
-
-		long time = MARK_BREAK - 1 - dmxHtim->Instance->CNT;
-		dmxHtim->Instance->ARR = (time > 0) ? time : MARK_BREAK;
+		dmxHtim->Instance->ARR = MARK_BREAK;
 
 	} else if (dmxSendState == STATE_BREAK) {
 		// Break finished. Next state is Mark After Break. Set TX high.
 		// Account for the time it takes to setup GPIO alternate function mode.
 		dmxSendState = STATE_MAB;
+		HAL_TIM_Base_Stop_IT(dmxHtim);
+		HAL_TIM_Base_Start(dmxHtim);
 		dmxHtim->Instance->CNT = 0;
 		HAL_GPIO_WritePin(DMX_TX_GPIO_Port, DMX_TX_Pin, GPIO_PIN_SET);
 		Dmx512EnableUsart(dmxHuart);
-
-		long time = MARK_AFTER_BREAK - 1 - dmxHtim->Instance->CNT;
-		dmxHtim->Instance->ARR = (time > 0) ? time : MARK_AFTER_BREAK;
+		uint32_t elapsedTime = dmxHtim->Instance->CNT;
+		long time = MARK_AFTER_BREAK - 1 - elapsedTime;
+		dmxHtim->Instance->ARR = (time > 0) ? time : 1;
+		HAL_TIM_Base_Start_IT(dmxHtim);
 
 	} else if (dmxSendState == STATE_MAB) {
 		// Mark After Break finished. Next send data over USART, then state Mark Before Break.
-
+		dmxSendState = STATE_DMA;
+		HAL_TIM_Base_Stop_IT(dmxHtim);
 		HAL_NVIC_DisableIRQ(DMX_TIM_IRQ);
 		while (HAL_UART_Transmit_DMA(dmxHuart, dmxData, DMX_CHANNELS + 1) != HAL_OK)
 			;
