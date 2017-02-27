@@ -62,7 +62,9 @@ void LCDfadeBrightness(uint8_t percent, uint8_t secondsFade) {
 		LCDsetBrightness(targetBrightness);
 	} else {
 		uint8_t currentBrightness = pwmHtim->Instance->CCR1;
-		uint8_t steps = (targetBrightness > currentBrightness) ? targetBrightness - currentBrightness : currentBrightness - targetBrightness;
+		uint8_t steps =
+				(targetBrightness > currentBrightness) ?
+						targetBrightness - currentBrightness : currentBrightness - targetBrightness;
 		microSecondHtim->Instance->ARR = 1000000 / (steps) * secondsFade;
 		HAL_NVIC_EnableIRQ(LCD_TIM_IRQ);
 		HAL_NVIC_SetPriority(LCD_TIM_IRQ, 5, 0);
@@ -72,13 +74,16 @@ void LCDfadeBrightness(uint8_t percent, uint8_t secondsFade) {
 void LCDsendBytes(uint8_t rs, uint8_t bytes) {
 	uint16_t data = (rs) ? LCD_RS_Pin : 0;
 	data |= bytes << 8;
-	while (HAL_I2C_Mem_Write(lcdHi2c, IOEXP_ADDRESS, IOEXP_GPIOA, I2C_MEMADD_SIZE_8BIT, (uint8_t *) &data, sizeof(data), 100) != HAL_OK)
+	while (HAL_I2C_Mem_Write(lcdHi2c, IOEXP_ADDRESS, IOEXP_GPIOA, I2C_MEMADD_SIZE_8BIT, (uint8_t *) &data, sizeof(data),
+			100) != HAL_OK)
 		;
 	data |= LCD_E_Pin;
-	while (HAL_I2C_Mem_Write(lcdHi2c, IOEXP_ADDRESS, IOEXP_GPIOA, I2C_MEMADD_SIZE_8BIT, (uint8_t *) &data, sizeof(data), 100) != HAL_OK)
+	while (HAL_I2C_Mem_Write(lcdHi2c, IOEXP_ADDRESS, IOEXP_GPIOA, I2C_MEMADD_SIZE_8BIT, (uint8_t *) &data, sizeof(data),
+			100) != HAL_OK)
 		;
 	data &= ~LCD_E_Pin;
-	while (HAL_I2C_Mem_Write(lcdHi2c, IOEXP_ADDRESS, IOEXP_GPIOA, I2C_MEMADD_SIZE_8BIT, (uint8_t *) &data, sizeof(data), 100) != HAL_OK)
+	while (HAL_I2C_Mem_Write(lcdHi2c, IOEXP_ADDRESS, IOEXP_GPIOA, I2C_MEMADD_SIZE_8BIT, (uint8_t *) &data, sizeof(data),
+			100) != HAL_OK)
 		;
 }
 
@@ -131,15 +136,19 @@ void LCDinit(TIM_HandleTypeDef *microSecondHtimHandle, TIM_HandleTypeDef *pwmHti
 	lcdHi2c = hi2cHandle;
 
 	uint8_t settings = 0; // Byte mode with IOCON.BANK = 0, no interrupts.
-	while (HAL_I2C_Mem_Write(lcdHi2c, IOEXP_ADDRESS, IOCONA, I2C_MEMADD_SIZE_8BIT, &settings, sizeof(settings), 100) != HAL_OK)
+	while (HAL_I2C_Mem_Write(lcdHi2c, IOEXP_ADDRESS, IOCONA, I2C_MEMADD_SIZE_8BIT, &settings, sizeof(settings), 100)
+			!= HAL_OK)
 		;
-	while (HAL_I2C_Mem_Write(lcdHi2c, IOEXP_ADDRESS, IOCONB, I2C_MEMADD_SIZE_8BIT, &settings, sizeof(settings), 100) != HAL_OK)
+	while (HAL_I2C_Mem_Write(lcdHi2c, IOEXP_ADDRESS, IOCONB, I2C_MEMADD_SIZE_8BIT, &settings, sizeof(settings), 100)
+			!= HAL_OK)
 		;
 	uint16_t direction = 0; // Outputs only
-	while (HAL_I2C_Mem_Write(lcdHi2c, IOEXP_ADDRESS, IODIRA, I2C_MEMADD_SIZE_8BIT, (uint8_t *) &direction, sizeof(direction), 100) != HAL_OK)
+	while (HAL_I2C_Mem_Write(lcdHi2c, IOEXP_ADDRESS, IODIRA, I2C_MEMADD_SIZE_8BIT, (uint8_t *) &direction,
+			sizeof(direction), 100) != HAL_OK)
 		;
 	uint16_t levels = 0;
-	while (HAL_I2C_Mem_Write(lcdHi2c, IOEXP_ADDRESS, IOEXP_GPIOA, I2C_MEMADD_SIZE_8BIT, (uint8_t *) &levels, sizeof(levels), 100) != HAL_OK)
+	while (HAL_I2C_Mem_Write(lcdHi2c, IOEXP_ADDRESS, IOEXP_GPIOA, I2C_MEMADD_SIZE_8BIT, (uint8_t *) &levels,
+			sizeof(levels), 100) != HAL_OK)
 		;
 
 	pwmHtim = pwmHtimHandle;

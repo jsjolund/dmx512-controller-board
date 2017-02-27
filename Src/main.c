@@ -38,10 +38,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "serial.h"
-#include "dmx512.h"
-#include "eeprom.h"
-#include "lcd.h"
+#include "precompiled.h"
+#include "sys_public.h"
 /* USER CODE END Includes */
 
 /* Private variables ---------------------------------------------------------*/
@@ -71,8 +69,7 @@ DMA_HandleTypeDef hdma_usart2_tx;
 /* USER CODE BEGIN PV */
 /* Private variables ---------------------------------------------------------*/
 volatile uint8_t adcFinished = 1;
-volatile uint8_t adcValues[4];
-volatile uint16_t selectedDmxChannels[4] = { 0, 1, 2, 3 };
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -192,9 +189,15 @@ int main(void) {
 
 	/* Infinite loop */
 	/* USER CODE BEGIN WHILE */
+	CommonInit();
+	selectedDmxChannels[0] = 0;
+	selectedDmxChannels[1] = 1;
+	selectedDmxChannels[2] = 2;
+	selectedDmxChannels[3] = 3;
 	int i;
 	char charBuffer[17];
 	while (1) {
+		CommonFrame();
 		/* USER CODE END WHILE */
 
 		/* USER CODE BEGIN 3 */
