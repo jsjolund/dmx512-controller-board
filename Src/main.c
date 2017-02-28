@@ -177,6 +177,7 @@ int main(void) {
 	Dmx512Init(&htim2, &huart1);
 	EEPROMInit(&hi2c2);
 //	testEEPROM();
+	ButtonsInit(&hi2c3);
 	LCDinit(&htim4, &htim3, &hi2c1);
 	LCDfadeBrightness(100, 1);
 	HAL_ADC_Start(&hadc1);
@@ -184,6 +185,9 @@ int main(void) {
 	// Blue button interrupt
 	HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
 	HAL_NVIC_SetPriority(EXTI15_10_IRQn, 0, 0);
+
+	HAL_NVIC_EnableIRQ(EXTI9_5_IRQn);
+	HAL_NVIC_SetPriority(EXTI9_5_IRQn, 0, 0);
 
 	/* USER CODE END 2 */
 

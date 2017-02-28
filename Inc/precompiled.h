@@ -8,6 +8,7 @@
 #include "dmx512.h"
 #include "eeprom.h"
 #include "lcd.h"
+#include "buttons.h"
 
 //framework
 #include "Controller.h"
