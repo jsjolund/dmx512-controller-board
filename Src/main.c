@@ -177,10 +177,11 @@ int main(void) {
 	Dmx512Init(&htim2, &huart1);
 	EEPROMInit(&hi2c2);
 //	testEEPROM();
-	ButtonsInit(&hi2c3);
 	LCDinit(&htim4, &htim3, &hi2c1);
 	LCDfadeBrightness(100, 1);
 	HAL_ADC_Start(&hadc1);
+
+	ButtonsInit(&hi2c3);
 
 	// Blue button interrupt
 	HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
@@ -276,7 +277,7 @@ void SystemClock_Config(void) {
 /* ADC1 init function */
 static void MX_ADC1_Init(void) {
 
-//  ADC_ChannelConfTypeDef sConfig;
+	ADC_ChannelConfTypeDef sConfig;
 	ADC_InjectionConfTypeDef sConfigInjected;
 
 	/**Configure the global features of the ADC (Clock, Resolution, Data Alignment and number of conversion)
@@ -297,42 +298,38 @@ static void MX_ADC1_Init(void) {
 		Error_Handler();
 	}
 
-//    /**Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time.
-//    */
-//  sConfig.Channel = ADC_CHANNEL_10;
-//  sConfig.Rank = 1;
-//  sConfig.SamplingTime = ADC_SAMPLETIME_3CYCLES;
-//  if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
-//  {
-//    Error_Handler();
-//  }
+//	/**Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time.
+//	 */
+//	sConfig.Channel = ADC_CHANNEL_10;
+//	sConfig.Rank = 1;
+//	sConfig.SamplingTime = ADC_SAMPLETIME_84CYCLES;
+//	if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK) {
+//		Error_Handler();
+//	}
 //
-//    /**Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time.
-//    */
-//  sConfig.Channel = ADC_CHANNEL_11;
-//  sConfig.Rank = 2;
-//  if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
-//  {
-//    Error_Handler();
-//  }
+//	/**Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time.
+//	 */
+//	sConfig.Channel = ADC_CHANNEL_11;
+//	sConfig.Rank = 2;
+//	if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK) {
+//		Error_Handler();
+//	}
 //
-//    /**Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time.
-//    */
-//  sConfig.Channel = ADC_CHANNEL_12;
-//  sConfig.Rank = 3;
-//  if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
-//  {
-//    Error_Handler();
-//  }
+//	/**Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time.
+//	 */
+//	sConfig.Channel = ADC_CHANNEL_12;
+//	sConfig.Rank = 3;
+//	if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK) {
+//		Error_Handler();
+//	}
 //
-//    /**Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time.
-//    */
-//  sConfig.Channel = ADC_CHANNEL_13;
-//  sConfig.Rank = 4;
-//  if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
-//  {
-//    Error_Handler();
-//  }
+//	/**Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time.
+//	 */
+//	sConfig.Channel = ADC_CHANNEL_13;
+//	sConfig.Rank = 4;
+//	if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK) {
+//		Error_Handler();
+//	}
 
 	/**Configures for the selected ADC injected channel its corresponding rank in the sequencer and its sample time
 	 */
@@ -627,11 +624,17 @@ static void MX_GPIO_Init(void) {
 	__HAL_RCC_GPIOB_CLK_ENABLE()
 	;
 
-	/*Configure GPIO pins : B1_Pin B2_Pin B3_Pin */
-	GPIO_InitStruct.Pin = B1_Pin | B2_Pin | B3_Pin;
+	/*Configure GPIO pin Output Level */
+	HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_RESET);
+
+	/*Configure GPIO pin Output Level */
+	HAL_GPIO_WritePin(DMX_EN_GPIO_Port, DMX_EN_Pin, GPIO_PIN_SET);
+
+	/*Configure GPIO pin : B1_Pin */
+	GPIO_InitStruct.Pin = B1_Pin;
 	GPIO_InitStruct.Mode = GPIO_MODE_IT_FALLING;
 	GPIO_InitStruct.Pull = GPIO_NOPULL;
-	HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+	HAL_GPIO_Init(B1_GPIO_Port, &GPIO_InitStruct);
 
 	/*Configure GPIO pins : LD2_Pin DMX_EN_Pin */
 	GPIO_InitStruct.Pin = LD2_Pin | DMX_EN_Pin;
@@ -642,15 +645,15 @@ static void MX_GPIO_Init(void) {
 
 	/*Configure GPIO pin : B0_Pin */
 	GPIO_InitStruct.Pin = B0_Pin;
-	GPIO_InitStruct.Mode = GPIO_MODE_IT_FALLING;
+	GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
 	GPIO_InitStruct.Pull = GPIO_NOPULL;
 	HAL_GPIO_Init(B0_GPIO_Port, &GPIO_InitStruct);
 
-	/*Configure GPIO pin Output Level */
-	HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_RESET);
-
-	/*Configure GPIO pin Output Level */
-	HAL_GPIO_WritePin(DMX_EN_GPIO_Port, DMX_EN_Pin, GPIO_PIN_SET);
+	/*Configure GPIO pin : B2_Pin */
+	GPIO_InitStruct.Pin = B2_Pin;
+	GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
+	GPIO_InitStruct.Pull = GPIO_NOPULL;
+	HAL_GPIO_Init(B2_GPIO_Port, &GPIO_InitStruct);
 
 }
 
