@@ -411,9 +411,9 @@
       (net 10 "Net-(P5-Pad1)"))
   )
 
-  (target plus (at 95.105743 25.780561) (size 5) (width 0.15) (layer Edge.Cuts) (tstamp 58B41D4A))
-  (target plus (at 175.7608 26.0356) (size 5) (width 0.15) (layer Edge.Cuts) (tstamp 58B41D44))
-  (target plus (at 175.8908 109.5356) (size 5) (width 0.15) (layer Edge.Cuts))
+  (target plus (at 76.095017 25.913497) (size 5) (width 0.15) (layer Edge.Cuts) (tstamp 58B41D4A))
+  (target plus (at 183.028766 26.0356) (size 5) (width 0.15) (layer Edge.Cuts) (tstamp 58B41D44))
+  (target plus (at 181.457411 109.60964) (size 5) (width 0.15) (layer Edge.Cuts))
   (dimension 83.435672 (width 0.3) (layer F.SilkS)
     (gr_text "83,436 mm" (at 171.834915 67.778236 90) (layer F.SilkS)
       (effects (font (size 1.5 1.5) (thickness 0.3)))
