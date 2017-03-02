@@ -97,19 +97,19 @@ void HAL_TIM_MspPostInit(TIM_HandleTypeDef *htim);
 /* USER CODE BEGIN 0 */
 void EXTI15_10_IRQHandler(void) {
 	// Blue button interrupt
-//	if (HAL_GPIO_ReadPin(B1_GPIO_Port, B1_Pin) == GPIO_PIN_RESET) {
-//		selectedDmxChannels[0] += 4;
-//		selectedDmxChannels[1] += 4;
-//		selectedDmxChannels[2] += 4;
-//		selectedDmxChannels[3] += 4;
-//	}
 	if (HAL_GPIO_ReadPin(B1_GPIO_Port, B1_Pin) == GPIO_PIN_RESET) {
-		uint8_t brightness = LCDgetBrightness();
-		if (brightness == 100)
-			LCDfadeBrightness(0, 4);
-		else if (brightness == 0)
-			LCDfadeBrightness(100, 1);
+		selectedDmxChannels[0] += 4;
+		selectedDmxChannels[1] += 4;
+		selectedDmxChannels[2] += 4;
+		selectedDmxChannels[3] += 4;
 	}
+//	if (HAL_GPIO_ReadPin(B1_GPIO_Port, B1_Pin) == GPIO_PIN_RESET) {
+//		uint8_t brightness = LCDgetBrightness();
+//		if (brightness == 100)
+//			LCDfadeBrightness(0, 4);
+//		else if (brightness == 0)
+//			LCDfadeBrightness(100, 1);
+//	}
 	EXTI->PR |= B1_Pin;
 }
 
@@ -277,7 +277,7 @@ void SystemClock_Config(void) {
 /* ADC1 init function */
 static void MX_ADC1_Init(void) {
 
-	ADC_ChannelConfTypeDef sConfig;
+//	ADC_ChannelConfTypeDef sConfig;
 	ADC_InjectionConfTypeDef sConfigInjected;
 
 	/**Configure the global features of the ADC (Clock, Resolution, Data Alignment and number of conversion)

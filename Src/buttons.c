@@ -24,10 +24,35 @@ static I2C_HandleTypeDef *btnHi2c;
 #define BTN_PIN_S3 GPB5
 #define BTN_PIN_S4 GPB7
 
-uint8_t ButtonEvent(int btn, uint8_t isPressed) {
+void ButtonSetLED(int btnPin, uint8_t state) {
+	uint16_t gpioState;
+	while (HAL_I2C_Mem_Read(btnHi2c, IOEXP_ADDRESS, IOEXP_GPIOA, I2C_MEMADD_SIZE_8BIT, (uint8_t *) &gpioState, sizeof(gpioState), BUTTONS_I2C_TIMEOUT) != HAL_OK)
+		;
+	if (state)
+		gpioState |= (btnPin >> 1);
+	else
+		gpioState &= ~(btnPin >> 1);
+	while (HAL_I2C_Mem_Write(btnHi2c, IOEXP_ADDRESS, IOEXP_GPIOA, I2C_MEMADD_SIZE_8BIT, (uint8_t *) &gpioState, sizeof(gpioState), BUTTONS_I2C_TIMEOUT) != HAL_OK)
+		;
+}
+
+uint8_t ButtonGetLED(int btnPin) {
+	uint16_t status;
+	while (HAL_I2C_Mem_Read(btnHi2c, IOEXP_ADDRESS, IOEXP_GPIOA, I2C_MEMADD_SIZE_8BIT, (uint8_t *) &status, sizeof(status), BUTTONS_I2C_TIMEOUT) != HAL_OK)
+		;
+	return (status & (btnPin >> 1)) ? 1 : 0;
+}
+
+void ButtonEvent(int btnPin, uint8_t isPressed) {
+	if (isPressed) {
+		if (ButtonGetLED(btnPin))
+			ButtonSetLED(btnPin, 0);
+		else
+			ButtonSetLED(btnPin, 1);
+	}
 	const char * state = isPressed ? "pressed" : "released";
 	char * buttonName;
-	switch (btn) {
+	switch (btnPin) {
 	case BTN_PIN_F1:
 		buttonName = "BTN_F1";
 		break;
