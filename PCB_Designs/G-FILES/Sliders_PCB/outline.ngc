@@ -1,0 +1,73 @@
+( pcb2gcode 1.3.2 )
+( Software-independent Gcode )
+
+G94 ( Millimeters per minute feed rate. )
+G21 ( Units == Millimeters. )
+
+G90 ( Absolute coordinates. )
+S10000 ( RPM spindle speed. )
+G64 P0.01000 ( set maximum deviation from commanded toolpath )
+F600.00000 ( Feedrate. )
+
+F600.00000 ( Feedrate. )
+M3 ( Spindle on clockwise. )
+G04 P0 ( dwell for no time -- G64 should not smooth over this point )
+G00 Z5.00000 ( retract )
+
+G00 X0.15085 Y1.65092 ( rapid move to begin. )
+G01 Z-2.50000 F300.00000 ( plunge. )
+G04 P0 ( dwell for no time -- G64 should not smooth over this point )
+F600.00000
+X0.15085 Y1.65092
+X0.15085 Y41.65890
+Z-0.60000
+X0.15085 Y45.15890
+Z-2.50000 F300.00000
+F600.00000X0.15085 Y85.16688
+X0.17967 Y85.45952
+X0.26504 Y85.74090
+X0.40365 Y86.00023
+X0.59019 Y86.22754
+X0.81749 Y86.41407
+X1.07683 Y86.55268
+X1.35821 Y86.63805
+X1.65084 Y86.66688
+X69.04078 Y86.66688
+X69.33341 Y86.63805
+X69.61479 Y86.55268
+X69.87413 Y86.41407
+X70.10143 Y86.22754
+X70.28797 Y86.00023
+X70.42658 Y85.74090
+X70.51194 Y85.45952
+X70.54077 Y85.16688
+X70.54077 Y45.15890
+Z-0.60000
+X70.54077 Y41.65890
+Z-2.50000 F300.00000
+F600.00000X70.54077 Y1.65092
+X70.51194 Y1.35829
+X70.42658 Y1.07691
+X70.28797 Y0.81757
+X70.10143 Y0.59027
+X69.87413 Y0.40373
+X69.61479 Y0.26512
+X69.33341 Y0.17975
+X69.04078 Y0.15092
+X1.65084 Y0.15092
+X1.35821 Y0.17975
+X1.07683 Y0.26512
+X0.81749 Y0.40373
+X0.59019 Y0.59027
+X0.40365 Y0.81757
+X0.26504 Y1.07691
+X0.17967 Y1.35829
+X0.15085 Y1.65092
+
+G04 P0 ( dwell for no time -- G64 should not smooth over this point )
+G00 Z10.000 ( retract )
+
+M5 ( Spindle off. )
+M9 ( Coolant off. )
+M2 ( Program end. )
+
