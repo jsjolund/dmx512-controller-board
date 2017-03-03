@@ -12,6 +12,9 @@
 #include "dmx512.h"
 #include "shell.h"
 
+#define RX_BUFFER_MAX 20
+#define TX_BUFFER_MAX 60
+
 void SerialInit(UART_HandleTypeDef *huart2);
 void SerialTransmit(char *ptr, int len);
 

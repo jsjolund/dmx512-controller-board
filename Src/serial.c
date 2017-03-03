@@ -7,9 +7,6 @@
 
 #include "serial.h"
 
-#define RX_BUFFER_MAX 20
-#define TX_BUFFER_MAX 60
-
 static volatile int usbRxIndex = 0;
 static uint8_t usbRxBuffer = 0;
 static volatile uint8_t usbRxString[RX_BUFFER_MAX];
@@ -28,6 +25,7 @@ int isLetter(char c) {
 }
 
 int SerialQueuePut(uint8_t new) {
+	// Put a character in the FIFO
 	if (usbTxIndex == ((usbTxOutdex - 1 + TX_BUFFER_MAX) % TX_BUFFER_MAX))
 		return 0;
 	usbTxString[usbTxIndex] = new;
@@ -36,6 +34,7 @@ int SerialQueuePut(uint8_t new) {
 }
 
 int SerialQueueGet(uint8_t *old) {
+	// Pop a character from the FIFO
 	if (usbTxIndex == usbTxOutdex)
 		return 0;
 	*old = usbTxString[usbTxOutdex];
@@ -50,10 +49,12 @@ void SerialInit(UART_HandleTypeDef *huartHandle) {
 	HAL_NVIC_EnableIRQ(USB_USART_IRQ);
 	HAL_NVIC_SetPriority(USB_USART_IRQ, 15, 0);
 
+	// Initiate automatic receive through DMA one character at a time
 	HAL_UART_Receive_DMA(usbHuart, &usbRxBuffer, sizeof(usbRxBuffer));
 }
 
 void SerialSendNextByte(void) {
+	// Sends a character from the FIFO through DMA
 	HAL_UART_StateTypeDef uartState = HAL_UART_GetState(usbHuart);
 	if ((uartState == HAL_UART_STATE_READY) || (uartState == HAL_UART_STATE_BUSY_RX)) {
 		uint8_t c;
@@ -64,6 +65,7 @@ void SerialSendNextByte(void) {
 }
 
 void SerialTransmit(char *ptr, int len) {
+	// Add a character to the buffer to be transmitted when the TX buffer is empty
 	int i = 0;
 	for (i = 0; i < len; i++)
 		SerialQueuePut(ptr[i]);
@@ -76,6 +78,7 @@ void USART2_IRQHandler(void) {
 }
 
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huartHandle) {
+	// Receive a single character
 	if (huartHandle == usbHuart) {
 		int i;
 		char usbRxChar = (char) usbRxBuffer;

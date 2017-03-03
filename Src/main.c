@@ -98,10 +98,11 @@ void HAL_TIM_MspPostInit(TIM_HandleTypeDef *htim);
 void EXTI15_10_IRQHandler(void) {
 	// Blue button interrupt
 	if (HAL_GPIO_ReadPin(B1_GPIO_Port, B1_Pin) == GPIO_PIN_RESET) {
-		selectedDmxChannels[0] += 4;
-		selectedDmxChannels[1] += 4;
-		selectedDmxChannels[2] += 4;
-		selectedDmxChannels[3] += 4;
+		selectedDmxChannels[0] = (selectedDmxChannels[0] + 4) % 512;
+		selectedDmxChannels[1] = (selectedDmxChannels[1] + 4) % 512;
+		selectedDmxChannels[2] = (selectedDmxChannels[2] + 4) % 512;
+		selectedDmxChannels[3] = (selectedDmxChannels[3] + 4) % 512;
+
 	}
 //	if (HAL_GPIO_ReadPin(B1_GPIO_Port, B1_Pin) == GPIO_PIN_RESET) {
 //		uint8_t brightness = LCDgetBrightness();
@@ -114,6 +115,7 @@ void EXTI15_10_IRQHandler(void) {
 }
 
 void HAL_ADCEx_InjectedConvCpltCallback(ADC_HandleTypeDef* hadc) {
+	// ADC has finished reading and converting the values on the four pins
 	adcValues[0] = HAL_ADCEx_InjectedGetValue(&hadc1, ADC_INJECTED_RANK_1);
 	adcValues[1] = HAL_ADCEx_InjectedGetValue(&hadc1, ADC_INJECTED_RANK_2);
 	adcValues[2] = HAL_ADCEx_InjectedGetValue(&hadc1, ADC_INJECTED_RANK_3);
@@ -195,10 +197,12 @@ int main(void) {
 	/* Infinite loop */
 	/* USER CODE BEGIN WHILE */
 	CommonInit();
+
 	selectedDmxChannels[0] = 0;
 	selectedDmxChannels[1] = 1;
 	selectedDmxChannels[2] = 2;
 	selectedDmxChannels[3] = 3;
+
 	int i;
 	char charBuffer[17];
 	while (1) {

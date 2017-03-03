@@ -22,6 +22,7 @@ void LCD_HAL_I2C_MemTxCpltCallback(I2C_HandleTypeDef *hi2cHandle) {
 }
 
 void LCD_TIM_IRQHandler(TIM_HandleTypeDef *htimHandle) {
+	// Timer interrupt for changing the backlight brightness in steps
 	uint8_t currentBrightness = pwmHtim->Instance->CCR1;
 	if (currentBrightness < targetBrightness) {
 		pwmHtim->Instance->CCR1 = currentBrightness + 1;
@@ -33,15 +34,18 @@ void LCD_TIM_IRQHandler(TIM_HandleTypeDef *htimHandle) {
 }
 
 void LCDsetBrightness(uint8_t percent) {
+	// Set the brightness of backlight in percent
 	targetBrightness = percent;
 	pwmHtim->Instance->CCR1 = percent;
 }
 
 uint8_t LCDgetBrightness(void) {
+	// Get the current backlight in percent
 	return pwmHtim->Instance->CCR1;
 }
 
 void LCDfadeBrightness(uint8_t percent, uint8_t secondsFade) {
+	// Fade the brightness to some percent during some seconds
 	targetBrightness = percent;
 	if (secondsFade == 0) {
 		LCDsetBrightness(targetBrightness);
@@ -55,6 +59,7 @@ void LCDfadeBrightness(uint8_t percent, uint8_t secondsFade) {
 }
 
 void LCDsendBytes(uint8_t rs, uint8_t bytes) {
+	// Sends a byte (blocking transfer) through I2C
 	uint16_t data = (rs) ? LCD_RS_Pin : 0;
 	data |= bytes << 8;
 	while (HAL_I2C_Mem_Write(lcdHi2c, IOEXP_ADDRESS, IOEXP_GPIOA, I2C_MEMADD_SIZE_8BIT, (uint8_t *) &data, sizeof(data), LCD_I2C_TIMEOUT) != HAL_OK)
@@ -76,6 +81,7 @@ void LCDsendChar(char character) {
 }
 
 void LCDcursorPos(uint8_t row, uint8_t column) {
+	// Set the position of the internal LCD cursor
 	switch (row) {
 	case 0:
 		LCDsendCmd(0x80 + column);
@@ -95,16 +101,19 @@ void LCDcursorPos(uint8_t row, uint8_t column) {
 }
 
 void LCDwrite(char *string) {
+	// Write a string to the LCD
 	while (*string)
 		LCDsendChar(*string++);
 }
 
 void LCDclear(void) {
+	// Clear the LCD. Should not be used each frame, since this will cause flickering.
 	LCDsendCmd(LCD_CMD_CLEAR);
 	HAL_Delay(4); // >3 ms
 }
 
 void LCDclearRow(uint8_t row) {
+	// Clear a single row. Should not be used each frame, since this will cause flickering.
 	LCDcursorPos(row, 0);
 	int i;
 	for (i = 0; i < 16; i++)
@@ -115,6 +124,7 @@ void LCDinit(TIM_HandleTypeDef *microSecondHtimHandle, TIM_HandleTypeDef *pwmHti
 
 	lcdHi2c = hi2cHandle;
 
+	// Setup the I/O expander
 	uint8_t settings = 0; // Byte mode with IOCON.BANK = 0, no interrupts.
 	while (HAL_I2C_Mem_Write(lcdHi2c, IOEXP_ADDRESS, IOCONA, I2C_MEMADD_SIZE_8BIT, &settings, sizeof(settings), LCD_I2C_TIMEOUT) != HAL_OK)
 		;
@@ -127,6 +137,7 @@ void LCDinit(TIM_HandleTypeDef *microSecondHtimHandle, TIM_HandleTypeDef *pwmHti
 	while (HAL_I2C_Mem_Write(lcdHi2c, IOEXP_ADDRESS, IOEXP_GPIOA, I2C_MEMADD_SIZE_8BIT, (uint8_t *) &levels, sizeof(levels), LCD_I2C_TIMEOUT) != HAL_OK)
 		;
 
+	// Setup PWM to control backlight brightness
 	pwmHtim = pwmHtimHandle;
 	HAL_TIM_Base_Start(pwmHtim);
 	HAL_TIM_PWM_Start(pwmHtim, LCD_PWM_CHANNEL);
@@ -137,7 +148,8 @@ void LCDinit(TIM_HandleTypeDef *microSecondHtimHandle, TIM_HandleTypeDef *pwmHti
 	HAL_TIM_Base_Init(microSecondHtim);
 	HAL_TIM_Base_Start_IT(microSecondHtim);
 
-	HAL_Delay(200); // Wait for LCD to power on fully
+	// Wait for LCD to power on fully, then set the correct mode
+	HAL_Delay(200);
 	LCDsendCmd(LCD_CMD_INIT);
 	HAL_Delay(1);
 	LCDsendCmd(LCD_CMD_ON_CURSOR_OFF);

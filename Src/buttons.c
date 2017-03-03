@@ -19,6 +19,7 @@ static I2C_HandleTypeDef *btnHi2c;
 #define BTN_PIN_F6 GPA3
 #define BTN_PIN_F7 GPA5
 #define BTN_PIN_F8 GPA7
+
 #define BTN_PIN_S1 GPB1
 #define BTN_PIN_S2 GPB3
 #define BTN_PIN_S3 GPB5
@@ -95,6 +96,7 @@ uint8_t ButtonChangedState(int btnPin, uint16_t flags, uint16_t status, uint8_t 
 void EXTI9_5_IRQHandler(void) {
 	const int BUTTONS[] = { BTN_PIN_F1, BTN_PIN_F2, BTN_PIN_F3, BTN_PIN_F4, BTN_PIN_F5, BTN_PIN_F6, BTN_PIN_F7, BTN_PIN_F8 };
 	const int NUM_BUTTONS = 8;
+
 	if (HAL_GPIO_ReadPin(B2_GPIO_Port, B2_Pin) == GPIO_PIN_SET) {
 		uint16_t flags;
 		while (HAL_I2C_Mem_Read(btnHi2c, IOEXP_ADDRESS, INTFA, I2C_MEMADD_SIZE_8BIT, (uint8_t *) &flags, sizeof(flags), BUTTONS_I2C_TIMEOUT) != HAL_OK)
@@ -113,6 +115,7 @@ void EXTI9_5_IRQHandler(void) {
 
 void ButtonsInit(I2C_HandleTypeDef *hi2cHandle) {
 	btnHi2c = hi2cHandle;
+	// Setup I/O expanders through I2C.
 
 	// Byte mode with IOCON.BANK = 0, INT pins internally connected, INT active-high
 	uint8_t settings = IOCON_MIRROR | IOCON_INTPOL;
@@ -141,5 +144,4 @@ void ButtonsInit(I2C_HandleTypeDef *hi2cHandle) {
 	uint16_t result;
 	while (HAL_I2C_Mem_Read(btnHi2c, IOEXP_ADDRESS, IOEXP_GPIOA, I2C_MEMADD_SIZE_8BIT, (uint8_t *) &result, sizeof(result), BUTTONS_I2C_TIMEOUT) != HAL_OK)
 		;
-
 }
