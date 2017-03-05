@@ -280,8 +280,7 @@ int main2(void) {
 	selectedDmxChannels[2] = 2;
 	selectedDmxChannels[3] = 3;
 
-	int i;
-	char charBuffer[17];
+
 
 
 	// Init application and gui systems
@@ -297,28 +296,14 @@ int main2(void) {
 
 			// we pop the uCmd buffer
 			usercmd_t * newUCmd;
-			uint32_t success = PopUserCmd( newUCmd );
+			uint32_t success = ControllerPopUserCmd( newUCmd );
 
 			// if we got a new user Command run application logic
 			if ( success ) {
 
 				// application logic, Signal state and View states are set here
-				//SunlightFrame( newUCmd );
-
-				// Update dmx output
-				SignalUpdate();
-
-				// Update LCD output
-				ViewUpdate();
+				SunlightFrame( newUCmd );
 			}
-			/*
-			for (i = 0; i < 4; i++) {
-				Dmx512SetChannelValue(selectedDmxChannels[i], adcValues[i]);
-				LCDcursorPos(i, 0);
-				snprintf(charBuffer, 17, "Channel %03d: %03d", selectedDmxChannels[i], adcValues[i]);
-				LCDwrite(charBuffer);
-			}
-			*/
 		}
 	}
 	return 0;

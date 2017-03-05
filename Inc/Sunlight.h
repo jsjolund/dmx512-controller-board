@@ -8,6 +8,7 @@
 #ifndef SUNLIGHT_H
 #define SUNLIGHT_H
 
-void SunlightFrame(const usercmd_t uCmd);
+void SunlightInit();
+void SunlightFrame(const usercmd_t * uCmd);
 
 #endif
