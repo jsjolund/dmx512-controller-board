@@ -144,6 +144,7 @@ void testEEPROM() {
 			HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_RESET);
 	}
 }
+/* USER CODE END 0 */
 
 int main(void) {
 

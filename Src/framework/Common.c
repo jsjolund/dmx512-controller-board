@@ -17,4 +17,6 @@ void CommonInit() {
 
 }
 
+void CommonFrame() {
 
+}

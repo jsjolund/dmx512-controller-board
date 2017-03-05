@@ -45,8 +45,8 @@ volatile uint32_t 			prevKeyStates[16];
  *
  */
 void ControllerInit(){
-	int i = 0;
-	while (i != 16 ){
+	int i;
+	for (i = 0; i < 16; i++) {
 		newKeyStates[i] = 0;
 		prevKeyStates[i] = 0;
 	}
@@ -56,8 +56,8 @@ void ControllerInit(){
  *
  */
 void UpdateKeyStates() {
-	int i = 0;
-	while (i != 16 ){
+	int i;
+	for (i = 0; i < 16; i++) {
 		newKeyStates[i] = keyStates[i];
 	}
 }

@@ -2,8 +2,8 @@
 #define PRECOMPILED_H
 
 // system specific
-#include <common.h>
-#include <controller.h>
+#include <Common.h>
+#include <Controller.h>
 #include <signal.h>
 #include <stdint.h>
 #include "serial.h"
@@ -13,7 +13,7 @@
 #include "buttons.h"
 
 //framework
-#include "View.h"
+//#include "View.h"
 
 // sunlight app
 #include "Sunlight.h"

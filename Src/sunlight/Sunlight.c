@@ -9,8 +9,8 @@ char charBuffer[17];
 
 void SunlightInit() {
 
-	int i = 0;
-	while(i != 512 ) {
+	int i;
+	for (i = 0; i < 512; i++) {
 		Channels[i] = 0;
 	}
 
@@ -20,7 +20,7 @@ void SunlightFrame(const usercmd_t * uCmd) {
 
 
 	// update lcd and dmx output
-	int i = 0;
+	int i;
 	for (i = 0; i < 4; i++) {
 		Dmx512SetChannelValue( Channels[ CurrChannelIndex + i], adcValues[i] );
 		LCDcursorPos(i, 0);
