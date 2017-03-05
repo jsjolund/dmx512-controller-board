@@ -4,10 +4,12 @@
  
  Author: Sam Karimi
  ========================================================*/
+#include "precompiled.h"
 
-#ifndef DMX_H
-#define DMX_H
+void SignalSet() {
 
-void DmxUpdate();
+}
 
-#endif //DMX_H
+void SignalUpdate() {
+
+}

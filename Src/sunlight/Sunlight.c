@@ -14,7 +14,10 @@
  ======================================================
  */
 void SunlightFrame(const usercmd_t uCmd) {
-
+	if (uCmd.button != ub_none) {
+		// nothing to update return
+		return;
+	}
 	// update and set new states based on incoming user command.
 
 	// Generate DMX cmd
