@@ -9,7 +9,6 @@
 #define CONTROLLER_H
 
 
-
 // all user commands available for entire program
 typedef enum {
 	ub_select,
@@ -19,19 +18,16 @@ typedef enum {
 
 
 	ub_none
-} usercmdButton_t;
+} usercmd_t;
 
 //
 typedef struct {
-	uint32_t			key;
-	usercmdButton_t 	button;
+	int					key;
+	usercmd_t 			button;
 } usercmdkey_t;
 
-typedef struct {
-	usercmdButton_t button;
-} usercmd_t;
 
-ControllerInit();
+void ControllerInit();
 
 
 
