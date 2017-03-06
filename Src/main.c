@@ -301,6 +301,90 @@ int main(void) {
 }
 */
 
+
+/*=========================================
+ * Sam's Main
+ *
+ * Inte klar!
+ =========================================*/
+int main2(void) {
+
+	/* USER CODE BEGIN 1 */
+
+	/* USER CODE END 1 */
+
+	/* MCU Configuration----------------------------------------------------------*/
+
+	/* Reset of all peripherals, Initializes the Flash interface and the Systick. */
+	HAL_Init();
+
+	/* Configure the system clock */
+	SystemClock_Config();
+
+	/* Initialize all configured peripherals */
+	MX_GPIO_Init();
+	MX_DMA_Init();
+	MX_ADC1_Init();
+	MX_I2C1_Init();
+	MX_I2C2_Init();
+	MX_I2C3_Init();
+	MX_TIM2_Init();
+	MX_TIM3_Init();
+	MX_USART1_UART_Init();
+	MX_USART2_UART_Init();
+	MX_TIM4_Init();
+
+	/* USER CODE BEGIN 2 */
+	SerialInit(&huart2);
+	Dmx512Init(&htim2, &huart1);
+	EEPROMInit(&hi2c2);
+//	testEEPROM();
+	LCDinit(&htim4, &htim3, &hi2c1);
+	LCDfadeBrightness(100, 1);
+	HAL_ADC_Start(&hadc1);
+
+	ButtonsInit(&hi2c3);
+
+	// Blue button interrupt
+	HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
+	HAL_NVIC_SetPriority(EXTI15_10_IRQn, 0, 0);
+
+	HAL_NVIC_EnableIRQ(EXTI9_5_IRQn);
+	HAL_NVIC_SetPriority(EXTI9_5_IRQn, 0, 0);
+
+	selectedDmxChannels[0] = 0;
+	selectedDmxChannels[1] = 1;
+	selectedDmxChannels[2] = 2;
+	selectedDmxChannels[3] = 3;
+
+
+
+
+	// Init application and gui systems
+	CommonInit();
+
+	while (1) {
+		if (adcFinished) {
+			adcFinished = 0;
+			HAL_ADCEx_InjectedStart_IT(&hadc1);
+
+			// generate a uCmd for the application
+			ControllerGenUserCmds();											// FIXME! Should this have a mutex lock?
+
+			// we pop the uCmd buffer
+			usercmd_t * newUCmd;
+			uint32_t success = ControllerPopUserCmd( newUCmd );
+
+			// if we got a new user Command run application logic
+			if ( success ) {
+
+				// application logic, Signal state and View states are set here
+				SunlightFrame( newUCmd );
+			}
+		}
+	}
+	return 0;
+}
 /** System Clock Configuration
  */
 void SystemClock_Config(void) {
