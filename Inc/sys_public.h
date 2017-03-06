@@ -6,6 +6,9 @@
 volatile uint8_t adcValues[4];
 volatile uint16_t selectedDmxChannels[4];
 
+volatile uint32_t keyStates[16];
+
+
 //Get slider Values
 
 //Get i2C key values

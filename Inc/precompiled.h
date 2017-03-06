@@ -2,23 +2,23 @@
 #define PRECOMPILED_H
 
 // system specific
-#include <stdint.h>
 
+
+#include <stdint.h>
 #include "serial.h"
 #include "dmx512.h"
 #include "eeprom.h"
 #include "lcd.h"
 #include "buttons.h"
 
+
 //framework
-#include "Controller.h"
-#include "Dmx.h"
-#include "View.h"
+#include "controller.h"
 
 // sunlight app
-#include "Sunlight.h"
+#include "sunlight.h"
 
 // common last
-#include "Common.h"
+#include "common.h"
 
 #endif //PRECOMPILED_H

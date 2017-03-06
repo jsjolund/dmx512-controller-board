@@ -4,12 +4,11 @@
  
  Author: Sam Karimi
  ========================================================*/
-#include "precompiled.h"
 
-void ViewSet() {
+#ifndef SUNLIGHT_H
+#define SUNLIGHT_H
 
-}
+void SunlightInit();
+void SunlightFrame( const usercmd_t * cmd );
 
-void ViewUpdate() {
-
-}
+#endif
