@@ -102,7 +102,6 @@ void EXTI15_10_IRQHandler(void) {
 		selectedDmxChannels[1] = (selectedDmxChannels[1] + 4) % 512;
 		selectedDmxChannels[2] = (selectedDmxChannels[2] + 4) % 512;
 		selectedDmxChannels[3] = (selectedDmxChannels[3] + 4) % 512;
-
 	}
 //	if (HAL_GPIO_ReadPin(B1_GPIO_Port, B1_Pin) == GPIO_PIN_RESET) {
 //		uint8_t brightness = LCDgetBrightness();
@@ -123,26 +122,33 @@ void HAL_ADCEx_InjectedConvCpltCallback(ADC_HandleTypeDef* hadc) {
 	adcFinished = 1;
 }
 
-void testEEPROM() {
-	//
-	uint16_t len = 128;
+static uint16_t Buffercmp(uint8_t *pBuffer1, uint8_t *pBuffer2, uint16_t BufferLength) {
+	while (BufferLength--) {
+		uint8_t a = *pBuffer1;
+		uint8_t b = *pBuffer2;
+		if (a != b) {
+			return 0;
+		}
+		pBuffer1++;
+		pBuffer2++;
+	}
+	return 1;
+}
+
+int testEEPROM() {
+	uint16_t len = 512;
 	uint8_t data[len];
 	uint8_t result[len];
 	uint16_t i;
 	for (i = 0; i < len; i++)
-		data[i] = 0xFF & i;
-	EEPROMwrite(0x00, &data[0], len);
-	while (EEPROMbusy())
+		data[i] = 'a' + (i % 25);
+	EEPROMwrite(0x00, (uint8_t *) data, len);
+	while (!EEPROMfinished())
 		;
-	HAL_Delay(20);
-	EEPROMread(0x00, &result[0], len);
-	while (EEPROMbusy())
+	EEPROMread(0x00, (uint8_t *) result, len);
+	while (!EEPROMfinished())
 		;
-	HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_SET);
-	for (i = 0; i < len; i++) {
-		if (data != result)
-			HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_RESET);
-	}
+	return Buffercmp((uint8_t *) data, (uint8_t *) result, len);
 }
 /* USER CODE END 0 */
 
@@ -177,17 +183,24 @@ int main(void) {
 	SerialInit(&huart2);
 	Dmx512Init(&htim2, &huart1);
 	EEPROMInit(&hi2c2);
-//	testEEPROM();
 	LCDinit(&htim4, &htim3, &hi2c1);
 	LCDfadeBrightness(100, 1);
 	HAL_ADC_Start(&hadc1);
 
-	ButtonsInit(&hi2c3);
+	if (!testEEPROM()) {
+		LCDcursorPos(0, 0);
+		LCDwrite("EEPROM Test failed");
+		while (1)
+			;
+	}
 
-	// Blue button interrupt
-	HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
-	HAL_NVIC_SetPriority(EXTI15_10_IRQn, 0, 0);
+//	ButtonsInit(&hi2c3);
 
+// Blue button interrupt
+//	HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
+//	HAL_NVIC_SetPriority(EXTI15_10_IRQn, 0, 0);
+
+// Buttons I/O expander interrupt
 	HAL_NVIC_EnableIRQ(EXTI9_5_IRQn);
 	HAL_NVIC_SetPriority(EXTI9_5_IRQn, 0, 0);
 
@@ -196,16 +209,14 @@ int main(void) {
 	// Infinite loop
 	// USER CODE BEGIN WHILE
 
-
 	selectedDmxChannels[0] = 0;
 	selectedDmxChannels[1] = 1;
 	selectedDmxChannels[2] = 2;
 	selectedDmxChannels[3] = 3;
 
 	int i;
-	char charBuffer[17];
+	char charBuffer[21];
 	while (1) {
-
 
 		if (adcFinished) {
 			adcFinished = 0;
@@ -214,93 +225,90 @@ int main(void) {
 			for (i = 0; i < 4; i++) {
 				Dmx512SetChannelValue(selectedDmxChannels[i], adcValues[i]);
 				LCDcursorPos(i, 0);
-				snprintf(charBuffer, 17, "Channel %03d: %03d", selectedDmxChannels[i], adcValues[i]);
+				snprintf(charBuffer, 21, "DMX Channel %03d: %03d", selectedDmxChannels[i], adcValues[i]);
 				LCDwrite(charBuffer);
 			}
 		}
 	}
 
-
 }
-
 
 /*=========================================
  * Sam's Main
  *
  =========================================*/
 /*
-int main(void) {
+ int main(void) {
 
 
-	HAL_Init();
+ HAL_Init();
 
 
-	SystemClock_Config();
+ SystemClock_Config();
 
 
-	MX_GPIO_Init();
-	MX_DMA_Init();
-	MX_ADC1_Init();
-	MX_I2C1_Init();
-	MX_I2C2_Init();
-	MX_I2C3_Init();
-	MX_TIM2_Init();
-	MX_TIM3_Init();
-	MX_USART1_UART_Init();
-	MX_USART2_UART_Init();
-	MX_TIM4_Init();
+ MX_GPIO_Init();
+ MX_DMA_Init();
+ MX_ADC1_Init();
+ MX_I2C1_Init();
+ MX_I2C2_Init();
+ MX_I2C3_Init();
+ MX_TIM2_Init();
+ MX_TIM3_Init();
+ MX_USART1_UART_Init();
+ MX_USART2_UART_Init();
+ MX_TIM4_Init();
 
 
-	SerialInit(&huart2);
-	Dmx512Init(&htim2, &huart1);
-	EEPROMInit(&hi2c2);
-//	testEEPROM();
-	LCDinit(&htim4, &htim3, &hi2c1);
-	LCDfadeBrightness(100, 1);
-	HAL_ADC_Start(&hadc1);
+ SerialInit(&huart2);
+ Dmx512Init(&htim2, &huart1);
+ EEPROMInit(&hi2c2);
+ //	testEEPROM();
+ LCDinit(&htim4, &htim3, &hi2c1);
+ LCDfadeBrightness(100, 1);
+ HAL_ADC_Start(&hadc1);
 
-	ButtonsInit(&hi2c3);
+ ButtonsInit(&hi2c3);
 
-	// Blue button interrupt
-	HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
-	HAL_NVIC_SetPriority(EXTI15_10_IRQn, 0, 0);
+ // Blue button interrupt
+ HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
+ HAL_NVIC_SetPriority(EXTI15_10_IRQn, 0, 0);
 
-	HAL_NVIC_EnableIRQ(EXTI9_5_IRQn);
-	HAL_NVIC_SetPriority(EXTI9_5_IRQn, 0, 0);
+ HAL_NVIC_EnableIRQ(EXTI9_5_IRQn);
+ HAL_NVIC_SetPriority(EXTI9_5_IRQn, 0, 0);
 
-	selectedDmxChannels[0] = 0;
-	selectedDmxChannels[1] = 1;
-	selectedDmxChannels[2] = 2;
-	selectedDmxChannels[3] = 3;
+ selectedDmxChannels[0] = 0;
+ selectedDmxChannels[1] = 1;
+ selectedDmxChannels[2] = 2;
+ selectedDmxChannels[3] = 3;
 
 
-	// Init application and gui systems
-	CommonInit();
+ // Init application and gui systems
+ CommonInit();
 
-	while (1) {
-		if (adcFinished) {
-			adcFinished = 0;
-			HAL_ADCEx_InjectedStart_IT(&hadc1);
+ while (1) {
+ if (adcFinished) {
+ adcFinished = 0;
+ HAL_ADCEx_InjectedStart_IT(&hadc1);
 
-			// generate a uCmd for the application
-			ControllerGenUserCmds();											// FIXME! Should this have a mutex lock?
+ // generate a uCmd for the application
+ ControllerGenUserCmds();											// FIXME! Should this have a mutex lock?
 
-			// we pop the uCmd buffer
-			usercmd_t * newUCmd;
-			uint32_t success = ControllerPopUserCmd( newUCmd );
+ // we pop the uCmd buffer
+ usercmd_t * newUCmd;
+ uint32_t success = ControllerPopUserCmd( newUCmd );
 
-			// if we got a new user Command run application logic
-			if ( success ) {
+ // if we got a new user Command run application logic
+ if ( success ) {
 
-				// application logic, Signal state and View states are set here
-				SunlightFrame( newUCmd );
-			}
-		}
-	}
-	return 0;
-}
-*/
-
+ // application logic, Signal state and View states are set here
+ SunlightFrame( newUCmd );
+ }
+ }
+ }
+ return 0;
+ }
+ */
 
 /*=========================================
  * Sam's Main
@@ -357,9 +365,6 @@ int main2(void) {
 	selectedDmxChannels[2] = 2;
 	selectedDmxChannels[3] = 3;
 
-
-
-
 	// Init application and gui systems
 	CommonInit();
 
@@ -373,13 +378,13 @@ int main2(void) {
 
 			// we pop the uCmd buffer
 			usercmd_t * newUCmd;
-			uint32_t success = ControllerPopUserCmd( newUCmd );
+			uint32_t success = ControllerPopUserCmd(newUCmd);
 
 			// if we got a new user Command run application logic
-			if ( success ) {
+			if (success) {
 
 				// application logic, Signal state and View states are set here
-				SunlightFrame( newUCmd );
+				SunlightFrame(newUCmd);
 			}
 		}
 	}
@@ -539,7 +544,7 @@ static void MX_ADC1_Init(void) {
 static void MX_I2C1_Init(void) {
 
 	hi2c1.Instance = I2C1;
-	hi2c1.Init.ClockSpeed = 100000;
+	hi2c1.Init.ClockSpeed = 400000;
 	hi2c1.Init.DutyCycle = I2C_DUTYCYCLE_2;
 	hi2c1.Init.OwnAddress1 = 0;
 	hi2c1.Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
@@ -557,7 +562,7 @@ static void MX_I2C1_Init(void) {
 static void MX_I2C2_Init(void) {
 
 	hi2c2.Instance = I2C2;
-	hi2c2.Init.ClockSpeed = 100000;
+	hi2c2.Init.ClockSpeed = 400000;
 	hi2c2.Init.DutyCycle = I2C_DUTYCYCLE_2;
 	hi2c2.Init.OwnAddress1 = 0;
 	hi2c2.Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
@@ -575,7 +580,7 @@ static void MX_I2C2_Init(void) {
 static void MX_I2C3_Init(void) {
 
 	hi2c3.Instance = I2C3;
-	hi2c3.Init.ClockSpeed = 100000;
+	hi2c3.Init.ClockSpeed = 400000;
 	hi2c3.Init.DutyCycle = I2C_DUTYCYCLE_2;
 	hi2c3.Init.OwnAddress1 = 0;
 	hi2c3.Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;

@@ -37,6 +37,7 @@
 
 /* USER CODE BEGIN 0 */
 #include "dmx512.h"
+#include "eeprom.h"
 #include "lcd.h"
 /* USER CODE END 0 */
 
@@ -274,7 +275,7 @@ void I2C2_EV_IRQHandler(void)
   /* USER CODE END I2C2_EV_IRQn 0 */
   HAL_I2C_EV_IRQHandler(&hi2c2);
   /* USER CODE BEGIN I2C2_EV_IRQn 1 */
-
+  EEPROM_I2C_EV_IRQHandler();
   /* USER CODE END I2C2_EV_IRQn 1 */
 }
 
