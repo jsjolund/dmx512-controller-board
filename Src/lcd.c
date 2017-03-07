@@ -13,14 +13,6 @@ static I2C_HandleTypeDef *lcdHi2c;
 
 static volatile uint8_t targetBrightness;
 
-void LCD_HAL_I2C_MemRxCpltCallback(I2C_HandleTypeDef *hi2cHandle) {
-
-}
-
-void LCD_HAL_I2C_MemTxCpltCallback(I2C_HandleTypeDef *hi2cHandle) {
-
-}
-
 void LCD_TIM_IRQHandler(TIM_HandleTypeDef *htimHandle) {
 	// Timer interrupt for changing the backlight brightness in steps
 	uint8_t currentBrightness = pwmHtim->Instance->CCR1;
@@ -90,10 +82,10 @@ void LCDcursorPos(uint8_t row, uint8_t column) {
 		LCDsendCmd(0xC0 + column);
 		break;
 	case 2:
-		LCDsendCmd(0x90 + column);
+		LCDsendCmd(0x90 + column + 4);
 		break;
 	case 3:
-		LCDsendCmd(0xD0 + column);
+		LCDsendCmd(0xD0 + column + 4);
 		break;
 	default:
 		break;
@@ -116,7 +108,7 @@ void LCDclearRow(uint8_t row) {
 	// Clear a single row. Should not be used each frame, since this will cause flickering.
 	LCDcursorPos(row, 0);
 	int i;
-	for (i = 0; i < 16; i++)
+	for (i = 0; i < 20; i++)
 		LCDsendChar(' ');
 }
 

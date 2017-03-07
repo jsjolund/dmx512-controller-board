@@ -33,7 +33,5 @@ uint8_t LCDgetBrightness(void);
 void LCDsetBrightness(uint8_t percent);
 void LCDfadeBrightness(uint8_t percent, uint8_t secondsFade);
 void LCDclear(void);
-void LCD_HAL_I2C_MemRxCpltCallback(I2C_HandleTypeDef *hi2cHandle);
-void LCD_HAL_I2C_MemTxCpltCallback(I2C_HandleTypeDef *hi2cHandle);
 void LCD_TIM_IRQHandler(TIM_HandleTypeDef *htimHandle);
 #endif /* LCD_H_ */
