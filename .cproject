@@ -1,279 +1,170 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <?fileVersion 4.0.0?><cproject storage_type_id="org.eclipse.cdt.core.XmlProjectDescriptionStorage">
 	<storageModule moduleId="org.eclipse.cdt.core.settings">
-		<cconfiguration id="ilg.gnuarmeclipse.managedbuild.cross.toolchain.base.1807473445">
-			<storageModule buildSystemId="org.eclipse.cdt.managedbuilder.core.configurationDataProvider" id="ilg.gnuarmeclipse.managedbuild.cross.toolchain.base.1807473445" moduleId="org.eclipse.cdt.core.settings" name="Default">
-				<externalSettings/>
+		<cconfiguration id="com.atollic.truestudio.exe.debug.1518366166">
+			<storageModule buildSystemId="org.eclipse.cdt.managedbuilder.core.configurationDataProvider" id="com.atollic.truestudio.exe.debug.1518366166" moduleId="org.eclipse.cdt.core.settings" name="Debug">
+				<externalSettings />
 				<extensions>
-					<extension id="org.eclipse.cdt.core.ELF" point="org.eclipse.cdt.core.BinaryParser"/>
-					<extension id="org.eclipse.cdt.core.GASErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
-					<extension id="org.eclipse.cdt.core.GmakeErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
-					<extension id="org.eclipse.cdt.core.GLDErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
-					<extension id="org.eclipse.cdt.core.CWDLocator" point="org.eclipse.cdt.core.ErrorParser"/>
-					<extension id="org.eclipse.cdt.core.GCCErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+					<extension id="org.eclipse.cdt.core.ELF" point="org.eclipse.cdt.core.BinaryParser" />
+					<extension id="org.eclipse.cdt.core.GCCErrorParser" point="org.eclipse.cdt.core.ErrorParser" />
+					<extension id="org.eclipse.cdt.core.GASErrorParser" point="org.eclipse.cdt.core.ErrorParser" />
+					<extension id="org.eclipse.cdt.core.GLDErrorParser" point="org.eclipse.cdt.core.ErrorParser" />
 				</extensions>
 			</storageModule>
 			<storageModule moduleId="cdtBuildSystem" version="4.0.0">
-				<configuration buildProperties="" description="" id="ilg.gnuarmeclipse.managedbuild.cross.toolchain.base.1807473445" name="Default" parent="org.eclipse.cdt.build.core.emptycfg">
-					<folderInfo id="ilg.gnuarmeclipse.managedbuild.cross.toolchain.base.1807473445.1253890145" name="/" resourcePath="">
-						<toolChain id="ilg.gnuarmeclipse.managedbuild.cross.toolchain.base.1490045126" name="Cross ARM GCC" superClass="ilg.gnuarmeclipse.managedbuild.cross.toolchain.base">
-							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.architecture.50452124" name="Architecture" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.architecture"/>
-							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.command.prefix.30058500" name="Prefix" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.command.prefix"/>
-							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.command.suffix.1660581013" name="Suffix" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.command.suffix"/>
-							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.command.c.500994635" name="C compiler" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.command.c"/>
-							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.command.cpp.1774191070" name="C++ compiler" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.command.cpp"/>
-							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.command.ar.2118865076" name="Archiver" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.command.ar"/>
-							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.command.objcopy.1616540125" name="Hex/Bin converter" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.command.objcopy"/>
-							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.command.objdump.1238885313" name="Listing generator" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.command.objdump"/>
-							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.command.size.912876054" name="Size command" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.command.size"/>
-							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.command.make.323176173" name="Build command" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.command.make"/>
-							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.command.rm.1575311482" name="Remove command" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.command.rm"/>
-							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.toolchain.useglobalpath.2093088901" name="Use global path" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.toolchain.useglobalpath"/>
-							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.toolchain.path.282728152" name="Path" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.toolchain.path"/>
-							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.addtools.createflash.1691231338" name="Create flash image" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.addtools.createflash"/>
-							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.addtools.createlisting.1147103031" name="Create extended listing" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.addtools.createlisting"/>
-							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.addtools.printsize.623498636" name="Print size" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.addtools.printsize"/>
-							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.family.785144025" name="ARM family" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.family"/>
-							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.architecture.324495844" name="Architecture" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.architecture"/>
-							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.instructionset.977976726" name="Instruction set" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.instructionset"/>
-							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.thumbinterwork.982244000" name="Thumb interwork (-mthumb-interwork)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.thumbinterwork"/>
-							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.endianness.1081349672" name="Endianness" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.endianness"/>
-							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.fpu.abi.1464322732" name="Float ABI" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.fpu.abi"/>
-							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.fpu.unit.1189310539" name="FPU Type" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.fpu.unit"/>
-							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.unalignedaccess.1304744897" name="Unaligned access" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.arm.target.unalignedaccess"/>
-							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.aarch64.target.family.1256335123" name="AArch64 family" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.aarch64.target.family"/>
-							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.aarch64.target.feature.crc.1676666137" name="Feature crc" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.aarch64.target.feature.crc"/>
-							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.aarch64.target.feature.crypto.430070982" name="Feature crypto" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.aarch64.target.feature.crypto"/>
-							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.aarch64.target.feature.fp.190758926" name="Feature fp" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.aarch64.target.feature.fp"/>
-							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.aarch64.target.feature.simd.2033795406" name="Feature simd" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.aarch64.target.feature.simd"/>
-							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.aarch64.target.cmodel.1142626918" name="Code model" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.aarch64.target.cmodel"/>
-							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.aarch64.target.strictalign.559771463" name="Strict align (-mstrict-align)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.aarch64.target.strictalign"/>
-							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.target.other.736230285" name="Other target flags" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.target.other"/>
-							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.optimization.level.1340315801" name="Optimization Level" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.optimization.level"/>
-							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.optimization.messagelength.2132526862" name="Message length (-fmessage-length=0)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.optimization.messagelength"/>
-							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.optimization.signedchar.561456598" name="'char' is signed (-fsigned-char)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.optimization.signedchar"/>
-							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.optimization.functionsections.216274741" name="Function sections (-ffunction-sections)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.optimization.functionsections"/>
-							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.optimization.datasections.729527338" name="Data sections (-fdata-sections)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.optimization.datasections"/>
-							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.optimization.nocommon.771242926" name="No common unitialized (-fno-common)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.optimization.nocommon"/>
-							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.optimization.noinlinefunctions.463246813" name="Do not inline functions (-fno-inline-functions)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.optimization.noinlinefunctions"/>
-							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.optimization.freestanding.400302372" name="Assume freestanding environment (-ffreestanding)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.optimization.freestanding"/>
-							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.optimization.nobuiltin.1775761478" name="Disable builtin (-fno-builtin)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.optimization.nobuiltin"/>
-							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.optimization.spconstant.1412812571" name="Single precision constants (-fsingle-precision-constant)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.optimization.spconstant"/>
-							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.optimization.PIC.1155320533" name="Position independent code (-fPIC)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.optimization.PIC"/>
-							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.optimization.lto.1850112310" name="Link-time optimizer (-flto)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.optimization.lto"/>
-							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.optimization.nomoveloopinvariants.930090544" name="Disable loop invariant move (-fno-move-loop-invariants)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.optimization.nomoveloopinvariants"/>
-							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.optimization.other.1440210938" name="Other optimization flags" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.optimization.other"/>
-							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.toolchain.name.1940746137" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.toolchain.name"/>
-							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.warnings.syntaxonly.1401701432" name="Check syntax only (-fsyntax-only)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.warnings.syntaxonly"/>
-							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.warnings.pedantic.1516959673" name="Pedantic (-pedantic)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.warnings.pedantic"/>
-							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.warnings.pedanticerrors.785527789" name="Pedantic warnings as errors (-pedantic-errors)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.warnings.pedanticerrors"/>
-							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.warnings.nowarn.906249365" name="Inhibit all warnings (-w)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.warnings.nowarn"/>
-							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.warnings.unused.570377555" name="Warn on various unused elements (-Wunused)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.warnings.unused"/>
-							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.warnings.uninitialized.1586535736" name="Warn on uninitialized variables (-Wuninitialised)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.warnings.uninitialized"/>
-							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.warnings.allwarn.1447479932" name="Enable all common warnings (-Wall)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.warnings.allwarn"/>
-							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.warnings.extrawarn.815103185" name="Enable extra warnings (-Wextra)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.warnings.extrawarn"/>
-							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.warnings.missingdeclaration.2114628448" name="Warn on undeclared global function (-Wmissing-declaration)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.warnings.missingdeclaration"/>
-							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.warnings.conversion.681871709" name="Warn on implicit conversions (-Wconversion)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.warnings.conversion"/>
-							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.warnings.pointerarith.1513011715" name="Warn if pointer arithmetic (-Wpointer-arith)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.warnings.pointerarith"/>
-							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.warnings.padded.1865180975" name="Warn if padding is included (-Wpadded)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.warnings.padded"/>
-							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.warnings.shadow.1974462193" name="Warn if shadowed variable (-Wshadow)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.warnings.shadow"/>
-							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.warnings.logicalop.68634110" name="Warn if suspicious logical ops (-Wlogical-op)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.warnings.logicalop"/>
-							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.warnings.agreggatereturn.1162302323" name="Warn if struct is returned (-Wagreggate-return)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.warnings.agreggatereturn"/>
-							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.warnings.floatequal.1427040240" name="Warn if floats are compared as equal (-Wfloat-equal)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.warnings.floatequal"/>
-							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.warnings.toerrors.1229935900" name="Generate errors instead of warnings (-Werror)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.warnings.toerrors"/>
-							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.warnings.other.890946489" name="Other warning flags" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.warnings.other"/>
-							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.debugging.level.1860232656" name="Debug level" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.debugging.level"/>
-							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.debugging.format.1134524804" name="Debug format" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.debugging.format"/>
-							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.debugging.prof.1735215878" name="Generate prof information (-p)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.debugging.prof"/>
-							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.debugging.gprof.828638045" name="Generate gprof information (-pg)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.debugging.gprof"/>
-							<option id="ilg.gnuarmeclipse.managedbuild.cross.option.debugging.other.723315546" name="Other debugging flags" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.debugging.other"/>
-							<targetPlatform archList="all" binaryParser="org.eclipse.cdt.core.ELF" id="ilg.gnuarmeclipse.managedbuild.cross.targetPlatform.750571717" isAbstract="false" osList="all" superClass="ilg.gnuarmeclipse.managedbuild.cross.targetPlatform"/>
-							<builder id="ilg.gnuarmeclipse.managedbuild.cross.builder.466045888" keepEnvironmentInBuildfile="false" managedBuildOn="false" name="Gnu Make Builder" superClass="ilg.gnuarmeclipse.managedbuild.cross.builder"/>
-							<tool id="ilg.gnuarmeclipse.managedbuild.cross.tool.assembler.1199706978" name="Cross ARM GNU Assembler" superClass="ilg.gnuarmeclipse.managedbuild.cross.tool.assembler">
-								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.assembler.usepreprocessor.923227965" name="Use preprocessor" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.assembler.usepreprocessor" useByScannerDiscovery="false" value="true" valueType="boolean"/>
-								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.assembler.include.paths.397116641" name="Include paths (-I)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.assembler.include.paths" valueType="includePath">
-									<listOptionValue builtIn="false" value="/usr/arm-none-eabi/include"/>
-									<listOptionValue builtIn="false" value="/usr/arm-none-eabi/include/c++/6.3.0"/>
-									<listOptionValue builtIn="false" value="/usr/arm-none-eabi/include/c++/6.3.0/arm-none-eabi/armv7e-m"/>
-									<listOptionValue builtIn="false" value="/usr/arm-none-eabi/include/c++/6.3.0/backward"/>
-									<listOptionValue builtIn="false" value="/usr/lib/gcc/arm-none-eabi/6.3.0/include"/>
-									<listOptionValue builtIn="false" value="/usr/lib/gcc/arm-none-eabi/6.3.0"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/dmx512-controller-board/Drivers/CMSIS/Device/ST/STM32F4xx/Include}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/dmx512-controller-board/Drivers/CMSIS/Include}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/dmx512-controller-board/Drivers/STM32F4xx_HAL_Driver/Inc}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/dmx512-controller-board/Inc}&quot;"/>
-								</option>
-								<inputType id="ilg.gnuarmeclipse.managedbuild.cross.tool.assembler.input.1912417165" superClass="ilg.gnuarmeclipse.managedbuild.cross.tool.assembler.input"/>
+				<configuration artifactExtension="elf" artifactName="dmx512-controller-board" buildArtefactType="org.eclipse.cdt.build.core.buildArtefactType.exe" buildProperties="org.eclipse.cdt.build.core.buildArtefactType=org.eclipse.cdt.build.core.buildArtefactType.exe" cleanCommand="rm -rf" description="" id="com.atollic.truestudio.exe.debug.1518366166" name="Debug" parent="com.atollic.truestudio.exe.debug" postbuildStep="" prebuildStep="">
+					<folderInfo id="com.atollic.truestudio.exe.debug.1518366166.2031504340" name="/" resourcePath="">
+						<toolChain id="com.atollic.truestudio.exe.debug.toolchain.683225115" name="Atollic ARM Tools" superClass="com.atollic.truestudio.exe.debug.toolchain">
+							<targetPlatform archList="all" binaryParser="org.eclipse.cdt.core.ELF" id="com.atollic.truestudio.exe.debug.toolchain.platform.2054752829" isAbstract="false" name="Debug platform" superClass="com.atollic.truestudio.exe.debug.toolchain.platform" />
+							<builder buildPath="${workspace_loc:/STM32100B-EVAL/Debug}" id="com.atollic.truestudio.mbs.builder1.1222194476" keepEnvironmentInBuildfile="false" managedBuildOn="true" name="CDT Internal Builder" superClass="com.atollic.truestudio.mbs.builder1">
+								<outputEntries>
+									<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="outputPath" name="Debug" />
+								</outputEntries>
+							</builder>
+							<tool command="arm-atollic-eabi-gcc -c" commandLinePattern="${COMMAND} ${FLAGS} ${OUTPUT_FLAG}${OUTPUT_PREFIX} ${OUTPUT} ${INPUTS}" id="com.atollic.truestudio.exe.debug.toolchain.as.1545899283" name="Assembler" superClass="com.atollic.truestudio.exe.debug.toolchain.as">
+								<option id="com.atollic.truestudio.common_options.target.endianess.1608144567" name="Endianess" superClass="com.atollic.truestudio.common_options.target.endianess" value="com.atollic.truestudio.common_options.target.endianess.little" valueType="enumerated" />
+								<option id="com.atollic.truestudio.common_options.target.mcpu.286463162" name="Microcontroller" superClass="com.atollic.truestudio.common_options.target.mcpu" value="STM32F411RE" valueType="enumerated" />
+								<option id="com.atollic.truestudio.common_options.target.instr_set.2033833414" name="Instruction set" superClass="com.atollic.truestudio.common_options.target.instr_set" value="com.atollic.truestudio.common_options.target.instr_set.thumb2" valueType="enumerated" />
+								<option id="com.atollic.truestudio.as.general.incpath.770237934" name="Include path" superClass="com.atollic.truestudio.as.general.incpath" valueType="includePath" />
+                                                                <option id="com.atollic.truestudio.gcc.symbols.defined.1670122205" name="Defined symbols" superClass="com.atollic.truestudio.gcc.symbols.defined" valueType="definedSymbols" />
+                                                                <option id="com.atollic.truestudio.as.general.otherflags.51384659" superClass="com.atollic.truestudio.as.general.otherflags" value="" valueType="string" />
+                                                                <option id="com.atollic.truestudio.as.general.warnings.1324541152" superClass="com.atollic.truestudio.as.general.warnings" value="true" valueType="boolean" />
+                                                                <inputType id="com.atollic.truestudio.as.input.374932590" name="Input" superClass="com.atollic.truestudio.as.input" />
+                                                                <option id="com.atollic.truestudio.common_options.target.fpu.829683864" name="Floating point" superClass="com.atollic.truestudio.common_options.target.fpu" value="com.atollic.truestudio.common_options.target.fpu.hard" valueType="enumerated" />
+                                                                <option id="com.atollic.truestudio.common_options.target.fpucore.1297069055" name="FPU" superClass="com.atollic.truestudio.common_options.target.fpucore" value="com.atollic.truestudio.common_options.target.fpucore.fpv4-sp-d16" valueType="enumerated" />
+                                                        </tool>
+							<tool command="arm-atollic-eabi-gcc -c " commandLinePattern="${COMMAND} ${FLAGS} ${OUTPUT_FLAG}${OUTPUT_PREFIX} ${OUTPUT} ${INPUTS}" id="com.atollic.truestudio.exe.debug.toolchain.gcc.1836874447" name="C Compiler" superClass="com.atollic.truestudio.exe.debug.toolchain.gcc">
+								<option id="com.atollic.truestudio.gcc.directories.select.330946435" name="Include path" superClass="com.atollic.truestudio.gcc.directories.select" valueType="includePath"><listOptionValue builtIn="false" value="../Inc" /><listOptionValue builtIn="false" value="../Drivers/STM32F4xx_HAL_Driver/Inc" /><listOptionValue builtIn="false" value="../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy" /><listOptionValue builtIn="false" value="../Drivers/CMSIS/Device/ST/STM32F4xx/Include" /><listOptionValue builtIn="false" value="../Drivers/CMSIS/Include" /></option>
+								<option id="com.atollic.truestudio.gcc.symbols.defined.1670122205" name="Defined symbols" superClass="com.atollic.truestudio.gcc.symbols.defined" valueType="definedSymbols"><listOptionValue builtIn="false" value="__weak=__attribute__((weak))" /><listOptionValue builtIn="false" value="__packed=__attribute__((__packed__))" /><listOptionValue builtIn="false" value="USE_HAL_DRIVER" /><listOptionValue builtIn="false" value="STM32F411xE" /></option>
+								<option id="com.atollic.truestudio.common_options.target.endianess.1854274048" name="Endianess" superClass="com.atollic.truestudio.common_options.target.endianess" value="com.atollic.truestudio.common_options.target.endianess.little" valueType="enumerated" />
+								<option id="com.atollic.truestudio.common_options.target.mcpu.191909026" name="Microcontroller" superClass="com.atollic.truestudio.common_options.target.mcpu" value="STM32F411RE" valueType="enumerated" />
+								<option id="com.atollic.truestudio.common_options.target.instr_set.1503159865" name="Instruction set" superClass="com.atollic.truestudio.common_options.target.instr_set" value="com.atollic.truestudio.common_options.target.instr_set.thumb2" valueType="enumerated" />
+								<option id="com.atollic.truestudio.gcc.optimization.prep_garbage.586275206" name="Prepare dead code removal" superClass="com.atollic.truestudio.gcc.optimization.prep_garbage" value="true" valueType="boolean" />
+								<option id="com.atollic.truestudio.gcc.optimization.prep_data.1044766448" name="Prepare dead data removal" superClass="com.atollic.truestudio.gcc.optimization.prep_data" value="true" valueType="boolean" />
+                                                                <!--option id="com.atollic.truestudio.gcc.misc.otherflags.895097519" name="Other options" superClass="com.atollic.truestudio.gcc.misc.otherflags" value=" -Os -w -mlong-callss" valueType="string"/-->
+								<option id="com.atollic.truestudio.exe.debug.toolchain.gcc.optimization.level.1763412676" name="Optimization Level" superClass="com.atollic.truestudio.exe.debug.toolchain.gcc.optimization.level" value="com.atollic.truestudio.gcc.optimization.level.0s" valueType="enumerated" />
+								<option id="com.atollic.truestudio.common_options.target.fpu.829683864" name="Floating point" superClass="com.atollic.truestudio.common_options.target.fpu" value="com.atollic.truestudio.common_options.target.fpu.hard" valueType="enumerated" />
+                                                                <option id="com.atollic.truestudio.common_options.target.fpucore.1297069055" name="FPU" superClass="com.atollic.truestudio.common_options.target.fpucore" value="com.atollic.truestudio.common_options.target.fpucore.fpv4-sp-d16" valueType="enumerated" />
+								<inputType id="com.atollic.truestudio.gcc.input.850396938" superClass="com.atollic.truestudio.gcc.input" />
 							</tool>
-							<tool id="ilg.gnuarmeclipse.managedbuild.cross.tool.c.compiler.1411436083" name="Cross ARM GNU C Compiler" superClass="ilg.gnuarmeclipse.managedbuild.cross.tool.c.compiler">
-								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.c.compiler.include.paths.981879839" name="Include paths (-I)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.c.compiler.include.paths" useByScannerDiscovery="true" valueType="includePath">
-									<listOptionValue builtIn="false" value="/usr/arm-none-eabi/include"/>
-									<listOptionValue builtIn="false" value="/usr/arm-none-eabi/include/c++/6.3.0"/>
-									<listOptionValue builtIn="false" value="/usr/arm-none-eabi/include/c++/6.3.0/arm-none-eabi/armv7e-m"/>
-									<listOptionValue builtIn="false" value="/usr/arm-none-eabi/include/c++/6.3.0/backward"/>
-									<listOptionValue builtIn="false" value="/usr/lib/gcc/arm-none-eabi/6.3.0/include"/>
-									<listOptionValue builtIn="false" value="/usr/lib/gcc/arm-none-eabi/6.3.0"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/dmx512-controller-board/Drivers/CMSIS/Device/ST/STM32F4xx/Include}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/dmx512-controller-board/Drivers/CMSIS/Include}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/dmx512-controller-board/Drivers/STM32F4xx_HAL_Driver/Inc}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/dmx512-controller-board/Inc}&quot;"/>
-								</option>
-								<inputType id="ilg.gnuarmeclipse.managedbuild.cross.tool.c.compiler.input.1417697512" superClass="ilg.gnuarmeclipse.managedbuild.cross.tool.c.compiler.input"/>
-							</tool>
-							<tool id="ilg.gnuarmeclipse.managedbuild.cross.tool.cpp.compiler.1994887563" name="Cross ARM GNU C++ Compiler" superClass="ilg.gnuarmeclipse.managedbuild.cross.tool.cpp.compiler">
-								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.compiler.include.paths.1965378994" name="Include paths (-I)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.compiler.include.paths" useByScannerDiscovery="true" valueType="includePath">
-									<listOptionValue builtIn="false" value="/usr/arm-none-eabi/include"/>
-									<listOptionValue builtIn="false" value="/usr/arm-none-eabi/include/c++/6.3.0"/>
-									<listOptionValue builtIn="false" value="/usr/arm-none-eabi/include/c++/6.3.0/arm-none-eabi/armv7e-m"/>
-									<listOptionValue builtIn="false" value="/usr/arm-none-eabi/include/c++/6.3.0/backward"/>
-									<listOptionValue builtIn="false" value="/usr/lib/gcc/arm-none-eabi/6.3.0/include"/>
-									<listOptionValue builtIn="false" value="/usr/lib/gcc/arm-none-eabi/6.3.0"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/dmx512-controller-board/Drivers/CMSIS/Device/ST/STM32F4xx/Include}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/dmx512-controller-board/Drivers/CMSIS/Include}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/dmx512-controller-board/Drivers/STM32F4xx_HAL_Driver/Inc}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/dmx512-controller-board/Inc}&quot;"/>
-								</option>
-								<inputType id="ilg.gnuarmeclipse.managedbuild.cross.tool.cpp.compiler.input.2111599612" superClass="ilg.gnuarmeclipse.managedbuild.cross.tool.cpp.compiler.input"/>
-							</tool>
-							<tool id="ilg.gnuarmeclipse.managedbuild.cross.tool.c.linker.1884309476" name="Cross ARM GNU C Linker" superClass="ilg.gnuarmeclipse.managedbuild.cross.tool.c.linker">
-								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.c.linker.gcsections.1220691975" name="Remove unused sections (-Xlinker --gc-sections)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.c.linker.gcsections" useByScannerDiscovery="false" value="true" valueType="boolean"/>
-							</tool>
-							<tool id="ilg.gnuarmeclipse.managedbuild.cross.tool.cpp.linker.1414059364" name="Cross ARM GNU C++ Linker" superClass="ilg.gnuarmeclipse.managedbuild.cross.tool.cpp.linker">
-								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.linker.gcsections.1283896810" name="Remove unused sections (-Xlinker --gc-sections)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.linker.gcsections" useByScannerDiscovery="false" value="true" valueType="boolean"/>
-								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.linker.paths.98301807" name="Library search path (-L)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.linker.paths" valueType="libPaths"/>
-								<inputType id="ilg.gnuarmeclipse.managedbuild.cross.tool.cpp.linker.input.928756621" superClass="ilg.gnuarmeclipse.managedbuild.cross.tool.cpp.linker.input">
-									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
-									<additionalInput kind="additionalinput" paths="$(LIBS)"/>
+							<tool id="com.atollic.truestudio.exe.debug.toolchain.ld.1444973427" name="C Linker" superClass="com.atollic.truestudio.exe.debug.toolchain.ld">
+								<option id="com.atollic.truestudio.common_options.target.endianess.662778612" name="Endianess" superClass="com.atollic.truestudio.common_options.target.endianess" value="com.atollic.truestudio.common_options.target.endianess.little" valueType="enumerated" />
+								<option id="com.atollic.truestudio.common_options.target.mcpu.35700531" name="Microcontroller" superClass="com.atollic.truestudio.common_options.target.mcpu" value="STM32F411RE" valueType="enumerated" />
+								<option id="com.atollic.truestudio.common_options.target.instr_set.566688004" name="Instruction set" superClass="com.atollic.truestudio.common_options.target.instr_set" value="com.atollic.truestudio.common_options.target.instr_set.thumb2" valueType="enumerated" />
+								<option id="com.atollic.truestudio.ld.general.scriptfile.1350476438" name="Linker script" superClass="com.atollic.truestudio.ld.general.scriptfile" value="../STM32F411RE_FLASH.ld" valueType="string" />
+								<option id="com.atollic.truestudio.ld.optimization.do_garbage.1816004776" name="Dead code removal" superClass="com.atollic.truestudio.ld.optimization.do_garbage" value="true" valueType="boolean" />
+                                                                <option id="com.atollic.truestudio.ld.libraries.list.848669414" superClass="com.atollic.truestudio.ld.libraries.list" valueType="libs" />
+                                                                <option id="com.atollic.truestudio.ld.libraries.searchpath.1273009461" superClass="com.atollic.truestudio.ld.libraries.searchpath" valueType="libPaths" />
+                                                                <!--option id="com.atollic.truestudio.ld.misc.linkerflags.1948405714" superClass="com.atollic.truestudio.ld.misc.linkerflags" value="" valueType="string"/>-->
+                                                                <option id="com.atollic.truestudio.common_options.target.fpu.829683864" name="Floating point" superClass="com.atollic.truestudio.common_options.target.fpu" value="com.atollic.truestudio.common_options.target.fpu.hard" valueType="enumerated" />
+                                                                <option id="com.atollic.truestudio.common_options.target.fpucore.1297069055" name="FPU" superClass="com.atollic.truestudio.common_options.target.fpucore" value="com.atollic.truestudio.common_options.target.fpucore.fpv4-sp-d16" valueType="enumerated" />
+                                                                <inputType id="com.atollic.truestudio.ld.input.1372975870" name="Input" superClass="com.atollic.truestudio.ld.input">
+									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)" />
+									<additionalInput kind="additionalinput" paths="$(LIBS)" />
 								</inputType>
 							</tool>
-							<tool id="ilg.gnuarmeclipse.managedbuild.cross.tool.archiver.518129039" name="Cross ARM GNU Archiver" superClass="ilg.gnuarmeclipse.managedbuild.cross.tool.archiver"/>
-							<tool id="ilg.gnuarmeclipse.managedbuild.cross.tool.createflash.723923670" name="Cross ARM GNU Create Flash Image" superClass="ilg.gnuarmeclipse.managedbuild.cross.tool.createflash"/>
-							<tool id="ilg.gnuarmeclipse.managedbuild.cross.tool.createlisting.1497148086" name="Cross ARM GNU Create Listing" superClass="ilg.gnuarmeclipse.managedbuild.cross.tool.createlisting">
-								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.createlisting.source.662318432" name="Display source (--source|-S)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.createlisting.source" useByScannerDiscovery="false" value="true" valueType="boolean"/>
-								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.createlisting.allheaders.1490749684" name="Display all headers (--all-headers|-x)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.createlisting.allheaders" useByScannerDiscovery="false" value="true" valueType="boolean"/>
-								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.createlisting.demangle.1042731559" name="Demangle names (--demangle|-C)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.createlisting.demangle" useByScannerDiscovery="false" value="true" valueType="boolean"/>
-								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.createlisting.linenumbers.141902394" name="Display line numbers (--line-numbers|-l)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.createlisting.linenumbers" useByScannerDiscovery="false" value="true" valueType="boolean"/>
-								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.createlisting.wide.1125680741" name="Wide lines (--wide|-w)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.createlisting.wide" useByScannerDiscovery="false" value="true" valueType="boolean"/>
-							</tool>
-							<tool id="ilg.gnuarmeclipse.managedbuild.cross.tool.printsize.288036376" name="Cross ARM GNU Print Size" superClass="ilg.gnuarmeclipse.managedbuild.cross.tool.printsize">
-								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.printsize.format.1096787354" name="Size format" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.printsize.format" useByScannerDiscovery="false"/>
-							</tool>
+							<tool id="com.atollic.truestudio.exe.debug.toolchain.gpp.981298185" name="C++ Compiler" superClass="com.atollic.truestudio.exe.debug.toolchain.gpp">
+								<option id="com.atollic.truestudio.gpp.symbols.defined.1619552487" name="Defined symbols" superClass="com.atollic.truestudio.gpp.symbols.defined" valueType="stringList">
+									<listOptionValue builtIn="false" value="STM32F10X_MD" />
+									<listOptionValue builtIn="false" value="USE_STDPERIPH_DRIVER" />
+								</option>
+								<option id="com.atollic.truestudio.common_options.target.endianess.176262651" name="Endianess" superClass="com.atollic.truestudio.common_options.target.endianess" value="com.atollic.truestudio.common_options.target.endianess.little" valueType="enumerated" />
+								<option id="com.atollic.truestudio.common_options.target.mcpu.630487808" name="Microcontroller" superClass="com.atollic.truestudio.common_options.target.mcpu" value="STM32F411RE" valueType="enumerated" />
+								<option id="com.atollic.truestudio.common_options.target.instr_set.227324580" name="Instruction set" superClass="com.atollic.truestudio.common_options.target.instr_set" value="com.atollic.truestudio.common_options.target.instr_set.thumb2" valueType="enumerated" />
+								<option id="com.atollic.truestudio.gpp.optimization.prep_garbage.26464025" name="Prepare dead code removal" superClass="com.atollic.truestudio.gpp.optimization.prep_garbage" value="true" valueType="boolean" />
+								<option id="com.atollic.truestudio.gpp.optimization.fno_rtti.1009504734" name="Disable RTTI" superClass="com.atollic.truestudio.gpp.optimization.fno_rtti" />
+								<option id="com.atollic.truestudio.gpp.optimization.fno_exceptions.342217745" name="Disable exception handling" superClass="com.atollic.truestudio.gpp.optimization.fno_exceptions" />
+                                                                <option id="com.atollic.truestudio.common_options.target.fpu.829683864" name="Floating point" superClass="com.atollic.truestudio.common_options.target.fpu" value="com.atollic.truestudio.common_options.target.fpu.hard" valueType="enumerated" />
+                                                                <option id="com.atollic.truestudio.common_options.target.fpucore.1297069055" name="FPU" superClass="com.atollic.truestudio.common_options.target.fpucore" value="com.atollic.truestudio.common_options.target.fpucore.fpv4-sp-d16" valueType="enumerated" />
+                                                        </tool>
+							<tool id="com.atollic.truestudio.exe.debug.toolchain.ldcc.428260" name="C++ Linker" superClass="com.atollic.truestudio.exe.debug.toolchain.ldcc">
+								<option id="com.atollic.truestudio.common_options.target.endianess.2051741049" name="Endianess" superClass="com.atollic.truestudio.common_options.target.endianess" value="com.atollic.truestudio.common_options.target.endianess.little" valueType="enumerated" />
+								<option id="com.atollic.truestudio.common_options.target.mcpu.1701726850" name="Microcontroller" superClass="com.atollic.truestudio.common_options.target.mcpu" value="STM32F411RE" valueType="enumerated" />
+								<option id="com.atollic.truestudio.common_options.target.instr_set.1600237525" name="Instruction set" superClass="com.atollic.truestudio.common_options.target.instr_set" value="com.atollic.truestudio.common_options.target.instr_set.thumb2" valueType="enumerated" />
+								<option id="com.atollic.truestudio.ldcc.optimization.do_garbage.956844137" name="Dead code removal" superClass="com.atollic.truestudio.ldcc.optimization.do_garbage" value="true" valueType="boolean" />
+								<option id="com.atollic.truestudio.ldcc.general.scriptfile.561304432" name="Linker script" superClass="com.atollic.truestudio.ldcc.general.scriptfile" value="../STM32F411RE_FLASH.ld" valueType="string" />
+                                                                <option id="com.atollic.truestudio.common_options.target.fpu.829683864" name="Floating point" superClass="com.atollic.truestudio.common_options.target.fpu" value="com.atollic.truestudio.common_options.target.fpu.hard" valueType="enumerated" />
+                                                                <option id="com.atollic.truestudio.common_options.target.fpucore.1297069055" name="FPU" superClass="com.atollic.truestudio.common_options.target.fpucore" value="com.atollic.truestudio.common_options.target.fpucore.fpv4-sp-d16" valueType="enumerated" />
+                                                        </tool>
+							<tool id="com.atollic.truestudio.exe.debug.toolchain.secoutput.839033486" name="Other" superClass="com.atollic.truestudio.exe.debug.toolchain.secoutput" />
 						</toolChain>
 					</folderInfo>
+					<fileInfo id="com.atollic.truestudio.exe.debug.311825581.983937533" name="" rcbsApplicability="disable" resourcePath="nofile" toolsToInvoke="com.atollic.truestudio.exe.debug.toolchain.gcc.1123980438.1469152088">
+						<tool id="com.atollic.truestudio.exe.debug.toolchain.gcc.1836874447.1976695455" name="C Compiler" superClass="com.atollic.truestudio.exe.debug.toolchain.gcc.1836874447">
+							<!--option id="com.atollic.truestudio.gcc.symbols.defined.571688647" superClass="com.atollic.truestudio.gcc.symbols.defined" valueType="definedSymbols">
+								<listOptionValue builtIn="false" value=""/>
+							</option-->
+							<!--option id="com.atollic.truestudio.gcc.directories.select.1885522499" superClass="com.atollic.truestudio.gcc.directories.select" valueType="includePath">
+								<listOptionValue builtIn="false" value=""/>
+							</option-->
+							<!--option id="com.atollic.truestudio.exe.debug.toolchain.gcc.optimization.level.2088348838" superClass="com.atollic.truestudio.exe.debug.toolchain.gcc.optimization.level" value="" valueType="enumerated"/-->
+							<inputType id="com.atollic.truestudio.gcc.input.1274347818" superClass="com.atollic.truestudio.gcc.input" />
+						</tool>
+					</fileInfo>
+					<!--fileInfo id="com.atollic.truestudio.exe.debug.1518366166.2095950970" name="main.c" rcbsApplicability="disable" resourcePath="User/main.c" toolsToInvoke="com.atollic.truestudio.exe.debug.toolchain.gcc.1836874447.1976695455">
+						<tool id="com.atollic.truestudio.exe.debug.toolchain.gcc.1836874447.1976695455" name="C Compiler" superClass="com.atollic.truestudio.exe.debug.toolchain.gcc.1836874447">
+							<option id="com.atollic.truestudio.common_options.target.mcpu.1225149534" superClass="com.atollic.truestudio.common_options.target.mcpu" value="ARM7TDMI" valueType="enumerated"/>
+							<option id="com.atollic.truestudio.common_options.target.endianess.611625540" superClass="com.atollic.truestudio.common_options.target.endianess" value="com.atollic.truestudio.common_options.target.endianess.big" valueType="enumerated"/>
+							<option id="com.atollic.truestudio.gcc.symbols.defined.661170442" superClass="com.atollic.truestudio.gcc.symbols.defined" valueType="definedSymbols">
+								<listOptionValue builtIn="false" value="USE_STDPERIPH_DRIVER"/>
+								<listOptionValue builtIn="false" value=""/>
+								<listOptionValue builtIn="false" value="STM32F40XX"/>
+								<listOptionValue builtIn="false" value="test_file_settings"/>
+							</option>
+							<inputType id="com.atollic.truestudio.gcc.input.570481643" superClass="com.atollic.truestudio.gcc.input"/>
+						</tool>
+					</fileInfo-->
+					<sourceEntries><entry excluding="" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Drivers" /><entry excluding="" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Src" /><entry excluding="" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Inc" />
+						
+					</sourceEntries>
 				</configuration>
 			</storageModule>
-			<storageModule moduleId="org.eclipse.cdt.core.externalSettings"/>
+			<storageModule moduleId="org.eclipse.cdt.core.externalSettings" />
+			<storageModule moduleId="org.eclipse.cdt.core.language.mapping" />
+			<storageModule moduleId="org.eclipse.cdt.internal.ui.text.commentOwnerProjectMappings" />
 		</cconfiguration>
 	</storageModule>
 	<storageModule moduleId="cdtBuildSystem" version="4.0.0">
-		<project id="dmx512-controller-board.null.955060787" name="dmx512-controller-board"/>
+		<project id="STM32100B-EVAL.com.atollic.truestudio.exe.1549124020" name="Executable" projectType="com.atollic.truestudio.exe" />
 	</storageModule>
+	<storageModule moduleId="refreshScope" />
 	<storageModule moduleId="scannerConfiguration">
-		<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
+		<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="" />
 		<profile id="org.eclipse.cdt.make.core.GCCStandardMakePerFileProfile">
 			<buildOutputProvider>
-				<openAction enabled="true" filePath=""/>
-				<parser enabled="true"/>
+				<openAction enabled="true" filePath="" />
+				<parser enabled="true" />
 			</buildOutputProvider>
 			<scannerInfoProvider id="makefileGenerator">
-				<runAction arguments="-f ${project_name}_scd.mk" command="make" useDefault="true"/>
-				<parser enabled="true"/>
+				<runAction arguments="-f ${project_name}_scd.mk" command="make" useDefault="true" />
+				<parser enabled="true" />
 			</scannerInfoProvider>
 		</profile>
-		<scannerConfigBuildInfo instanceId="ilg.gnuarmeclipse.managedbuild.cross.toolchain.base.1807473445;ilg.gnuarmeclipse.managedbuild.cross.toolchain.base.1807473445.1253890145;ilg.gnuarmeclipse.managedbuild.cross.tool.cpp.compiler.1994887563;ilg.gnuarmeclipse.managedbuild.cross.tool.cpp.compiler.input.2111599612">
-			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
-			<profile id="org.eclipse.cdt.make.core.GCCStandardMakePerFileProfile">
-				<buildOutputProvider>
-					<openAction enabled="true" filePath=""/>
-					<parser enabled="true"/>
-				</buildOutputProvider>
-				<scannerInfoProvider id="makefileGenerator">
-					<runAction arguments="-f ${project_name}_scd.mk" command="make" useDefault="true"/>
-					<parser enabled="true"/>
-				</scannerInfoProvider>
-			</profile>
-		</scannerConfigBuildInfo>
-		<scannerConfigBuildInfo instanceId="ilg.gnuarmeclipse.managedbuild.cross.toolchain.base.1967639673;ilg.gnuarmeclipse.managedbuild.cross.toolchain.base.1967639673.9273521;ilg.gnuarmeclipse.managedbuild.cross.tool.cpp.compiler.1467728300;ilg.gnuarmeclipse.managedbuild.cross.tool.cpp.compiler.input.187278251">
-			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
-			<profile id="org.eclipse.cdt.make.core.GCCStandardMakePerFileProfile">
-				<buildOutputProvider>
-					<openAction enabled="true" filePath=""/>
-					<parser enabled="true"/>
-				</buildOutputProvider>
-				<scannerInfoProvider id="makefileGenerator">
-					<runAction arguments="-f ${project_name}_scd.mk" command="make" useDefault="true"/>
-					<parser enabled="true"/>
-				</scannerInfoProvider>
-			</profile>
-		</scannerConfigBuildInfo>
-		<scannerConfigBuildInfo instanceId="ilg.gnuarmeclipse.managedbuild.cross.toolchain.base.1807473445;ilg.gnuarmeclipse.managedbuild.cross.toolchain.base.1807473445.1253890145;ilg.gnuarmeclipse.managedbuild.cross.tool.c.compiler.1411436083;ilg.gnuarmeclipse.managedbuild.cross.tool.c.compiler.input.1417697512">
-			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
-			<profile id="org.eclipse.cdt.make.core.GCCStandardMakePerFileProfile">
-				<buildOutputProvider>
-					<openAction enabled="true" filePath=""/>
-					<parser enabled="true"/>
-				</buildOutputProvider>
-				<scannerInfoProvider id="makefileGenerator">
-					<runAction arguments="-f ${project_name}_scd.mk" command="make" useDefault="true"/>
-					<parser enabled="true"/>
-				</scannerInfoProvider>
-			</profile>
-		</scannerConfigBuildInfo>
-		<scannerConfigBuildInfo instanceId="0.607795884">
-			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
-		</scannerConfigBuildInfo>
 		<scannerConfigBuildInfo instanceId="com.atollic.truestudio.exe.debug.1518366166;com.atollic.truestudio.exe.debug.1518366166.303277065;com.atollic.truestudio.exe.debug.toolchain.gcc.393815702;com.atollic.truestudio.gcc.input.1088835115">
-			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="org.eclipse.cdt.managedbuilder.core.GCCManagedMakePerProjectProfileC"/>
+			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="org.eclipse.cdt.managedbuilder.core.GCCManagedMakePerProjectProfileC" />
 			<profile id="org.eclipse.cdt.make.core.GCCStandardMakePerFileProfile">
 				<buildOutputProvider>
-					<openAction enabled="true" filePath=""/>
-					<parser enabled="true"/>
+					<openAction enabled="true" filePath="" />
+					<parser enabled="true" />
 				</buildOutputProvider>
 				<scannerInfoProvider id="makefileGenerator">
-					<runAction arguments="-f ${project_name}_scd.mk" command="make" useDefault="true"/>
-					<parser enabled="true"/>
+					<runAction arguments="-f ${project_name}_scd.mk" command="make" useDefault="true" />
+					<parser enabled="true" />
 				</scannerInfoProvider>
 			</profile>
 		</scannerConfigBuildInfo>
 		<scannerConfigBuildInfo instanceId="com.atollic.truestudio.exe.debug.1518366166;com.atollic.truestudio.exe.debug.1518366166.;com.atollic.truestudio.exe.debug.toolchain.gcc.1836874447;com.atollic.truestudio.gcc.input.850396938">
-			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="org.eclipse.cdt.managedbuilder.core.GCCManagedMakePerProjectProfileC"/>
+			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="org.eclipse.cdt.managedbuilder.core.GCCManagedMakePerProjectProfileC" />
 			<profile id="org.eclipse.cdt.make.core.GCCStandardMakePerFileProfile">
 				<buildOutputProvider>
-					<openAction enabled="true" filePath=""/>
-					<parser enabled="true"/>
+					<openAction enabled="true" filePath="" />
+					<parser enabled="true" />
 				</buildOutputProvider>
 				<scannerInfoProvider id="makefileGenerator">
-					<runAction arguments="-f ${project_name}_scd.mk" command="make" useDefault="true"/>
-					<parser enabled="true"/>
+					<runAction arguments="-f ${project_name}_scd.mk" command="make" useDefault="true" />
+					<parser enabled="true" />
 				</scannerInfoProvider>
 			</profile>
 		</scannerConfigBuildInfo>
-		<scannerConfigBuildInfo instanceId="ilg.gnuarmeclipse.managedbuild.cross.toolchain.base.1967639673;ilg.gnuarmeclipse.managedbuild.cross.toolchain.base.1967639673.9273521;ilg.gnuarmeclipse.managedbuild.cross.tool.c.compiler.1052329025;ilg.gnuarmeclipse.managedbuild.cross.tool.c.compiler.input.535414314">
-			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
-			<profile id="org.eclipse.cdt.make.core.GCCStandardMakePerFileProfile">
-				<buildOutputProvider>
-					<openAction enabled="true" filePath=""/>
-					<parser enabled="true"/>
-				</buildOutputProvider>
-				<scannerInfoProvider id="makefileGenerator">
-					<runAction arguments="-f ${project_name}_scd.mk" command="make" useDefault="true"/>
-					<parser enabled="true"/>
-				</scannerInfoProvider>
-			</profile>
-		</scannerConfigBuildInfo>
-	</storageModule>
-	<storageModule moduleId="org.eclipse.cdt.core.LanguageSettingsProviders"/>
-	<storageModule moduleId="refreshScope"/>
-	<storageModule moduleId="org.eclipse.cdt.make.core.buildtargets">
-		<buildTargets>
-			<target name="all" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
-				<buildCommand>make</buildCommand>
-				<buildArguments/>
-				<buildTarget>all</buildTarget>
-				<stopOnError>true</stopOnError>
-				<useDefaultCommand>false</useDefaultCommand>
-				<runAllBuilders>true</runAllBuilders>
-			</target>
-		</buildTargets>
 	</storageModule>
 </cproject>
