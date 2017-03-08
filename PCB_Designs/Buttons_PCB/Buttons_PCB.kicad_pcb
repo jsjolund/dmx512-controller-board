@@ -5,7 +5,7 @@
     (no_connects 0)
     (area 57.7892 49.884266 229.539201 104.292933)
     (thickness 1.6)
-    (drawings 6)
+    (drawings 9)
     (tracks 862)
     (zones 0)
     (modules 84)
@@ -37,7 +37,7 @@
   )
 
   (setup
-    (last_trace_width 2)
+    (last_trace_width 0.7)
     (user_trace_width 0.7)
     (user_trace_width 0.8)
     (user_trace_width 0.9)
@@ -2982,6 +2982,9 @@
       (net 65 "Net-(P5-Pad1)"))
   )
 
+  (target plus (at 229.04 131.69) (size 5) (width 0.15) (layer Edge.Cuts) (tstamp 58B9648A))
+  (target plus (at 67.01 24.91) (size 5) (width 0.15) (layer Edge.Cuts) (tstamp 58B96489))
+  (target plus (at 68 128.34) (size 5) (width 0.15) (layer Edge.Cuts))
   (gr_text Bottom (at 71.4242 62.9916 270) (layer B.Cu)
     (effects (font (size 1.5 1.5) (thickness 0.3)) (justify mirror))
   )

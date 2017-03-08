@@ -212,23 +212,20 @@ F 3 "" H 2400 1600 50  0000 C CNN
 	1    2400 1600
 	1    0    0    -1  
 $EndComp
-Text Label 3700 1100 2    60   ~ 0
+Text Label 3700 1100 0    60   ~ 0
 ENCODERA
 Text Label 2500 1100 2    60   ~ 0
 ENCODERB
 Wire Wire Line
 	2500 1100 2700 1100
 Wire Wire Line
-	2400 1750 2400 1950
-Wire Wire Line
-	2400 1950 3400 1950
+	2400 1750 2400 1900
 Text Label 3400 1850 2    60   ~ 0
 GND
 Text Label 4000 1950 0    60   ~ 0
 GND
 Connection ~ 3100 1750
-Connection ~ 3350 1750
-Connection ~ 2700 1950
+Connection ~ 2700 1900
 Text Label 3300 800  1    60   ~ 0
 GND
 Text Label 2700 800  1    60   ~ 0
@@ -299,7 +296,7 @@ Wire Wire Line
 	3300 1550 3300 1750
 Connection ~ 3300 1750
 Wire Wire Line
-	2700 1550 2700 1950
+	2700 1550 2700 1900
 Wire Wire Line
 	3300 1100 3300 1250
 Wire Wire Line
@@ -372,8 +369,6 @@ Wire Wire Line
 	5050 3750 5500 3750
 Text Label 5800 1650 2    60   ~ 0
 INTA
-Wire Wire Line
-	3100 1750 3400 1750
 $Comp
 L C 100n4
 U 1 1 58A0D14F
@@ -680,4 +675,16 @@ F 3 "" H 4800 4350 50  0001 C CNN
 	1    4550 3350
 	1    0    0    -1  
 $EndComp
+Wire Wire Line
+	3300 1750 3100 1750
+Wire Wire Line
+	3100 1750 3100 1950
+Wire Wire Line
+	3100 1950 3400 1950
+Wire Wire Line
+	3400 1750 3350 1750
+Wire Wire Line
+	3350 1900 3350 1750
+Wire Wire Line
+	2400 1900 3350 1900
 $EndSCHEMATC

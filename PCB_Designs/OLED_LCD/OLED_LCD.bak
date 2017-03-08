@@ -65,7 +65,11 @@ GND
 Wire Wire Line
 	5050 3950 5150 3950
 Wire Wire Line
-	5150 3950 5150 4300
+	5150 3950 5150 4050
+Wire Wire Line
+	5150 4050 5150 4150
+Wire Wire Line
+	5150 4150 5150 4300
 Wire Wire Line
 	5150 4150 5050 4150
 Wire Wire Line
@@ -212,23 +216,20 @@ F 3 "" H 2400 1600 50  0000 C CNN
 	1    2400 1600
 	1    0    0    -1  
 $EndComp
-Text Label 3700 1100 2    60   ~ 0
+Text Label 3700 1100 0    60   ~ 0
 ENCODERA
 Text Label 2500 1100 2    60   ~ 0
 ENCODERB
 Wire Wire Line
 	2500 1100 2700 1100
 Wire Wire Line
-	2400 1750 2400 1950
-Wire Wire Line
-	2400 1950 3400 1950
+	2400 1750 2400 1900
 Text Label 3400 1850 2    60   ~ 0
 GND
 Text Label 4000 1950 0    60   ~ 0
 GND
 Connection ~ 3100 1750
-Connection ~ 3350 1750
-Connection ~ 2700 1950
+Connection ~ 2700 1900
 Text Label 3300 800  1    60   ~ 0
 GND
 Text Label 2700 800  1    60   ~ 0
@@ -267,7 +268,11 @@ F 3 "" H 4200 1600 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	4000 1750 4350 1750
+	4000 1750 4200 1750
+Wire Wire Line
+	4200 1750 4300 1750
+Wire Wire Line
+	4300 1750 4350 1750
 Text Label 4350 1750 0    60   ~ 0
 ENCODERSW
 Connection ~ 4200 1750
@@ -299,7 +304,7 @@ Wire Wire Line
 	3300 1550 3300 1750
 Connection ~ 3300 1750
 Wire Wire Line
-	2700 1550 2700 1950
+	2700 1550 2700 1900
 Wire Wire Line
 	3300 1100 3300 1250
 Wire Wire Line
@@ -372,8 +377,6 @@ Wire Wire Line
 	5050 3750 5500 3750
 Text Label 5800 1650 2    60   ~ 0
 INTA
-Wire Wire Line
-	3100 1750 3400 1750
 $Comp
 L C 100n4
 U 1 1 58A0D14F
@@ -419,7 +422,7 @@ F 3 "" H 7100 1650 50  0000 C CNN
 	1    7100 1650
 	1    0    0    -1  
 $EndComp
-Text Label 4050 3450 2    60   ~ 0
+Text Label 4050 3550 2    60   ~ 0
 BUTTON_2
 Text Label 8000 1050 0    60   ~ 0
 BUTTON_2
@@ -434,7 +437,7 @@ F 3 "" H 6950 1650 50  0000 C CNN
 	1    6950 1650
 	0    1    1    0   
 $EndComp
-Text Label 4050 3550 2    60   ~ 0
+Text Label 4050 3450 2    60   ~ 0
 BUTT_LED
 Text Label 7550 1650 0    60   ~ 0
 BUTT_LED
@@ -521,7 +524,9 @@ $EndComp
 Wire Wire Line
 	6900 1050 7100 1050
 Wire Wire Line
-	7400 1050 7700 1050
+	7400 1050 7550 1050
+Wire Wire Line
+	7550 1050 7700 1050
 Wire Wire Line
 	7550 1050 7550 950 
 Connection ~ 7550 1050
@@ -680,4 +685,22 @@ F 3 "" H 4800 4350 50  0001 C CNN
 	1    4550 3350
 	1    0    0    -1  
 $EndComp
+Wire Wire Line
+	3300 1750 3100 1750
+Wire Wire Line
+	3100 1750 3100 1950
+Wire Wire Line
+	3100 1950 3400 1950
+Wire Wire Line
+	3400 1750 3350 1750
+Wire Wire Line
+	3350 1750 3350 1900
+Wire Wire Line
+	3350 1900 2750 1900
+Wire Wire Line
+	2750 1900 2750 1900
+Wire Wire Line
+	2750 1900 2700 1900
+Wire Wire Line
+	2700 1900 2400 1900
 $EndSCHEMATC
