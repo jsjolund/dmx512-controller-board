@@ -108,6 +108,7 @@ void Dmx512_TIM_IRQHandler(TIM_HandleTypeDef *htimHandle) {
 		uint32_t elapsedTime = dmxHtim->Instance->CNT;
 		long time = MARK_AFTER_BREAK - 1 - elapsedTime;
 		dmxHtim->Instance->ARR = (time > 0) ? time : 1;
+		HAL_NVIC_EnableIRQ(DMX_TIM_IRQ);
 		HAL_TIM_Base_Start_IT(dmxHtim);
 
 	} else if (dmxSendState == STATE_MAB) {

@@ -187,20 +187,20 @@ int main(void) {
 	LCDfadeBrightness(100, 1);
 	HAL_ADC_Start(&hadc1);
 
-	if (!testEEPROM()) {
-		LCDcursorPos(0, 0);
-		LCDwrite("EEPROM Test failed");
-		while (1)
-			;
-	}
+//	if (!testEEPROM()) {
+//		LCDcursorPos(0, 0);
+//		LCDwrite("EEPROM Test failed");
+//		while (1)
+//			;
+//	}
 
-//	ButtonsInit(&hi2c3);
+	// ButtonsInit(&hi2c3);
 
-// Blue button interrupt
-//	HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
-//	HAL_NVIC_SetPriority(EXTI15_10_IRQn, 0, 0);
+	// Blue button interrupt
+	// HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
+	// HAL_NVIC_SetPriority(EXTI15_10_IRQn, 0, 0);
 
-// Buttons I/O expander interrupt
+	// Buttons I/O expander interrupt
 	HAL_NVIC_EnableIRQ(EXTI9_5_IRQn);
 	HAL_NVIC_SetPriority(EXTI9_5_IRQn, 0, 0);
 
@@ -504,7 +504,7 @@ static void MX_ADC1_Init(void) {
 	sConfigInjected.InjectedChannel = ADC_CHANNEL_10;
 	sConfigInjected.InjectedRank = 1;
 	sConfigInjected.InjectedNbrOfConversion = 4;
-	sConfigInjected.InjectedSamplingTime = ADC_SAMPLETIME_84CYCLES;
+	sConfigInjected.InjectedSamplingTime = ADC_SAMPLETIME_2CYCLE_5;
 	sConfigInjected.ExternalTrigInjecConvEdge = ADC_EXTERNALTRIGINJECCONVEDGE_NONE;
 	sConfigInjected.ExternalTrigInjecConv = ADC_INJECTED_SOFTWARE_START;
 	sConfigInjected.AutoInjectedConv = DISABLE;
@@ -544,7 +544,7 @@ static void MX_ADC1_Init(void) {
 static void MX_I2C1_Init(void) {
 
 	hi2c1.Instance = I2C1;
-	hi2c1.Init.ClockSpeed = 400000;
+	hi2c1.Init.ClockSpeed = 100000;
 	hi2c1.Init.DutyCycle = I2C_DUTYCYCLE_2;
 	hi2c1.Init.OwnAddress1 = 0;
 	hi2c1.Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
@@ -580,7 +580,7 @@ static void MX_I2C2_Init(void) {
 static void MX_I2C3_Init(void) {
 
 	hi2c3.Instance = I2C3;
-	hi2c3.Init.ClockSpeed = 400000;
+	hi2c3.Init.ClockSpeed = 100000;
 	hi2c3.Init.DutyCycle = I2C_DUTYCYCLE_2;
 	hi2c3.Init.OwnAddress1 = 0;
 	hi2c3.Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
