@@ -11,9 +11,16 @@
 #include "stm32f4xx_hal.h"
 #include "io_exp.h"
 
-#define LCD_RS_Pin GPIO_PIN_2
-#define LCD_RW_Pin GPIO_PIN_3
-#define LCD_E_Pin GPIO_PIN_4
+#define LCD_BUTTON_LED_Pin GPA0
+#define LCD_BUTTON_Pin GPA1
+
+#define ENCODER_W_Pin GPA2
+#define ENCODER_B_Pin GPA3
+#define ENCODER_A_Pin GPA4
+
+#define LCD_RS_Pin GPA5
+#define LCD_RW_Pin GPA6
+#define LCD_E_Pin GPA7
 
 #define LCD_I2C_TIMEOUT 100
 
