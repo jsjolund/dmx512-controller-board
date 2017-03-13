@@ -14,17 +14,18 @@ static I2C_HandleTypeDef *btnHi2c;
 #define BTN_PIN_F2 GPB3
 #define BTN_PIN_F3 GPB5
 #define BTN_PIN_F4 GPB7
-#define BTN_PIN_F5 GPA1
-#define BTN_PIN_F6 GPA3
-#define BTN_PIN_F7 GPA5
-#define BTN_PIN_F8 GPA7
+#define BTN_PIN_F5 GPA7
+#define BTN_PIN_F6 GPA5
+#define BTN_PIN_F7 GPA3
+#define BTN_PIN_F8 GPA1
+
 #define BTN_PIN_S1 GPB1
 #define BTN_PIN_S2 GPB3
 #define BTN_PIN_S3 GPB5
 #define BTN_PIN_S4 GPB7
 
 #define IOEXP_ADDRESS_F (IOEXP_ADDRESS + 0)
-#define IOEXP_ADDRESS_S (IOEXP_ADDRESS + 1)
+#define IOEXP_ADDRESS_S (IOEXP_ADDRESS + 2)
 
 void ButtonSetLED(int devAddress, int btnPin, uint8_t state) {
 	uint16_t gpioState;
@@ -126,19 +127,24 @@ void EXTI9_5_IRQHandler(void) {
 	const int BUTTONS_S[] = { BTN_PIN_S1, BTN_PIN_S2, BTN_PIN_S3, BTN_PIN_S4 };
 	const int NUM_BUTTONS_S = 4;
 
+	int i;
+
 	if (HAL_GPIO_ReadPin(B2_GPIO_Port, B2_Pin) == GPIO_PIN_SET) {
+
 		uint16_t flags;
 		uint16_t status;
 		uint8_t isPressed;
-		int i;
 
 		while (HAL_I2C_Mem_Read(btnHi2c, IOEXP_ADDRESS_F, INTFA, I2C_MEMADD_SIZE_8BIT, (uint8_t *) &flags, sizeof(flags), BUTTONS_I2C_TIMEOUT) != HAL_OK)
 			;
 		while (HAL_I2C_Mem_Read(btnHi2c, IOEXP_ADDRESS_F, IOEXP_GPIOA, I2C_MEMADD_SIZE_8BIT, (uint8_t *) &status, sizeof(status), BUTTONS_I2C_TIMEOUT) != HAL_OK)
 			;
-		for (i = 0; i < NUM_BUTTONS_F; i++)
-			if (ButtonChangedState(BUTTONS_F[i], flags, status, &isPressed))
+		for (i = 0; i < NUM_BUTTONS_F; i++) {
+			if (ButtonChangedState(BUTTONS_F[i], flags, status, &isPressed)) {
 				ButtonEvent(IOEXP_ADDRESS_F, BUTTONS_F[i], isPressed);
+				EXTI->PR |= B2_Pin;
+			}
+		}
 
 		flags = 0;
 		status = 0;
@@ -148,11 +154,14 @@ void EXTI9_5_IRQHandler(void) {
 			;
 		while (HAL_I2C_Mem_Read(btnHi2c, IOEXP_ADDRESS_S, IOEXP_GPIOA, I2C_MEMADD_SIZE_8BIT, (uint8_t *) &status, sizeof(status), BUTTONS_I2C_TIMEOUT) != HAL_OK)
 			;
-		for (i = 0; i < NUM_BUTTONS_S; i++)
-			if (ButtonChangedState(BUTTONS_S[i], flags, status, &isPressed))
+		for (i = 0; i < NUM_BUTTONS_S; i++) {
+			if (ButtonChangedState(BUTTONS_S[i], flags, status, &isPressed)) {
 				ButtonEvent(IOEXP_ADDRESS_S, BUTTONS_S[i], isPressed);
+				EXTI->PR |= B2_Pin;
+			}
+		}
 	}
-	EXTI->PR |= B2_Pin;
+
 }
 
 void ButtonsInitIOexpander(uint16_t devAddress) {
@@ -175,10 +184,10 @@ void ButtonsInitIOexpander(uint16_t devAddress) {
 	while (HAL_I2C_Mem_Write(btnHi2c, devAddress, INTCONA, I2C_MEMADD_SIZE_8BIT, (uint8_t *) &intcon, sizeof(intcon), BUTTONS_I2C_TIMEOUT) != HAL_OK)
 		;
 	// 1 = Pull-up enabled
-	uint16_t pullups = 0b0101010101010101;
+	uint16_t pullups = 0xFFFF;
 	while (HAL_I2C_Mem_Write(btnHi2c, devAddress, GPPUA, I2C_MEMADD_SIZE_8BIT, (uint8_t *) &pullups, sizeof(pullups), BUTTONS_I2C_TIMEOUT) != HAL_OK)
 		;
-	uint16_t levels = 0xffff;
+	uint16_t levels = 0;
 	while (HAL_I2C_Mem_Write(btnHi2c, devAddress, IOEXP_GPIOA, I2C_MEMADD_SIZE_8BIT, (uint8_t *) &levels, sizeof(levels), BUTTONS_I2C_TIMEOUT) != HAL_OK)
 		;
 	// Read once to reset any interrupt related stuff
@@ -189,6 +198,6 @@ void ButtonsInitIOexpander(uint16_t devAddress) {
 
 void ButtonsInit(I2C_HandleTypeDef *hi2cHandle) {
 	btnHi2c = hi2cHandle;
-	ButtonsInitIOexpander(IOEXP_ADDRESS_F);
 	ButtonsInitIOexpander(IOEXP_ADDRESS_S);
+	ButtonsInitIOexpander(IOEXP_ADDRESS_F);
 }

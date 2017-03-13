@@ -40,5 +40,6 @@ uint8_t LCDgetBrightness(void);
 void LCDsetBrightness(uint8_t percent);
 void LCDfadeBrightness(uint8_t percent, uint8_t secondsFade);
 void LCDclear(void);
+void LCDclearRow(uint8_t row);
 void LCD_TIM_IRQHandler(TIM_HandleTypeDef *htimHandle);
 #endif /* LCD_H_ */
