@@ -504,7 +504,7 @@ static void MX_ADC1_Init(void) {
 	sConfigInjected.InjectedChannel = ADC_CHANNEL_10;
 	sConfigInjected.InjectedRank = 1;
 	sConfigInjected.InjectedNbrOfConversion = 4;
-	sConfigInjected.InjectedSamplingTime = ADC_SAMPLETIME_2CYCLE_5;
+	sConfigInjected.InjectedSamplingTime = ADC_SAMPLETIME_3CYCLES;
 	sConfigInjected.ExternalTrigInjecConvEdge = ADC_EXTERNALTRIGINJECCONVEDGE_NONE;
 	sConfigInjected.ExternalTrigInjecConv = ADC_INJECTED_SOFTWARE_START;
 	sConfigInjected.AutoInjectedConv = DISABLE;
