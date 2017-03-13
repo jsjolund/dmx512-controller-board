@@ -204,6 +204,9 @@ int main(void) {
 	HAL_NVIC_EnableIRQ(EXTI9_5_IRQn);
 	HAL_NVIC_SetPriority(EXTI9_5_IRQn, 0, 0);
 
+	HAL_NVIC_EnableIRQ(EXTI0_IRQn);
+	HAL_NVIC_SetPriority(EXTI0_IRQn, 0, 0);
+
 	// USER CODE END 2
 
 	// Infinite loop

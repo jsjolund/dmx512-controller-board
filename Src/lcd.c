@@ -112,21 +112,41 @@ void LCDclearRow(uint8_t row) {
 		LCDsendChar(' ');
 }
 
+void EXTI0_IRQHandler(void) {
+	EXTI->PR |= B0_Pin;
+}
+
 void LCDinit(TIM_HandleTypeDef *microSecondHtimHandle, TIM_HandleTypeDef *pwmHtimHandle, I2C_HandleTypeDef *hi2cHandle) {
 
 	lcdHi2c = hi2cHandle;
 
 	// Setup the I/O expander
-	uint8_t settings = 0; // Byte mode with IOCON.BANK = 0, no interrupts.
+	// Byte mode with IOCON.BANK = 0, INT pins internally connected, INT active-high
+	uint8_t settings = IOCON_MIRROR | IOCON_INTPOL;
 	while (HAL_I2C_Mem_Write(lcdHi2c, IOEXP_ADDRESS, IOCONA, I2C_MEMADD_SIZE_8BIT, &settings, sizeof(settings), LCD_I2C_TIMEOUT) != HAL_OK)
 		;
 	while (HAL_I2C_Mem_Write(lcdHi2c, IOEXP_ADDRESS, IOCONB, I2C_MEMADD_SIZE_8BIT, &settings, sizeof(settings), LCD_I2C_TIMEOUT) != HAL_OK)
 		;
-	uint16_t direction = 0; // Outputs only
+	uint16_t direction = LCD_BUTTON_Pin | LCD_ENCODER_W_Pin | LCD_ENCODER_B_Pin | LCD_ENCODER_A_Pin;
 	while (HAL_I2C_Mem_Write(lcdHi2c, IOEXP_ADDRESS, IODIRA, I2C_MEMADD_SIZE_8BIT, (uint8_t *) &direction, sizeof(direction), LCD_I2C_TIMEOUT) != HAL_OK)
 		;
-	uint16_t levels = 0;
+	// 1 = Enable GPIO input pin for interrupt-on-change event.
+	while (HAL_I2C_Mem_Write(lcdHi2c, IOEXP_ADDRESS, GPINTENA, I2C_MEMADD_SIZE_8BIT, (uint8_t *) &direction, sizeof(direction), LCD_I2C_TIMEOUT) != HAL_OK)
+		;
+	// Interrupt on change for inputs. 0 = Pin value is compared against the previous pin value.
+	uint16_t intcon = 0;
+	while (HAL_I2C_Mem_Write(lcdHi2c, IOEXP_ADDRESS, INTCONA, I2C_MEMADD_SIZE_8BIT, (uint8_t *) &intcon, sizeof(intcon), LCD_I2C_TIMEOUT) != HAL_OK)
+		;
+	// 1 = Pull-up enabled
+	uint16_t pullups = ~direction;
+	while (HAL_I2C_Mem_Write(lcdHi2c, IOEXP_ADDRESS, GPPUA, I2C_MEMADD_SIZE_8BIT, (uint8_t *) &pullups, sizeof(pullups), LCD_I2C_TIMEOUT) != HAL_OK)
+		;
+	uint16_t levels = direction | LCD_BUTTON_LED_Pin;
 	while (HAL_I2C_Mem_Write(lcdHi2c, IOEXP_ADDRESS, IOEXP_GPIOA, I2C_MEMADD_SIZE_8BIT, (uint8_t *) &levels, sizeof(levels), LCD_I2C_TIMEOUT) != HAL_OK)
+		;
+	// Read once to reset any interrupt related stuff
+	volatile uint16_t result;
+	while (HAL_I2C_Mem_Read(lcdHi2c, IOEXP_ADDRESS, IOEXP_GPIOA, I2C_MEMADD_SIZE_8BIT, (uint8_t *) &result, sizeof(result), LCD_I2C_TIMEOUT) != HAL_OK)
 		;
 
 	// Setup PWM to control backlight brightness

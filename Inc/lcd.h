@@ -14,9 +14,9 @@
 #define LCD_BUTTON_LED_Pin GPA0
 #define LCD_BUTTON_Pin GPA1
 
-#define ENCODER_W_Pin GPA2
-#define ENCODER_B_Pin GPA3
-#define ENCODER_A_Pin GPA4
+#define LCD_ENCODER_W_Pin GPA2
+#define LCD_ENCODER_B_Pin GPA3
+#define LCD_ENCODER_A_Pin GPA4
 
 #define LCD_RS_Pin GPA5
 #define LCD_RW_Pin GPA6

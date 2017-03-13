@@ -182,7 +182,7 @@ void ButtonsInitIOexpander(uint16_t devAddress) {
 	while (HAL_I2C_Mem_Write(btnHi2c, devAddress, IOEXP_GPIOA, I2C_MEMADD_SIZE_8BIT, (uint8_t *) &levels, sizeof(levels), BUTTONS_I2C_TIMEOUT) != HAL_OK)
 		;
 	// Read once to reset any interrupt related stuff
-	uint16_t result;
+	volatile uint16_t result;
 	while (HAL_I2C_Mem_Read(btnHi2c, devAddress, IOEXP_GPIOA, I2C_MEMADD_SIZE_8BIT, (uint8_t *) &result, sizeof(result), BUTTONS_I2C_TIMEOUT) != HAL_OK)
 		;
 }
