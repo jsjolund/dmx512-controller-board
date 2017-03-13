@@ -142,7 +142,6 @@ void EXTI9_5_IRQHandler(void) {
 		for (i = 0; i < NUM_BUTTONS_F; i++) {
 			if (ButtonChangedState(BUTTONS_F[i], flags, status, &isPressed)) {
 				ButtonEvent(IOEXP_ADDRESS_F, BUTTONS_F[i], isPressed);
-				EXTI->PR |= B2_Pin;
 			}
 		}
 
@@ -157,11 +156,15 @@ void EXTI9_5_IRQHandler(void) {
 		for (i = 0; i < NUM_BUTTONS_S; i++) {
 			if (ButtonChangedState(BUTTONS_S[i], flags, status, &isPressed)) {
 				ButtonEvent(IOEXP_ADDRESS_S, BUTTONS_S[i], isPressed);
-				EXTI->PR |= B2_Pin;
 			}
 		}
 	}
-
+	EXTI->PR |= B2_Pin;
+	while (HAL_I2C_IsDeviceReady(btnHi2c, IOEXP_ADDRESS_F, 100, BUTTONS_I2C_TIMEOUT) != HAL_OK);
+	while (HAL_I2C_IsDeviceReady(btnHi2c, IOEXP_ADDRESS_S, 100, BUTTONS_I2C_TIMEOUT) != HAL_OK);
+	if (HAL_GPIO_ReadPin(B2_GPIO_Port, B2_Pin) == GPIO_PIN_SET) {
+		EXTI9_5_IRQHandler();
+	}
 }
 
 void ButtonsInitIOexpander(uint16_t devAddress) {

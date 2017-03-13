@@ -197,6 +197,12 @@ int main(void) {
 	LCDcursorPos(0, 0);
 	LCDwrite("ERROR EEPROM");
 	EEPROMInit(&hi2c2);
+	//	if (!testEEPROM()) {
+	//		LCDcursorPos(0, 0);
+	//		LCDwrite("EEPROM Test failed");
+	//		while (1)
+	//			;
+	//	}
 
 	LCDclearRow(0);
 	LCDcursorPos(0, 0);
@@ -208,18 +214,7 @@ int main(void) {
 	LCDwrite("ERROR BUTTONS");
 	ButtonsInit(&hi2c3);
 
-//	if (!testEEPROM()) {
-//		LCDcursorPos(0, 0);
-//		LCDwrite("EEPROM Test failed");
-//		while (1)
-//			;
-//	}
-
-// Blue button interrupt
-// HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
-// HAL_NVIC_SetPriority(EXTI15_10_IRQn, 0, 0);
-
-// Buttons I/O expander interrupt
+	// Buttons I/O expander interrupt
 	HAL_NVIC_EnableIRQ(EXTI9_5_IRQn);
 	HAL_NVIC_SetPriority(EXTI9_5_IRQn, 0, 0);
 
