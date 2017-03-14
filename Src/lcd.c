@@ -12,6 +12,9 @@ static TIM_HandleTypeDef *pwmHtim;
 static I2C_HandleTypeDef *lcdHi2c;
 
 static volatile uint8_t targetBrightness;
+static volatile int encPosition;
+static volatile uint16_t lStateA;
+static volatile uint16_t lStateB;
 
 void LCD_TIM_IRQHandler(TIM_HandleTypeDef *htimHandle) {
 	// Timer interrupt for changing the backlight brightness in steps
@@ -51,8 +54,16 @@ void LCDfadeBrightness(uint8_t percent, uint8_t secondsFade) {
 }
 
 void LCDsendBytes(uint8_t rs, uint8_t bytes) {
+	HAL_NVIC_DisableIRQ(EXTI0_IRQn);
+	// Save the previous GPIO state for non-LCD pins
+	uint16_t prevState;
+	while (HAL_I2C_Mem_Read(lcdHi2c, IOEXP_ADDRESS, IOEXP_GPIOA, I2C_MEMADD_SIZE_8BIT, (uint8_t *) &prevState, sizeof(prevState), LCD_I2C_TIMEOUT) != HAL_OK)
+		;
+	prevState &= LCD_BUTTON_LED_Pin | LCD_BUTTON_Pin | LCD_ROT_ENC_W_Pin | LCD_ROT_ENC_B_Pin | LCD_ROT_ENC_A_Pin;
+
 	// Sends a byte (blocking transfer) through I2C
 	uint16_t data = (rs) ? LCD_RS_Pin : 0;
+	data |= prevState;
 	data |= bytes << 8;
 	while (HAL_I2C_Mem_Write(lcdHi2c, IOEXP_ADDRESS, IOEXP_GPIOA, I2C_MEMADD_SIZE_8BIT, (uint8_t *) &data, sizeof(data), LCD_I2C_TIMEOUT) != HAL_OK)
 		;
@@ -62,6 +73,80 @@ void LCDsendBytes(uint8_t rs, uint8_t bytes) {
 	data &= ~LCD_E_Pin;
 	while (HAL_I2C_Mem_Write(lcdHi2c, IOEXP_ADDRESS, IOEXP_GPIOA, I2C_MEMADD_SIZE_8BIT, (uint8_t *) &data, sizeof(data), LCD_I2C_TIMEOUT) != HAL_OK)
 		;
+	HAL_NVIC_EnableIRQ(EXTI0_IRQn);
+}
+
+void LCDbuttonEvent(int btnPin, uint8_t isPressed) {
+	switch (btnPin) {
+	case LCD_ROT_ENC_W_Pin:
+		if (isPressed)
+			printf("push pressed\r\n");
+		else
+			printf("push released\r\n");
+		break;
+	case LCD_ROT_ENC_CW:
+		encPosition++;
+		printf("encoder %d\r\n", encPosition);
+		break;
+	case LCD_ROT_ENC_CCW:
+		encPosition--;
+		printf("encoder %d\r\n", encPosition);
+		break;
+	default:
+		break;
+	}
+}
+
+void EXTI0_IRQHandler(void) {
+	if (HAL_GPIO_ReadPin(B0_GPIO_Port, B0_Pin) == GPIO_PIN_SET) {
+		uint16_t flags;
+		uint16_t state;
+		while (HAL_I2C_Mem_Read(lcdHi2c, IOEXP_ADDRESS, INTFA, I2C_MEMADD_SIZE_8BIT, (uint8_t *) &flags, sizeof(flags), LCD_I2C_TIMEOUT) != HAL_OK)
+			;
+		while (HAL_I2C_Mem_Read(lcdHi2c, IOEXP_ADDRESS, IOEXP_GPIOA, I2C_MEMADD_SIZE_8BIT, (uint8_t *) &state, sizeof(state), LCD_I2C_TIMEOUT) != HAL_OK)
+			;
+		if (flags & LCD_ROT_ENC_W_Pin)
+			LCDbuttonEvent(LCD_ROT_ENC_W_Pin, (state & LCD_ROT_ENC_W_Pin));
+
+		if (flags & LCD_ROT_ENC_A_Pin) {
+			if (!(state & LCD_ROT_ENC_A_Pin) && (state & LCD_ROT_ENC_B_Pin)) {
+				// Initial falling edge on A, tick for counter clockwise rotation
+				LCDbuttonEvent(LCD_ROT_ENC_CCW, 1);
+				lStateA = state;
+
+			} else if ((state & LCD_ROT_ENC_A_Pin) && !(state & LCD_ROT_ENC_B_Pin)) {
+				// Rising edge on A, check if we missed the previous tick...
+				if (!(!(lStateA & LCD_ROT_ENC_A_Pin) && (lStateA & LCD_ROT_ENC_B_Pin))) {
+					LCDbuttonEvent(LCD_ROT_ENC_CCW, 1);
+					lStateA = state;
+				} else {
+					lStateA = 0;
+				}
+			}
+		}
+		if (flags & LCD_ROT_ENC_B_Pin) {
+			if (!(state & LCD_ROT_ENC_B_Pin) && (state & LCD_ROT_ENC_A_Pin)) {
+				// Initial falling edge on B, tick for clockwise rotation
+				LCDbuttonEvent(LCD_ROT_ENC_CW, 1);
+				lStateB = state;
+
+			} else if ((state & LCD_ROT_ENC_B_Pin) && !(state & LCD_ROT_ENC_A_Pin)) {
+				// Rising edge on B, check if we missed the previous tick...
+				if (!(!(lStateB & LCD_ROT_ENC_B_Pin) && (lStateB & LCD_ROT_ENC_A_Pin))) {
+					LCDbuttonEvent(LCD_ROT_ENC_CW, 1);
+					lStateB = state;
+				} else {
+					lStateB = 0;
+				}
+			}
+		}
+	}
+	EXTI->PR |= B0_Pin;
+	while (HAL_I2C_IsDeviceReady(lcdHi2c, IOEXP_ADDRESS, 100, LCD_I2C_TIMEOUT) != HAL_OK)
+		;
+	if (HAL_GPIO_ReadPin(B0_GPIO_Port, B0_Pin) == GPIO_PIN_SET) {
+		EXTI0_IRQHandler();
+	}
 }
 
 void LCDsendCmd(uint8_t cmd) {
@@ -112,10 +197,6 @@ void LCDclearRow(uint8_t row) {
 		LCDsendChar(' ');
 }
 
-void EXTI0_IRQHandler(void) {
-	EXTI->PR |= B0_Pin;
-}
-
 void LCDinit(TIM_HandleTypeDef *microSecondHtimHandle, TIM_HandleTypeDef *pwmHtimHandle, I2C_HandleTypeDef *hi2cHandle) {
 
 	lcdHi2c = hi2cHandle;
@@ -127,7 +208,7 @@ void LCDinit(TIM_HandleTypeDef *microSecondHtimHandle, TIM_HandleTypeDef *pwmHti
 		;
 	while (HAL_I2C_Mem_Write(lcdHi2c, IOEXP_ADDRESS, IOCONB, I2C_MEMADD_SIZE_8BIT, &settings, sizeof(settings), LCD_I2C_TIMEOUT) != HAL_OK)
 		;
-	uint16_t direction = LCD_BUTTON_Pin | LCD_ENCODER_W_Pin | LCD_ENCODER_B_Pin | LCD_ENCODER_A_Pin;
+	uint16_t direction = LCD_BUTTON_Pin | LCD_ROT_ENC_W_Pin | LCD_ROT_ENC_B_Pin | LCD_ROT_ENC_A_Pin;
 	while (HAL_I2C_Mem_Write(lcdHi2c, IOEXP_ADDRESS, IODIRA, I2C_MEMADD_SIZE_8BIT, (uint8_t *) &direction, sizeof(direction), LCD_I2C_TIMEOUT) != HAL_OK)
 		;
 	// 1 = Enable GPIO input pin for interrupt-on-change event.
@@ -138,10 +219,10 @@ void LCDinit(TIM_HandleTypeDef *microSecondHtimHandle, TIM_HandleTypeDef *pwmHti
 	while (HAL_I2C_Mem_Write(lcdHi2c, IOEXP_ADDRESS, INTCONA, I2C_MEMADD_SIZE_8BIT, (uint8_t *) &intcon, sizeof(intcon), LCD_I2C_TIMEOUT) != HAL_OK)
 		;
 	// 1 = Pull-up enabled
-	uint16_t pullups = ~direction;
+	uint16_t pullups = 0xFFFF;
 	while (HAL_I2C_Mem_Write(lcdHi2c, IOEXP_ADDRESS, GPPUA, I2C_MEMADD_SIZE_8BIT, (uint8_t *) &pullups, sizeof(pullups), LCD_I2C_TIMEOUT) != HAL_OK)
 		;
-	uint16_t levels = direction | LCD_BUTTON_LED_Pin;
+	uint16_t levels = LCD_BUTTON_LED_Pin;
 	while (HAL_I2C_Mem_Write(lcdHi2c, IOEXP_ADDRESS, IOEXP_GPIOA, I2C_MEMADD_SIZE_8BIT, (uint8_t *) &levels, sizeof(levels), LCD_I2C_TIMEOUT) != HAL_OK)
 		;
 	// Read once to reset any interrupt related stuff

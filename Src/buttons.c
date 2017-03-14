@@ -10,14 +10,14 @@
 static I2C_HandleTypeDef *btnHi2c;
 
 // NOTE: These do not have unique identifiers since they map to pin numbers
-#define BTN_PIN_F1 GPB1
-#define BTN_PIN_F2 GPB3
-#define BTN_PIN_F3 GPB5
-#define BTN_PIN_F4 GPB7
-#define BTN_PIN_F5 GPA7
-#define BTN_PIN_F6 GPA5
-#define BTN_PIN_F7 GPA3
-#define BTN_PIN_F8 GPA1
+#define BTN_PIN_F1 GPA1
+#define BTN_PIN_F2 GPA3
+#define BTN_PIN_F3 GPA5
+#define BTN_PIN_F4 GPA7
+#define BTN_PIN_F5 GPB7
+#define BTN_PIN_F6 GPB5
+#define BTN_PIN_F7 GPB3
+#define BTN_PIN_F8 GPB1
 
 #define BTN_PIN_S1 GPB1
 #define BTN_PIN_S2 GPB3
@@ -132,29 +132,29 @@ void EXTI9_5_IRQHandler(void) {
 	if (HAL_GPIO_ReadPin(B2_GPIO_Port, B2_Pin) == GPIO_PIN_SET) {
 
 		uint16_t flags;
-		uint16_t status;
+		uint16_t state;
 		uint8_t isPressed;
 
 		while (HAL_I2C_Mem_Read(btnHi2c, IOEXP_ADDRESS_F, INTFA, I2C_MEMADD_SIZE_8BIT, (uint8_t *) &flags, sizeof(flags), BUTTONS_I2C_TIMEOUT) != HAL_OK)
 			;
-		while (HAL_I2C_Mem_Read(btnHi2c, IOEXP_ADDRESS_F, IOEXP_GPIOA, I2C_MEMADD_SIZE_8BIT, (uint8_t *) &status, sizeof(status), BUTTONS_I2C_TIMEOUT) != HAL_OK)
+		while (HAL_I2C_Mem_Read(btnHi2c, IOEXP_ADDRESS_F, IOEXP_GPIOA, I2C_MEMADD_SIZE_8BIT, (uint8_t *) &state, sizeof(state), BUTTONS_I2C_TIMEOUT) != HAL_OK)
 			;
 		for (i = 0; i < NUM_BUTTONS_F; i++) {
-			if (ButtonChangedState(BUTTONS_F[i], flags, status, &isPressed)) {
+			if (ButtonChangedState(BUTTONS_F[i], flags, state, &isPressed)) {
 				ButtonEvent(IOEXP_ADDRESS_F, BUTTONS_F[i], isPressed);
 			}
 		}
 
 		flags = 0;
-		status = 0;
+		state = 0;
 		isPressed = 0;
 
 		while (HAL_I2C_Mem_Read(btnHi2c, IOEXP_ADDRESS_S, INTFA, I2C_MEMADD_SIZE_8BIT, (uint8_t *) &flags, sizeof(flags), BUTTONS_I2C_TIMEOUT) != HAL_OK)
 			;
-		while (HAL_I2C_Mem_Read(btnHi2c, IOEXP_ADDRESS_S, IOEXP_GPIOA, I2C_MEMADD_SIZE_8BIT, (uint8_t *) &status, sizeof(status), BUTTONS_I2C_TIMEOUT) != HAL_OK)
+		while (HAL_I2C_Mem_Read(btnHi2c, IOEXP_ADDRESS_S, IOEXP_GPIOA, I2C_MEMADD_SIZE_8BIT, (uint8_t *) &state, sizeof(state), BUTTONS_I2C_TIMEOUT) != HAL_OK)
 			;
 		for (i = 0; i < NUM_BUTTONS_S; i++) {
-			if (ButtonChangedState(BUTTONS_S[i], flags, status, &isPressed)) {
+			if (ButtonChangedState(BUTTONS_S[i], flags, state, &isPressed)) {
 				ButtonEvent(IOEXP_ADDRESS_S, BUTTONS_S[i], isPressed);
 			}
 		}

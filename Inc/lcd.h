@@ -11,13 +11,14 @@
 #include "stm32f4xx_hal.h"
 #include "io_exp.h"
 
+#define LCD_ROT_ENC_CW 0xFFFF
+#define LCD_ROT_ENC_CCW 0xFFFE
+
 #define LCD_BUTTON_LED_Pin GPA0
 #define LCD_BUTTON_Pin GPA1
-
-#define LCD_ENCODER_W_Pin GPA2
-#define LCD_ENCODER_B_Pin GPA3
-#define LCD_ENCODER_A_Pin GPA4
-
+#define LCD_ROT_ENC_W_Pin GPA2
+#define LCD_ROT_ENC_B_Pin GPA3
+#define LCD_ROT_ENC_A_Pin GPA4
 #define LCD_RS_Pin GPA5
 #define LCD_RW_Pin GPA6
 #define LCD_E_Pin GPA7
