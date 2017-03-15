@@ -181,7 +181,7 @@ int main(void) {
 
 	// USER CODE BEGIN 2
 	LCDinit(&htim4, &htim3, &hi2c1);
-	LCDfadeBrightness(100, 1);
+	LCDfadeBrightness(100, 3);
 
 	LCDclearRow(0);
 	LCDcursorPos(0, 0);
