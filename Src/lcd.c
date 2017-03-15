@@ -6,15 +6,30 @@
  */
 
 #include "lcd.h"
+#include "SRP.h"
 
 static TIM_HandleTypeDef *microSecondHtim;
 static TIM_HandleTypeDef *pwmHtim;
 static I2C_HandleTypeDef *lcdHi2c;
 
 static volatile uint8_t targetBrightness;
-static volatile int encPosition;
 static volatile uint16_t lStateA;
 static volatile uint16_t lStateB;
+static volatile int encPosition;
+
+static volatile uint8_t sending;
+static volatile uint8_t intPending;
+static volatile uint8_t ledState;
+
+void LCD_I2C_Write(uint16_t MemAddress, uint8_t *pData, uint16_t Size) {
+	while (HAL_I2C_Mem_Write(lcdHi2c, IOEXP_ADDRESS, MemAddress, I2C_MEMADD_SIZE_8BIT, pData, Size, LCD_I2C_TIMEOUT) != HAL_OK)
+		;
+}
+
+void LCD_I2C_Read(uint16_t MemAddress, uint8_t *pData, uint16_t Size) {
+	while (HAL_I2C_Mem_Read(lcdHi2c, IOEXP_ADDRESS, MemAddress, I2C_MEMADD_SIZE_8BIT, pData, Size, LCD_I2C_TIMEOUT) != HAL_OK)
+		;
+}
 
 void LCD_TIM_IRQHandler(TIM_HandleTypeDef *htimHandle) {
 	// Timer interrupt for changing the backlight brightness in steps
@@ -26,6 +41,21 @@ void LCD_TIM_IRQHandler(TIM_HandleTypeDef *htimHandle) {
 	} else {
 		HAL_NVIC_DisableIRQ(LCD_TIM_IRQ);
 	}
+}
+
+void LCDsetButtonLED(uint8_t state) {
+	uint16_t gpioState;
+	LCD_I2C_Read(IOEXP_GPIOA, (uint8_t *) &gpioState, sizeof(gpioState));
+	gpioState = (state) ? gpioState | LCD_BUTTON_LED_Pin : gpioState & ~LCD_BUTTON_LED_Pin;
+	LCD_I2C_Write(IOEXP_GPIOA, (uint8_t *) &gpioState, sizeof(gpioState));
+	ledState = state;
+}
+
+uint8_t LCDgetButtonLED(void) {
+	uint16_t gpioState;
+	LCD_I2C_Read(IOEXP_GPIOA, (uint8_t *) &gpioState, sizeof(gpioState));
+	ledState = (gpioState & LCD_BUTTON_LED_Pin) ? 1 : 0;
+	return ledState;
 }
 
 void LCDsetBrightness(uint8_t percent) {
@@ -53,31 +83,19 @@ void LCDfadeBrightness(uint8_t percent, uint8_t secondsFade) {
 	}
 }
 
-void LCDsendBytes(uint8_t rs, uint8_t bytes) {
-	HAL_NVIC_DisableIRQ(EXTI0_IRQn);
-	// Save the previous GPIO state for non-LCD pins
-	uint16_t prevState;
-	while (HAL_I2C_Mem_Read(lcdHi2c, IOEXP_ADDRESS, IOEXP_GPIOA, I2C_MEMADD_SIZE_8BIT, (uint8_t *) &prevState, sizeof(prevState), LCD_I2C_TIMEOUT) != HAL_OK)
-		;
-	prevState &= LCD_BUTTON_LED_Pin | LCD_BUTTON_Pin | LCD_ROT_ENC_W_Pin | LCD_ROT_ENC_B_Pin | LCD_ROT_ENC_A_Pin;
-
-	// Sends a byte (blocking transfer) through I2C
-	uint16_t data = (rs) ? LCD_RS_Pin : 0;
-	data |= prevState;
-	data |= bytes << 8;
-	while (HAL_I2C_Mem_Write(lcdHi2c, IOEXP_ADDRESS, IOEXP_GPIOA, I2C_MEMADD_SIZE_8BIT, (uint8_t *) &data, sizeof(data), LCD_I2C_TIMEOUT) != HAL_OK)
-		;
-	data |= LCD_E_Pin;
-	while (HAL_I2C_Mem_Write(lcdHi2c, IOEXP_ADDRESS, IOEXP_GPIOA, I2C_MEMADD_SIZE_8BIT, (uint8_t *) &data, sizeof(data), LCD_I2C_TIMEOUT) != HAL_OK)
-		;
-	data &= ~LCD_E_Pin;
-	while (HAL_I2C_Mem_Write(lcdHi2c, IOEXP_ADDRESS, IOEXP_GPIOA, I2C_MEMADD_SIZE_8BIT, (uint8_t *) &data, sizeof(data), LCD_I2C_TIMEOUT) != HAL_OK)
-		;
-	HAL_NVIC_EnableIRQ(EXTI0_IRQn);
-}
-
 void LCDbuttonEvent(int btnPin, uint8_t isPressed) {
 	switch (btnPin) {
+	case LCD_BUTTON_Pin:
+		if (isPressed) {
+			if (LCDgetButtonLED())
+				LCDsetButtonLED(0);
+			else
+				LCDsetButtonLED(1);
+			printf("BTN_LCD pressed\r\n");
+		} else {
+			printf("BTN_LCD released\r\n");
+		}
+		break;
 	case LCD_ROT_ENC_W_Pin:
 		if (isPressed)
 			printf("push pressed\r\n");
@@ -98,55 +116,108 @@ void LCDbuttonEvent(int btnPin, uint8_t isPressed) {
 }
 
 void EXTI0_IRQHandler(void) {
-	if (HAL_GPIO_ReadPin(B0_GPIO_Port, B0_Pin) == GPIO_PIN_SET) {
-		uint16_t flags;
-		uint16_t state;
-		while (HAL_I2C_Mem_Read(lcdHi2c, IOEXP_ADDRESS, INTFA, I2C_MEMADD_SIZE_8BIT, (uint8_t *) &flags, sizeof(flags), LCD_I2C_TIMEOUT) != HAL_OK)
-			;
-		while (HAL_I2C_Mem_Read(lcdHi2c, IOEXP_ADDRESS, IOEXP_GPIOA, I2C_MEMADD_SIZE_8BIT, (uint8_t *) &state, sizeof(state), LCD_I2C_TIMEOUT) != HAL_OK)
-			;
-		if (flags & LCD_ROT_ENC_W_Pin)
-			LCDbuttonEvent(LCD_ROT_ENC_W_Pin, (state & LCD_ROT_ENC_W_Pin));
+	if (sending) {
+		BARRIER_LOCK
+		EXTI->PR |= B0_Pin;
+		intPending = 1;
+		BARRIER_UNLOCK
+		return;
+	}
+	NVIC_DisableIRQ(EXTI0_IRQn);
+	BARRIER_LOCK
+	volatile uint16_t flags, state, aHigh, bHigh, aLow, bLow;
+	// No need to check INTFB/GPIOB probably
+	while (HAL_I2C_IsDeviceReady(lcdHi2c, IOEXP_ADDRESS, 100, LCD_I2C_TIMEOUT) != HAL_OK)
+		;
+	LCD_I2C_Read(INTFA, (uint8_t *) &flags, sizeof(flags));
+	LCD_I2C_Read(INTCAPA, (uint8_t *) &state, sizeof(state));
 
-		if (flags & LCD_ROT_ENC_A_Pin) {
-			if (!(state & LCD_ROT_ENC_A_Pin) && (state & LCD_ROT_ENC_B_Pin)) {
-				// Initial falling edge on A, tick for counter clockwise rotation
-				LCDbuttonEvent(LCD_ROT_ENC_CCW, 1);
-				lStateA = state;
+	if (flags & LCD_BUTTON_Pin)
+		LCDbuttonEvent(LCD_BUTTON_Pin, (state & LCD_BUTTON_Pin) ? 0 : 1);
 
-			} else if ((state & LCD_ROT_ENC_A_Pin) && !(state & LCD_ROT_ENC_B_Pin)) {
-				// Rising edge on A, check if we missed the previous tick...
-				if (!(!(lStateA & LCD_ROT_ENC_A_Pin) && (lStateA & LCD_ROT_ENC_B_Pin))) {
-					LCDbuttonEvent(LCD_ROT_ENC_CCW, 1);
-					lStateA = state;
-				} else {
-					lStateA = 0;
-				}
-			}
-		}
-		if (flags & LCD_ROT_ENC_B_Pin) {
-			if (!(state & LCD_ROT_ENC_B_Pin) && (state & LCD_ROT_ENC_A_Pin)) {
-				// Initial falling edge on B, tick for clockwise rotation
+	if (flags & LCD_ROT_ENC_W_Pin)
+		LCDbuttonEvent(LCD_ROT_ENC_W_Pin, (state & LCD_ROT_ENC_W_Pin) ? 0 : 1);
+
+	aHigh = state & LCD_ROT_ENC_A_Pin;
+	bHigh = state & LCD_ROT_ENC_B_Pin;
+	aLow = !aHigh;
+	bLow = !bHigh;
+
+	if (flags & LCD_ROT_ENC_A_Pin) {
+		if (aLow && bHigh) {
+			// Initial falling edge on A, tick for clockwise rotation
+			LCDbuttonEvent(LCD_ROT_ENC_CW, 1);
+			lStateA = state;
+
+		} else if (aHigh && bLow) {
+			// Rising edge on A, check if we missed the previous tick...
+			if ((lStateA & LCD_ROT_ENC_A_Pin) || !(lStateA & LCD_ROT_ENC_B_Pin)) {
 				LCDbuttonEvent(LCD_ROT_ENC_CW, 1);
-				lStateB = state;
-
-			} else if ((state & LCD_ROT_ENC_B_Pin) && !(state & LCD_ROT_ENC_A_Pin)) {
-				// Rising edge on B, check if we missed the previous tick...
-				if (!(!(lStateB & LCD_ROT_ENC_B_Pin) && (lStateB & LCD_ROT_ENC_A_Pin))) {
-					LCDbuttonEvent(LCD_ROT_ENC_CW, 1);
-					lStateB = state;
-				} else {
-					lStateB = 0;
-				}
+				lStateA = state;
+			} else {
+				lStateA = 0;
 			}
 		}
 	}
-	EXTI->PR |= B0_Pin;
+	if (flags & LCD_ROT_ENC_B_Pin) {
+		if (bLow && aHigh) {
+			// Initial falling edge on B, tick for counter clockwise rotation
+			LCDbuttonEvent(LCD_ROT_ENC_CCW, 1);
+			lStateB = state;
+
+		} else if (bHigh && aLow) {
+			// Rising edge on B, check if we missed the previous tick...
+			if ((lStateB & LCD_ROT_ENC_B_Pin) || !(lStateB & LCD_ROT_ENC_A_Pin)) {
+				LCDbuttonEvent(LCD_ROT_ENC_CCW, 1);
+				lStateB = state;
+			} else {
+				lStateB = 0;
+			}
+		}
+	}
+	intPending = 0;
 	while (HAL_I2C_IsDeviceReady(lcdHi2c, IOEXP_ADDRESS, 100, LCD_I2C_TIMEOUT) != HAL_OK)
 		;
+	// Reset the I/O expander interrupt
+	LCD_I2C_Read(IOEXP_GPIOA, (uint8_t *) &state, sizeof(state));
+	while (HAL_I2C_IsDeviceReady(lcdHi2c, IOEXP_ADDRESS, 100, LCD_I2C_TIMEOUT) != HAL_OK)
+		;
+	// Reset the MCU interrupt
+	EXTI->PR |= B0_Pin;
+	NVIC_EnableIRQ(EXTI0_IRQn);
+	BARRIER_UNLOCK
 	if (HAL_GPIO_ReadPin(B0_GPIO_Port, B0_Pin) == GPIO_PIN_SET) {
 		EXTI0_IRQHandler();
 	}
+}
+void LCDsendBytes(uint8_t rs, uint8_t bytes) {
+	BARRIER_LOCK
+		// Sends a byte (blocking transfer) through I2C
+	uint16_t data = (rs) ? LCD_RS_Pin : 0;
+	data |= bytes << 8;
+	data = (ledState) ? data | LCD_BUTTON_LED_Pin : data & ~LCD_BUTTON_LED_Pin;
+	sending = 1;
+	LCD_I2C_Write(IOEXP_GPIOA, (uint8_t *) &data, sizeof(data));
+	sending = 0;
+	if (intPending)
+		EXTI0_IRQHandler();
+	// There is no need to set the data pins twice more, this could be faster by only addressing GPIOA (E pin).
+	// However, the LCD still needs time to settle between writes, so delay might be needed in that case?
+	data |= LCD_E_Pin;
+	data = (ledState) ? data | LCD_BUTTON_LED_Pin : data & ~LCD_BUTTON_LED_Pin;
+	sending = 1;
+	LCD_I2C_Write(IOEXP_GPIOA, (uint8_t *) &data, sizeof(data));
+	sending = 0;
+	if (intPending)
+		EXTI0_IRQHandler();
+	data &= ~LCD_E_Pin;
+	data = (ledState) ? data | LCD_BUTTON_LED_Pin : data & ~LCD_BUTTON_LED_Pin;
+	sending = 1;
+	LCD_I2C_Write(IOEXP_GPIOA, (uint8_t *) &data, sizeof(data));
+	sending = 0;
+	if (intPending)
+		EXTI0_IRQHandler();
+	BARRIER_UNLOCK
 }
 
 void LCDsendCmd(uint8_t cmd) {
@@ -204,31 +275,30 @@ void LCDinit(TIM_HandleTypeDef *microSecondHtimHandle, TIM_HandleTypeDef *pwmHti
 	// Setup the I/O expander
 	// Byte mode with IOCON.BANK = 0, INT pins internally connected, INT active-high
 	uint8_t settings = IOCON_MIRROR | IOCON_INTPOL;
-	while (HAL_I2C_Mem_Write(lcdHi2c, IOEXP_ADDRESS, IOCONA, I2C_MEMADD_SIZE_8BIT, &settings, sizeof(settings), LCD_I2C_TIMEOUT) != HAL_OK)
-		;
-	while (HAL_I2C_Mem_Write(lcdHi2c, IOEXP_ADDRESS, IOCONB, I2C_MEMADD_SIZE_8BIT, &settings, sizeof(settings), LCD_I2C_TIMEOUT) != HAL_OK)
-		;
+	LCD_I2C_Write(IOCONA, &settings, sizeof(settings));
+	LCD_I2C_Write(IOCONB, &settings, sizeof(settings));
+
+	// 1 = Pin is input
 	uint16_t direction = LCD_BUTTON_Pin | LCD_ROT_ENC_W_Pin | LCD_ROT_ENC_B_Pin | LCD_ROT_ENC_A_Pin;
-	while (HAL_I2C_Mem_Write(lcdHi2c, IOEXP_ADDRESS, IODIRA, I2C_MEMADD_SIZE_8BIT, (uint8_t *) &direction, sizeof(direction), LCD_I2C_TIMEOUT) != HAL_OK)
-		;
+	LCD_I2C_Write(IODIRA, (uint8_t *) &direction, sizeof(direction));
+
 	// 1 = Enable GPIO input pin for interrupt-on-change event.
-	while (HAL_I2C_Mem_Write(lcdHi2c, IOEXP_ADDRESS, GPINTENA, I2C_MEMADD_SIZE_8BIT, (uint8_t *) &direction, sizeof(direction), LCD_I2C_TIMEOUT) != HAL_OK)
-		;
+	LCD_I2C_Write(GPINTENA, (uint8_t *) &direction, sizeof(direction));
+
 	// Interrupt on change for inputs. 0 = Pin value is compared against the previous pin value.
 	uint16_t intcon = 0;
-	while (HAL_I2C_Mem_Write(lcdHi2c, IOEXP_ADDRESS, INTCONA, I2C_MEMADD_SIZE_8BIT, (uint8_t *) &intcon, sizeof(intcon), LCD_I2C_TIMEOUT) != HAL_OK)
-		;
+	LCD_I2C_Write(INTCONA, (uint8_t *) &intcon, sizeof(intcon));
+
 	// 1 = Pull-up enabled
 	uint16_t pullups = 0xFFFF;
-	while (HAL_I2C_Mem_Write(lcdHi2c, IOEXP_ADDRESS, GPPUA, I2C_MEMADD_SIZE_8BIT, (uint8_t *) &pullups, sizeof(pullups), LCD_I2C_TIMEOUT) != HAL_OK)
-		;
-	uint16_t levels = LCD_BUTTON_LED_Pin;
-	while (HAL_I2C_Mem_Write(lcdHi2c, IOEXP_ADDRESS, IOEXP_GPIOA, I2C_MEMADD_SIZE_8BIT, (uint8_t *) &levels, sizeof(levels), LCD_I2C_TIMEOUT) != HAL_OK)
-		;
+	LCD_I2C_Write(GPPUA, (uint8_t *) &pullups, sizeof(pullups));
+
+	uint16_t levels = 0;
+	LCD_I2C_Write(IOEXP_GPIOA, (uint8_t *) &levels, sizeof(levels));
+
 	// Read once to reset any interrupt related stuff
 	volatile uint16_t result;
-	while (HAL_I2C_Mem_Read(lcdHi2c, IOEXP_ADDRESS, IOEXP_GPIOA, I2C_MEMADD_SIZE_8BIT, (uint8_t *) &result, sizeof(result), LCD_I2C_TIMEOUT) != HAL_OK)
-		;
+	LCD_I2C_Read(IOEXP_GPIOA, (uint8_t *) &result, sizeof(result));
 
 	// Setup PWM to control backlight brightness
 	pwmHtim = pwmHtimHandle;
