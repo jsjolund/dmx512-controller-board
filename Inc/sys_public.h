@@ -1,30 +1,10 @@
 #ifndef SYSPUBLIC_H
 #define SYSPUBLIC_H
 
-// Johannes includera publika funktioner
+#include "stdint.h"
 
 volatile uint8_t adcValues[4];
 volatile uint16_t selectedDmxChannels[4];
-
-volatile uint32_t keyStates[16];
-
-
-//Get slider Values
-
-//Get i2C key values
-
-//LCD
-//----------------------
-// Set LCD
-
-// Update LCD
-
-//DMX
-//----------------------
-//Set All
-
-//Set lamp
-
-//Update DMX
+volatile uint8_t selectedDmxChannelsLock[4];
 
 #endif //SYSPUBLIC_H

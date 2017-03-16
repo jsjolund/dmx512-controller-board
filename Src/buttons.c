@@ -7,25 +7,44 @@
 
 #include "buttons.h"
 
+struct buttonStruct buttonMap[] = {
+
+{ .btn = BTN_F1, .btnName = "BTN_F1", .btnPin = GPA1, .ledPin = GPA0, .ioexp_address = IOEXP_ADDRESS_F, .hi2c = 0 },
+
+{ .btn = BTN_F2, .btnName = "BTN_F2", .btnPin = GPA3, .ledPin = GPA2, .ioexp_address = IOEXP_ADDRESS_F, .hi2c = 0 },
+
+{ .btn = BTN_F3, .btnName = "BTN_F3", .btnPin = GPA5, .ledPin = GPA4, .ioexp_address = IOEXP_ADDRESS_F, .hi2c = 0 },
+
+{ .btn = BTN_F4, .btnName = "BTN_F4", .btnPin = GPA7, .ledPin = GPA6, .ioexp_address = IOEXP_ADDRESS_F, .hi2c = 0 },
+
+{ .btn = BTN_F5, .btnName = "BTN_F5", .btnPin = GPB7, .ledPin = GPB6, .ioexp_address = IOEXP_ADDRESS_F, .hi2c = 0 },
+
+{ .btn = BTN_F6, .btnName = "BTN_F6", .btnPin = GPB5, .ledPin = GPB4, .ioexp_address = IOEXP_ADDRESS_F, .hi2c = 0 },
+
+{ .btn = BTN_F7, .btnName = "BTN_F7", .btnPin = GPB3, .ledPin = GPB2, .ioexp_address = IOEXP_ADDRESS_F, .hi2c = 0 },
+
+{ .btn = BTN_F8, .btnName = "BTN_F8", .btnPin = GPB1, .ledPin = GPB0, .ioexp_address = IOEXP_ADDRESS_F, .hi2c = 0 },
+
+{ .btn = BTN_S1, .btnName = "BTN_S1", .btnPin = GPB1, .ledPin = GPB0, .ioexp_address = IOEXP_ADDRESS_S, .hi2c = 0 },
+
+{ .btn = BTN_S2, .btnName = "BTN_S2", .btnPin = GPB3, .ledPin = GPB2, .ioexp_address = IOEXP_ADDRESS_S, .hi2c = 0 },
+
+{ .btn = BTN_S3, .btnName = "BTN_S3", .btnPin = GPB5, .ledPin = GPB4, .ioexp_address = IOEXP_ADDRESS_S, .hi2c = 0 },
+
+{ .btn = BTN_S4, .btnName = "BTN_S4", .btnPin = GPB7, .ledPin = GPB6, .ioexp_address = IOEXP_ADDRESS_S, .hi2c = 0 },
+
+{ .btn = BTN_LCD, .btnName = "BTN_LCD", .btnPin = GPA1, .ledPin = GPA0, .ioexp_address = IOEXP_ADDRESS, .hi2c = 0 },
+
+{ .btn = BTN_ENC, .btnName = "BTN_ENC", .btnPin = GPA2, .ledPin = -1, .ioexp_address = IOEXP_ADDRESS, .hi2c = 0 },
+
+{ .btn = ENC_CW, .btnName = "ENC_CW", .btnPin = -1, .ledPin = -1, .ioexp_address = IOEXP_ADDRESS, .hi2c = 0 },
+
+{ .btn = ENC_CCW, .btnName = "ENC_CCW", .btnPin = -1, .ledPin = -1, .ioexp_address = IOEXP_ADDRESS, .hi2c = 0 }
+
+};
+
 static I2C_HandleTypeDef *btnHi2c;
-
-// NOTE: These do not have unique identifiers since they map to pin numbers
-#define BTN_PIN_F1 GPA1
-#define BTN_PIN_F2 GPA3
-#define BTN_PIN_F3 GPA5
-#define BTN_PIN_F4 GPA7
-#define BTN_PIN_F5 GPB7
-#define BTN_PIN_F6 GPB5
-#define BTN_PIN_F7 GPB3
-#define BTN_PIN_F8 GPB1
-
-#define BTN_PIN_S1 GPB1
-#define BTN_PIN_S2 GPB3
-#define BTN_PIN_S3 GPB5
-#define BTN_PIN_S4 GPB7
-
-#define IOEXP_ADDRESS_F (IOEXP_ADDRESS + 0)
-#define IOEXP_ADDRESS_S (IOEXP_ADDRESS + 2)
+volatile uint8_t lcdButtonLEDstate;
 
 void Button_I2C_Read(uint16_t DevAddress, uint16_t MemAddress, uint8_t *pData, uint16_t Size) {
 	while (HAL_I2C_Mem_Read(btnHi2c, DevAddress, MemAddress, I2C_MEMADD_SIZE_8BIT, pData, Size, BUTTONS_I2C_TIMEOUT) != HAL_OK)
@@ -37,102 +56,56 @@ void Button_I2C_Write(uint16_t DevAddress, uint16_t MemAddress, uint8_t *pData, 
 		;
 }
 
-void ButtonSetLED(int devAddress, int btnPin, uint8_t state) {
+void ButtonSetLED(struct buttonStruct *button, uint8_t state) {
+	NVIC_DisableIRQ(EXTI0_IRQn);
+	NVIC_DisableIRQ(EXTI9_5_IRQn);
 	uint16_t gpioState;
-	Button_I2C_Read(devAddress, IOEXP_GPIOA, (uint8_t *) &gpioState, sizeof(gpioState));
-	if (state)
-		gpioState |= (btnPin >> 1);
-	else
-		gpioState &= ~(btnPin >> 1);
-	Button_I2C_Write(devAddress, IOEXP_GPIOA, (uint8_t *) &gpioState, sizeof(gpioState));
+	while (HAL_I2C_Mem_Read(button->hi2c, button->ioexp_address, IOEXP_GPIOA, I2C_MEMADD_SIZE_8BIT, (uint8_t *) &gpioState, sizeof(gpioState), BUTTONS_I2C_TIMEOUT) != HAL_OK)
+		;
+	if (state) {
+		gpioState |= button->ledPin;
+		if (button->btn == BTN_LCD)
+			lcdButtonLEDstate = 1;
+	} else {
+		gpioState &= ~(button->ledPin);
+		if (button->btn == BTN_LCD)
+			lcdButtonLEDstate = 0;
+	}
+	while (HAL_I2C_Mem_Write(button->hi2c, button->ioexp_address, IOEXP_GPIOA, I2C_MEMADD_SIZE_8BIT, (uint8_t *) &gpioState, sizeof(gpioState), BUTTONS_I2C_TIMEOUT) != HAL_OK)
+		;
+	NVIC_EnableIRQ(EXTI0_IRQn);
+	NVIC_EnableIRQ(EXTI9_5_IRQn);
 }
 
-uint8_t ButtonGetLED(int devAddress, int btnPin) {
+uint8_t ButtonGetLED(struct buttonStruct *button) {
+	NVIC_DisableIRQ(EXTI0_IRQn);
+	NVIC_DisableIRQ(EXTI9_5_IRQn);
 	uint16_t gpioState;
-	Button_I2C_Read(devAddress, IOEXP_GPIOA, (uint8_t *) &gpioState, sizeof(gpioState));
-	return (gpioState & (btnPin >> 1)) ? 1 : 0;
+	while (HAL_I2C_Mem_Read(button->hi2c, button->ioexp_address, IOEXP_GPIOA, I2C_MEMADD_SIZE_8BIT, (uint8_t *) &gpioState, sizeof(gpioState), BUTTONS_I2C_TIMEOUT) != HAL_OK)
+		;
+	NVIC_EnableIRQ(EXTI0_IRQn);
+	NVIC_EnableIRQ(EXTI9_5_IRQn);
+	return (gpioState & button->ledPin) ? 1 : 0;
 }
 
-void ButtonEvent(int devAddress, int btnPin, uint8_t isPressed) {
-	if (isPressed) {
-		if (ButtonGetLED(devAddress, btnPin))
-			ButtonSetLED(devAddress, btnPin, 0);
-		else
-			ButtonSetLED(devAddress, btnPin, 1);
-	}
-	const char * state = isPressed ? "pressed" : "released";
-	char * buttonName;
-	switch (devAddress) {
-	case IOEXP_ADDRESS_F:
-		switch (btnPin) {
-		case BTN_PIN_F1:
-			buttonName = "BTN_F1";
-			break;
-		case BTN_PIN_F2:
-			buttonName = "BTN_F2";
-			break;
-		case BTN_PIN_F3:
-			buttonName = "BTN_F3";
-			break;
-		case BTN_PIN_F4:
-			buttonName = "BTN_F4";
-			break;
-		case BTN_PIN_F5:
-			buttonName = "BTN_F5";
-			break;
-		case BTN_PIN_F6:
-			buttonName = "BTN_F6";
-			break;
-		case BTN_PIN_F7:
-			buttonName = "BTN_F7";
-			break;
-		case BTN_PIN_F8:
-			buttonName = "BTN_F8";
-			break;
-		default:
-			buttonName = "UNKNOWN BTN_F";
-			break;
-		}
-		break;
-	case IOEXP_ADDRESS_S:
-		switch (btnPin) {
-		case BTN_PIN_S1:
-			buttonName = "BTN_S1";
-			break;
-		case BTN_PIN_S2:
-			buttonName = "BTN_S2";
-			break;
-		case BTN_PIN_S3:
-			buttonName = "BTN_S3";
-			break;
-		case BTN_PIN_S4:
-			buttonName = "BTN_S4";
-			break;
-		default:
-			buttonName = "UNKNOWN BTN_S";
-			break;
-		}
-		break;
-	default:
-		buttonName = "UNKNOWN ADDR";
-		break;
-	}
-	printf("%s %s\r\n", buttonName, state);
+void ButtonEvent(struct buttonStruct *button, int isPressed) {
+	ControllerQueueCmd(button->btn, isPressed);
 }
 
 uint8_t ButtonChangedState(int btnPin, uint16_t flags, uint16_t status, uint8_t *isPressed) {
 	if (flags & btnPin) {
-		*isPressed = (status & btnPin) ? 0 : 1;
+		*isPressed = (status & btnPin) ? BUTTON_RELEASED : BUTTON_PRESSED;
 		return 1;
 	}
 	return 0;
 }
 
 void EXTI9_5_IRQHandler(void) {
-	const int BUTTONS_F[] = { BTN_PIN_F1, BTN_PIN_F2, BTN_PIN_F3, BTN_PIN_F4, BTN_PIN_F5, BTN_PIN_F6, BTN_PIN_F7, BTN_PIN_F8 };
 	const int NUM_BUTTONS_F = 8;
-	const int BUTTONS_S[] = { BTN_PIN_S1, BTN_PIN_S2, BTN_PIN_S3, BTN_PIN_S4 };
+	struct buttonStruct buttonsF[] = { buttonMap[BTN_F1], buttonMap[BTN_F2], buttonMap[BTN_F3], buttonMap[BTN_F4], buttonMap[BTN_F5], buttonMap[BTN_F6], buttonMap[BTN_F7], buttonMap[BTN_F8] };
+
 	const int NUM_BUTTONS_S = 4;
+	struct buttonStruct buttonsS[] = { buttonMap[BTN_S1], buttonMap[BTN_S2], buttonMap[BTN_S3], buttonMap[BTN_S4] };
 
 	int i;
 
@@ -144,8 +117,8 @@ void EXTI9_5_IRQHandler(void) {
 		Button_I2C_Read(IOEXP_ADDRESS_F, INTFA, (uint8_t *) &flags, sizeof(flags));
 		Button_I2C_Read(IOEXP_ADDRESS_F, IOEXP_GPIOA, (uint8_t *) &state, sizeof(state));
 		for (i = 0; i < NUM_BUTTONS_F; i++) {
-			if (ButtonChangedState(BUTTONS_F[i], flags, state, &isPressed)) {
-				ButtonEvent(IOEXP_ADDRESS_F, BUTTONS_F[i], isPressed);
+			if (ButtonChangedState(buttonsF[i].btnPin, flags, state, &isPressed)) {
+				ButtonEvent(&buttonsF[i], isPressed);
 			}
 		}
 
@@ -156,8 +129,8 @@ void EXTI9_5_IRQHandler(void) {
 		Button_I2C_Read(IOEXP_ADDRESS_S, INTFA, (uint8_t *) &flags, sizeof(flags));
 		Button_I2C_Read(IOEXP_ADDRESS_S, IOEXP_GPIOA, (uint8_t *) &state, sizeof(state));
 		for (i = 0; i < NUM_BUTTONS_S; i++) {
-			if (ButtonChangedState(BUTTONS_S[i], flags, state, &isPressed)) {
-				ButtonEvent(IOEXP_ADDRESS_S, BUTTONS_S[i], isPressed);
+			if (ButtonChangedState(buttonsS[i].btnPin, flags, state, &isPressed)) {
+				ButtonEvent(&buttonsS[i], isPressed);
 			}
 		}
 	}
@@ -203,6 +176,20 @@ void ButtonsInitIOexpander(uint16_t devAddress) {
 
 void ButtonsInit(I2C_HandleTypeDef *hi2cHandle) {
 	btnHi2c = hi2cHandle;
+
+	buttonMap[BTN_F1].hi2c = hi2cHandle;
+	buttonMap[BTN_F2].hi2c = hi2cHandle;
+	buttonMap[BTN_F3].hi2c = hi2cHandle;
+	buttonMap[BTN_F4].hi2c = hi2cHandle;
+	buttonMap[BTN_F5].hi2c = hi2cHandle;
+	buttonMap[BTN_F6].hi2c = hi2cHandle;
+	buttonMap[BTN_F7].hi2c = hi2cHandle;
+	buttonMap[BTN_F8].hi2c = hi2cHandle;
+	buttonMap[BTN_S1].hi2c = hi2cHandle;
+	buttonMap[BTN_S2].hi2c = hi2cHandle;
+	buttonMap[BTN_S3].hi2c = hi2cHandle;
+	buttonMap[BTN_S4].hi2c = hi2cHandle;
+
 	ButtonsInitIOexpander(IOEXP_ADDRESS_S);
 	ButtonsInitIOexpander(IOEXP_ADDRESS_F);
 }

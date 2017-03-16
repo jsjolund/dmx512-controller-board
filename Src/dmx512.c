@@ -21,6 +21,12 @@ int Dmx512SetChannelValue(uint16_t channel, uint8_t value) {
 	return 1;
 }
 
+uint8_t Dmx512GetChannelValue(uint16_t channel) {
+	if (channel >= DMX_CHANNELS)
+		return 0;
+	return dmxData[channel + 1];
+}
+
 void Dmx512DisableUsart(UART_HandleTypeDef *huart1) {
 	HAL_NVIC_DisableIRQ(DMX_USART_IRQ);
 

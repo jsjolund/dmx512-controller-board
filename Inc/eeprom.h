@@ -24,9 +24,6 @@
 void EEPROMInit(I2C_HandleTypeDef* hi2c);
 int EEPROMwrite(uint16_t address, uint8_t* MemTarget, uint16_t Size);
 int EEPROMread(uint16_t address, uint8_t* MemTarget, uint16_t Size);
-//int EEPROMbusy(void);
 int EEPROMfinished(void);
-//void EEPROM_HAL_I2C_MemRxCpltCallback(I2C_HandleTypeDef *hi2c);
-//void EEPROM_HAL_I2C_MemTxCpltCallback(I2C_HandleTypeDef *hi2c);
 void EEPROM_I2C_EV_IRQHandler(void);
 #endif /* EEPROM_H_ */

@@ -1,38 +1,19 @@
 /*========================================================
- 
- Description: 
- 
+
+ Description:
+
  Author: Sam Karimi
  ========================================================*/
 
 #ifndef CONTROLLER_H
 #define CONTROLLER_H
 
+#include "sys_public.h"
+#include "buttons.h"
+#include "lcd.h"
+#include "dmx512.h"
 
-// all user commands available for entire program
-typedef enum {
-	ub_select,
-	ub_back,
-	ub_up,
-	ub_down,
-
-
-	ub_none
-} usercmd_t;
-
-//
-typedef struct {
-	int					key;
-	usercmd_t			button;
-} usercmdkey_t;
-
-
-void ControllerInit();
-
-
-
-
-void ControllerGenUserCmds();
-int ControllerPopUserCmd( usercmd_t * uCmd );
+int ControllerQueueCmd(enum buttonEnum uCmd, int state);
+void ControllerUpdate(void);
 
 #endif

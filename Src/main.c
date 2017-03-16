@@ -37,8 +37,15 @@
 /* USER CODE BEGIN Includes */
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdint.h>
 
-#include "precompiled.h"
+#include "serial.h"
+#include "dmx512.h"
+#include "eeprom.h"
+#include "lcd.h"
+#include "buttons.h"
+#include "controller.h"
+
 #include "sys_public.h"
 /* USER CODE END Includes */
 
@@ -97,19 +104,6 @@ void HAL_TIM_MspPostInit(TIM_HandleTypeDef *htim);
 /* USER CODE BEGIN 0 */
 void EXTI15_10_IRQHandler(void) {
 	// Blue button interrupt
-	if (HAL_GPIO_ReadPin(B1_GPIO_Port, B1_Pin) == GPIO_PIN_RESET) {
-		selectedDmxChannels[0] = (selectedDmxChannels[0] + 4) % 512;
-		selectedDmxChannels[1] = (selectedDmxChannels[1] + 4) % 512;
-		selectedDmxChannels[2] = (selectedDmxChannels[2] + 4) % 512;
-		selectedDmxChannels[3] = (selectedDmxChannels[3] + 4) % 512;
-	}
-//	if (HAL_GPIO_ReadPin(B1_GPIO_Port, B1_Pin) == GPIO_PIN_RESET) {
-//		uint8_t brightness = LCDgetBrightness();
-//		if (brightness == 100)
-//			LCDfadeBrightness(0, 4);
-//		else if (brightness == 0)
-//			LCDfadeBrightness(100, 1);
-//	}
 	EXTI->PR |= B1_Pin;
 }
 
@@ -154,19 +148,19 @@ int testEEPROM() {
 
 int main(void) {
 
-	// USER CODE BEGIN 1
+	/* USER CODE BEGIN 1 */
 
-	// USER CODE END 1
+	/* USER CODE END 1 */
 
-	// MCU Configuration----------------------------------------------------------
+	/* MCU Configuration----------------------------------------------------------*/
 
-	// Reset of all peripherals, Initializes the Flash interface and the Systick.
+	/* Reset of all peripherals, Initializes the Flash interface and the Systick. */
 	HAL_Init();
 
-	// Configure the system clock
+	/* Configure the system clock */
 	SystemClock_Config();
 
-	// Initialize all configured peripherals
+	/* Initialize all configured peripherals */
 	MX_GPIO_Init();
 	MX_DMA_Init();
 	MX_ADC1_Init();
@@ -179,7 +173,7 @@ int main(void) {
 	MX_USART2_UART_Init();
 	MX_TIM4_Init();
 
-	// USER CODE BEGIN 2
+	/* USER CODE BEGIN 2 */
 	LCDinit(&htim4, &htim3, &hi2c1);
 	LCDfadeBrightness(100, 3);
 
@@ -221,193 +215,32 @@ int main(void) {
 	HAL_NVIC_EnableIRQ(EXTI0_IRQn);
 	HAL_NVIC_SetPriority(EXTI0_IRQn, 0, 0);
 
-	// USER CODE END 2
-
-	// Infinite loop
-	// USER CODE BEGIN WHILE
-
 	selectedDmxChannels[0] = 0;
 	selectedDmxChannels[1] = 1;
 	selectedDmxChannels[2] = 2;
 	selectedDmxChannels[3] = 3;
+	/* USER CODE END 2 */
 
+	/* Infinite loop */
+	/* USER CODE BEGIN WHILE */
 	int i;
-	char charBuffer[21];
 	while (1) {
+		/* USER CODE END WHILE */
 
+		/* USER CODE BEGIN 3 */
 		if (adcFinished) {
 			adcFinished = 0;
 			HAL_ADCEx_InjectedStart_IT(&hadc1);
-
 			for (i = 0; i < 4; i++) {
-				Dmx512SetChannelValue(selectedDmxChannels[i], adcValues[i]);
-				LCDcursorPos(i, 0);
-				snprintf(charBuffer, 21, "DMX Channel %03d: %03d", selectedDmxChannels[i], adcValues[i]);
-				LCDwrite(charBuffer);
+				if (!selectedDmxChannelsLock[i])
+					Dmx512SetChannelValue(selectedDmxChannels[i], adcValues[i]);
 			}
 		}
+		ControllerUpdate();
 	}
-
+	/* USER CODE END 3 */
 }
 
-/*=========================================
- * Sam's Main
- *
- =========================================*/
-/*
- int main(void) {
-
-
- HAL_Init();
-
-
- SystemClock_Config();
-
-
- MX_GPIO_Init();
- MX_DMA_Init();
- MX_ADC1_Init();
- MX_I2C1_Init();
- MX_I2C2_Init();
- MX_I2C3_Init();
- MX_TIM2_Init();
- MX_TIM3_Init();
- MX_USART1_UART_Init();
- MX_USART2_UART_Init();
- MX_TIM4_Init();
-
-
- SerialInit(&huart2);
- Dmx512Init(&htim2, &huart1);
- EEPROMInit(&hi2c2);
- //	testEEPROM();
- LCDinit(&htim4, &htim3, &hi2c1);
- LCDfadeBrightness(100, 1);
- HAL_ADC_Start(&hadc1);
-
- ButtonsInit(&hi2c3);
-
- // Blue button interrupt
- HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
- HAL_NVIC_SetPriority(EXTI15_10_IRQn, 0, 0);
-
- HAL_NVIC_EnableIRQ(EXTI9_5_IRQn);
- HAL_NVIC_SetPriority(EXTI9_5_IRQn, 0, 0);
-
- selectedDmxChannels[0] = 0;
- selectedDmxChannels[1] = 1;
- selectedDmxChannels[2] = 2;
- selectedDmxChannels[3] = 3;
-
-
- // Init application and gui systems
- CommonInit();
-
- while (1) {
- if (adcFinished) {
- adcFinished = 0;
- HAL_ADCEx_InjectedStart_IT(&hadc1);
-
- // generate a uCmd for the application
- ControllerGenUserCmds();											// FIXME! Should this have a mutex lock?
-
- // we pop the uCmd buffer
- usercmd_t * newUCmd;
- uint32_t success = ControllerPopUserCmd( newUCmd );
-
- // if we got a new user Command run application logic
- if ( success ) {
-
- // application logic, Signal state and View states are set here
- SunlightFrame( newUCmd );
- }
- }
- }
- return 0;
- }
- */
-
-///*=========================================
-// * Sam's Main
-// *
-// * Inte klar!
-// =========================================*/
-//int main2(void) {
-//
-//	/* USER CODE BEGIN 1 */
-//
-//	/* USER CODE END 1 */
-//
-//	/* MCU Configuration----------------------------------------------------------*/
-//
-//	/* Reset of all peripherals, Initializes the Flash interface and the Systick. */
-//	HAL_Init();
-//
-//	/* Configure the system clock */
-//	SystemClock_Config();
-//
-//	/* Initialize all configured peripherals */
-//	MX_GPIO_Init();
-//	MX_DMA_Init();
-//	MX_ADC1_Init();
-//	MX_I2C1_Init();
-//	MX_I2C2_Init();
-//	MX_I2C3_Init();
-//	MX_TIM2_Init();
-//	MX_TIM3_Init();
-//	MX_USART1_UART_Init();
-//	MX_USART2_UART_Init();
-//	MX_TIM4_Init();
-//
-//
-//	/* USER CODE BEGIN 2 */
-//	SerialInit(&huart2);
-//	Dmx512Init(&htim2, &huart1);
-//	EEPROMInit(&hi2c2);
-////	testEEPROM();
-//	LCDinit(&htim4, &htim3, &hi2c1);
-//	LCDfadeBrightness(100, 1);
-//	HAL_ADC_Start(&hadc1);
-//
-//	ButtonsInit(&hi2c3);
-//
-//	// Blue button interrupt
-//	HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
-//	HAL_NVIC_SetPriority(EXTI15_10_IRQn, 0, 0);
-//
-//	HAL_NVIC_EnableIRQ(EXTI9_5_IRQn);
-//	HAL_NVIC_SetPriority(EXTI9_5_IRQn, 0, 0);
-//
-//	selectedDmxChannels[0] = 0;
-//	selectedDmxChannels[1] = 1;
-//	selectedDmxChannels[2] = 2;
-//	selectedDmxChannels[3] = 3;
-//
-//	// Init application and gui systems
-//	CommonInit();
-//
-//	while (1) {
-//		if (adcFinished) {
-//			adcFinished = 0;
-//			HAL_ADCEx_InjectedStart_IT(&hadc1);
-//
-//			// generate a uCmd for the application
-//			ControllerGenUserCmds();											// FIXME! Should this have a mutex lock?
-//
-//			// we pop the uCmd buffer
-//			usercmd_t * newUCmd;
-//			uint32_t success = ControllerPopUserCmd(newUCmd);
-//
-//			// if we got a new user Command run application logic
-//			if (success) {
-//
-//				// application logic, Signal state and View states are set here
-//				SunlightFrame(newUCmd);
-//			}
-//		}
-//	}
-//	return 0;
-//}
 /** System Clock Configuration
  */
 void SystemClock_Config(void) {

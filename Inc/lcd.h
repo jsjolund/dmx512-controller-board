@@ -14,9 +14,6 @@
 #define LCD_ROT_ENC_CW 0xFFFF
 #define LCD_ROT_ENC_CCW 0xFFFE
 
-#define LCD_BUTTON_LED_Pin GPA0
-#define LCD_BUTTON_Pin GPA1
-#define LCD_ROT_ENC_W_Pin GPA2
 #define LCD_ROT_ENC_B_Pin GPA3
 #define LCD_ROT_ENC_A_Pin GPA4
 #define LCD_RS_Pin GPA5
