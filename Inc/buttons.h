@@ -26,7 +26,8 @@ typedef const enum buttonEnum {
 	BTN_LCD,
 	BTN_ENC,
 	ENC_CW,
-	ENC_CCW
+	ENC_CCW,
+	BTN_NONE
 } buttonEnum;
 
 typedef struct buttonStruct {
@@ -56,5 +57,6 @@ void ButtonsInit(I2C_HandleTypeDef *hi2cHandle);
 void ButtonEvent(struct buttonStruct *button, int isPressed);
 uint8_t ButtonGetLED(struct buttonStruct *button);
 void ButtonSetLED(struct buttonStruct *button, uint8_t state);
+void ButtonSetFNbuttonLEDS(uint8_t state);
 
 #endif /* BUTTONS_H_ */

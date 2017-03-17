@@ -6,7 +6,6 @@
  */
 #include "dmx512.h"
 
-static uint8_t dmxData[DMX_CHANNELS + 1];
 static volatile uint8_t dmxSendState;
 
 static TIM_HandleTypeDef *dmxHtim;

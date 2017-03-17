@@ -39,7 +39,9 @@ struct buttonStruct buttonMap[] = {
 
 { .btn = ENC_CW, .btnName = "ENC_CW", .btnPin = -1, .ledPin = -1, .ioexp_address = IOEXP_ADDRESS, .hi2c = 0 },
 
-{ .btn = ENC_CCW, .btnName = "ENC_CCW", .btnPin = -1, .ledPin = -1, .ioexp_address = IOEXP_ADDRESS, .hi2c = 0 }
+{ .btn = ENC_CCW, .btnName = "ENC_CCW", .btnPin = -1, .ledPin = -1, .ioexp_address = IOEXP_ADDRESS, .hi2c = 0 },
+
+{ .btn = BTN_NONE, .btnName = "BTN_NONE", .btnPin = -1, .ledPin = -1, .ioexp_address = -1, .hi2c = 0 }
 
 };
 
@@ -54,6 +56,26 @@ void Button_I2C_Read(uint16_t DevAddress, uint16_t MemAddress, uint8_t *pData, u
 void Button_I2C_Write(uint16_t DevAddress, uint16_t MemAddress, uint8_t *pData, uint16_t Size) {
 	while (HAL_I2C_Mem_Write(btnHi2c, DevAddress, MemAddress, I2C_MEMADD_SIZE_8BIT, pData, Size, BUTTONS_I2C_TIMEOUT) != HAL_OK)
 		;
+}
+
+void ButtonSetFNbuttonLEDS(uint8_t state) {
+	NVIC_DisableIRQ(EXTI0_IRQn);
+	NVIC_DisableIRQ(EXTI9_5_IRQn);
+	uint16_t gpioState;
+	// Might as well hard code these values...
+	while (HAL_I2C_Mem_Read(btnHi2c, IOEXP_ADDRESS_F, IOEXP_GPIOA, I2C_MEMADD_SIZE_8BIT, (uint8_t *) &gpioState, sizeof(gpioState), BUTTONS_I2C_TIMEOUT) != HAL_OK)
+		;
+	uint16_t pins = (buttonMap[BTN_F1].ledPin | buttonMap[BTN_F2].ledPin | buttonMap[BTN_F3].ledPin | buttonMap[BTN_F4].ledPin | buttonMap[BTN_F5].ledPin | buttonMap[BTN_F6].ledPin
+			| buttonMap[BTN_F7].ledPin | buttonMap[BTN_F8].ledPin);
+	if (state) {
+		gpioState |= pins;
+	} else {
+		gpioState &= ~pins;
+	}
+	while (HAL_I2C_Mem_Write(btnHi2c, IOEXP_ADDRESS_F, IOEXP_GPIOA, I2C_MEMADD_SIZE_8BIT, (uint8_t *) &gpioState, sizeof(gpioState), BUTTONS_I2C_TIMEOUT) != HAL_OK)
+		;
+	NVIC_EnableIRQ(EXTI0_IRQn);
+	NVIC_EnableIRQ(EXTI9_5_IRQn);
 }
 
 void ButtonSetLED(struct buttonStruct *button, uint8_t state) {

@@ -45,8 +45,8 @@
 #include "lcd.h"
 #include "buttons.h"
 #include "controller.h"
-
 #include "sys_public.h"
+
 /* USER CODE END Includes */
 
 /* Private variables ---------------------------------------------------------*/
@@ -133,16 +133,21 @@ int testEEPROM() {
 	uint16_t len = 512;
 	uint8_t data[len];
 	uint8_t result[len];
-	uint16_t i;
-	for (i = 0; i < len; i++)
-		data[i] = 'a' + (i % 25);
-	EEPROMwrite(0x00, (uint8_t *) data, len);
-	while (!EEPROMfinished())
-		;
-	EEPROMread(0x00, (uint8_t *) result, len);
-	while (!EEPROMfinished())
-		;
-	return Buffercmp((uint8_t *) data, (uint8_t *) result, len);
+	int i;
+	for (i = 0; i < len; i++) {
+		data[i] = 0;
+	}
+	for (i = 0; i < 9; i++) {
+		EEPROMwrite(512 * i, (uint8_t *) data, len);
+		while (!EEPROMfinished())
+			;
+		EEPROMread(512 * i, (uint8_t *) result, len);
+		while (!EEPROMfinished())
+			;
+		if (!Buffercmp((uint8_t *) data, (uint8_t *) result, len))
+			return 0;
+	}
+	return 1;
 }
 /* USER CODE END 0 */
 
@@ -191,12 +196,12 @@ int main(void) {
 	LCDcursorPos(0, 0);
 	LCDwrite("ERROR EEPROM");
 	EEPROMInit(&hi2c2);
-	//	if (!testEEPROM()) {
-	//		LCDcursorPos(0, 0);
-	//		LCDwrite("EEPROM Test failed");
-	//		while (1)
-	//			;
-	//	}
+//	if (!testEEPROM()) {
+//		LCDcursorPos(0, 0);
+//		LCDwrite("EEPROM Test failed");
+//		while (1)
+//			;
+//	}
 
 	LCDclearRow(0);
 	LCDcursorPos(0, 0);
@@ -219,6 +224,9 @@ int main(void) {
 	selectedDmxChannels[1] = 1;
 	selectedDmxChannels[2] = 2;
 	selectedDmxChannels[3] = 3;
+
+	controllerMenuFunction = &ControllerEditProgram;
+	prevControllerMenuFunction = &ControllerEditProgram;
 	/* USER CODE END 2 */
 
 	/* Infinite loop */
@@ -232,7 +240,7 @@ int main(void) {
 			adcFinished = 0;
 			HAL_ADCEx_InjectedStart_IT(&hadc1);
 			for (i = 0; i < 4; i++) {
-				if (!selectedDmxChannelsLock[i])
+				if (!selectedDmxInputLock[i])
 					Dmx512SetChannelValue(selectedDmxChannels[i], adcValues[i]);
 			}
 		}

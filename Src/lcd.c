@@ -98,13 +98,13 @@ void EXTI0_IRQHandler(void) {
 	if (flags & LCD_ROT_ENC_A_Pin) {
 		if (aLow && bHigh) {
 			// Initial falling edge on A, tick for clockwise rotation
-			ButtonEvent(&buttonMap[ENC_CW], 1);
+			ButtonEvent(&buttonMap[ENC_CW], BUTTON_PRESSED);
 			lStateA = state;
 
 		} else if (aHigh && bLow) {
 			// Rising edge on A, check if we missed the previous tick...
 			if ((lStateA & LCD_ROT_ENC_A_Pin) || !(lStateA & LCD_ROT_ENC_B_Pin)) {
-				ButtonEvent(&buttonMap[ENC_CW], 1);
+				ButtonEvent(&buttonMap[ENC_CW], BUTTON_PRESSED);
 				lStateA = state;
 			} else {
 				lStateA = 0;
@@ -114,13 +114,13 @@ void EXTI0_IRQHandler(void) {
 	if (flags & LCD_ROT_ENC_B_Pin) {
 		if (bLow && aHigh) {
 			// Initial falling edge on B, tick for counter clockwise rotation
-			ButtonEvent(&buttonMap[ENC_CCW], 1);
+			ButtonEvent(&buttonMap[ENC_CCW], BUTTON_PRESSED);
 			lStateB = state;
 
 		} else if (bHigh && aLow) {
 			// Rising edge on B, check if we missed the previous tick...
 			if ((lStateB & LCD_ROT_ENC_B_Pin) || !(lStateB & LCD_ROT_ENC_A_Pin)) {
-				ButtonEvent(&buttonMap[ENC_CCW], 1);
+				ButtonEvent(&buttonMap[ENC_CCW], BUTTON_PRESSED);
 				lStateB = state;
 			} else {
 				lStateB = 0;

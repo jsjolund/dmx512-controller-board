@@ -33,6 +33,7 @@
 
 void LCDinit(TIM_HandleTypeDef *microSecondHtimHandle, TIM_HandleTypeDef *pwmHtimHandle, I2C_HandleTypeDef *hi2cHandle);
 void LCDwrite(char *string);
+void LCDsendChar(char character);
 void LCDcursorPos(uint8_t row, uint8_t column);
 uint8_t LCDgetBrightness(void);
 void LCDsetBrightness(uint8_t percent);
