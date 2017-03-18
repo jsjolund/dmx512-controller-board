@@ -69,7 +69,7 @@
     (pad_size 1.8 1.8)
     (pad_drill 1)
     (pad_to_mask_clearance 0.2)
-    (aux_axis_origin 62.08 173.68)
+    (aux_axis_origin 66.375969 138.271003)
     (visible_elements 7FFFEFFF)
     (pcbplotparams
       (layerselection 0x01000_80000001)
@@ -1321,7 +1321,7 @@
     (arrow2b (pts (xy 188.4 74.529334) (xy 187.273496 75.115755)))
   )
   (target plus (at 188.534728 41.537054) (size 5) (width 0.15) (layer Edge.Cuts) (tstamp 58B955E3))
-  (target plus (at 77.070051 170.787018) (size 5) (width 0.15) (layer Edge.Cuts) (tstamp 58B955E0))
+  (target plus (at 81.023025 173.32871) (size 5) (width 0.15) (layer Edge.Cuts) (tstamp 58B955E0))
   (target plus (at 79.362983 39.258244) (size 5) (width 0.15) (layer Edge.Cuts))
   (gr_line (start 188.4172 138.303) (end 66.349999 138.303) (layer Edge.Cuts) (width 0.15))
   (gr_line (start 66.35 78.33) (end 66.35 138.3) (layer Edge.Cuts) (width 0.15))
