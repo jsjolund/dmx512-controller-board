@@ -7,7 +7,6 @@ static uint8_t uCmdState[MAX_CMD_BUF];
 static int uCmdIndex = 0;
 static int uCmdOutdex = 0;
 
-static uint8_t tmpDmxData[DMX_CHANNELS];
 static volatile uint8_t newDmxDataLoaded = 0;
 
 static volatile int encPosition;
@@ -66,10 +65,7 @@ void ControllerLoadDMXprogram(int program) {
 void ControllerSaveDMXprogram(int program) {
 	if (program == 0)
 		return;
-	// TODO: memcpy?
-	int i;
-	for (i = 0; i < DMX_CHANNELS; i++)
-		tmpDmxData[i] = dmxData[i + 1];
+	memcpy(tmpDmxData, &dmxData[1], DMX_CHANNELS * sizeof(uint8_t));
 	EEPROMwrite(DMX_CHANNELS * program, tmpDmxData, DMX_CHANNELS);
 }
 
@@ -181,7 +177,7 @@ void ControllerEditProgram(enum buttonEnum button, int buttonState) {
 	LCDcursorPos(1, 0);
 	const int bufferLen = 21;
 	char charBuffer[bufferLen];
-	snprintf(charBuffer, bufferLen, " %03d  %03d  %03d  %03d ", selectedDmxChannels[0], selectedDmxChannels[1], selectedDmxChannels[2], selectedDmxChannels[3]);
+	snprintf(charBuffer, bufferLen, " %03d  %03d  %03d  %03d ", selectedDmxChannels[0] + 1, selectedDmxChannels[1] + 1, selectedDmxChannels[2] + 1, selectedDmxChannels[3] + 1);
 	LCDwrite(charBuffer);
 
 	LCDcursorPos(2, 0);
@@ -198,29 +194,66 @@ void ControllerEditProgram(enum buttonEnum button, int buttonState) {
 	LCDwrite(charBuffer);
 }
 
+void ControllerAboutMenu(enum buttonEnum button, int buttonState) {
+	LCDcursorPos(0, 0);
+	LCDwrite("Daniel Brolin");
+	LCDcursorPos(1, 0);
+	LCDwrite("David Eriksson");
+	LCDcursorPos(2, 0);
+	LCDwrite("Johannes Sjolund");
+	LCDcursorPos(3, 0);
+	LCDwrite("Saman Karimi");
+}
+
+void ControllerUSARTpassthrough(enum buttonEnum button, int buttonState) {
+
+}
+
 void ControllerMenuProgram(enum buttonEnum button, int buttonState) {
 
 	if (buttonState == BUTTON_PRESSED) {
 		switch (button) {
 		case BTN_ENC:
-			if (mainMenuCursor == 0) {
+			if (mainMenuCursor == MENU_ITEM_SAVE_PROGRAM) {
 				ControllerSaveDMXprogram(selectedDmxProgram);
 				mainMenuProgramWasSaved = 1;
 
-			} else if (mainMenuCursor == 1) {
+			} else if (mainMenuCursor == MENU_ITEM_LCD_BACKLIGHT) {
 				mainMenuEditMode = (mainMenuEditMode) ? 0 : 1;
+
+			} else if (mainMenuCursor == MENU_ITEM_USART_PASSHTHROUGH) {
+				ControllerLockDMXinput();
+				passthroughMode = 1;
+				prevControllerMenuFunction = controllerMenuFunction;
+				controllerMenuFunction = &ControllerUSARTpassthrough;
+				USB_USART->CR1 |= (USART_CR1_RXNEIE);
+
+				LCDclear();
+				LCDcursorPos(0, 0);
+				LCDwrite("PC USB control:");
+				LCDcursorPos(2, 0);
+				LCDwrite("Emulating:");
+				LCDcursorPos(3, 0);
+				LCDwrite("Enttec Open DMX");
+				return;
+
+			} else if (mainMenuCursor == MENU_ITEM_ABOUT_SUNSHINE) {
+				LCDclear();
+				prevControllerMenuFunction = controllerMenuFunction;
+				controllerMenuFunction = &ControllerAboutMenu;
+				return;
 			}
 			break;
 		case ENC_CW:
-			if (mainMenuCursor == 1 && mainMenuEditMode == 1) {
+			if (mainMenuCursor == MENU_ITEM_LCD_BACKLIGHT && mainMenuEditMode == 1) {
 				int16_t brightness = LCDgetBrightness() + 5;
 				if (brightness > 100)
 					brightness = 100;
 				LCDsetBrightness(brightness);
 			} else {
 				mainMenuCursor++;
-				if (mainMenuCursor > 2)
-					mainMenuCursor = 2;
+				if (mainMenuCursor > MENU_CURSOR_MAX)
+					mainMenuCursor = MENU_CURSOR_MAX;
 			}
 			break;
 		case ENC_CCW:
@@ -289,8 +322,8 @@ void ControllerMenuProgram(enum buttonEnum button, int buttonState) {
 	}
 	const int bufferLen = 21;
 	char charBuffer[bufferLen];
-	LCDcursorPos(0, 0);
-	LCDsendChar((mainMenuCursor == 0) ? 126 : ' ');
+	LCDcursorPos(MENU_ITEM_SAVE_PROGRAM, 0);
+	LCDsendChar((mainMenuCursor == MENU_ITEM_SAVE_PROGRAM) ? 126 : ' ');
 	if (mainMenuProgramWasSaved) {
 		snprintf(charBuffer, bufferLen, " Program %03d saved ", selectedDmxProgram);
 	} else {
@@ -298,13 +331,18 @@ void ControllerMenuProgram(enum buttonEnum button, int buttonState) {
 	}
 	LCDwrite(charBuffer);
 
-	LCDcursorPos(1, 0);
-	LCDsendChar((mainMenuCursor == 1) ? 126 : ' ');
+	LCDcursorPos(MENU_ITEM_LCD_BACKLIGHT, 0);
+	LCDsendChar((mainMenuCursor == MENU_ITEM_LCD_BACKLIGHT) ? 126 : ' ');
 	snprintf(charBuffer, bufferLen, " LCD Backlight  %03d", LCDgetBrightness());
 	LCDwrite(charBuffer);
 
-	LCDcursorPos(2, 0);
-	LCDsendChar((mainMenuCursor == 2) ? 126 : ' ');
+	LCDcursorPos(MENU_ITEM_USART_PASSHTHROUGH, 0);
+	LCDsendChar((mainMenuCursor == MENU_ITEM_USART_PASSHTHROUGH) ? 126 : ' ');
+	snprintf(charBuffer, bufferLen, " PC USB control    ");
+	LCDwrite(charBuffer);
+
+	LCDcursorPos(MENU_ITEM_ABOUT_SUNSHINE, 0);
+	LCDsendChar((mainMenuCursor == MENU_ITEM_ABOUT_SUNSHINE) ? 126 : ' ');
 	snprintf(charBuffer, bufferLen, " About Sunshine DMX");
 	LCDwrite(charBuffer);
 }
@@ -313,10 +351,7 @@ void ControllerUpdate(void) {
 	if (!EEPROMfinished())
 		return;
 	else if (newDmxDataLoaded) {
-		// TODO: memcpy?
-		int i;
-		for (i = 0; i < DMX_CHANNELS; i++)
-			dmxData[i + 1] = tmpDmxData[i];
+		memcpy(&dmxData[1], tmpDmxData, DMX_CHANNELS * sizeof(uint8_t));
 		newDmxDataLoaded = 0;
 	}
 
@@ -330,12 +365,23 @@ void ControllerUpdate(void) {
 
 			ControllerLockDMXinput();
 
-			if (controllerMenuFunction != &ControllerMenuProgram) {
+			if (controllerMenuFunction == &ControllerAboutMenu) {
+				controllerMenuFunction = prevControllerMenuFunction;
+				prevControllerMenuFunction = &ControllerAboutMenu;
+
+			} else if (controllerMenuFunction == &ControllerUSARTpassthrough) {
+				USB_USART->CR1 &= ~(USART_CR1_RXNEIE);
+				passthroughMode = 0;
+				controllerMenuFunction = prevControllerMenuFunction;
+				prevControllerMenuFunction = &ControllerAboutMenu;
+
+			} else if (controllerMenuFunction == &ControllerMenuProgram) {
+				prevControllerMenuFunction = controllerMenuFunction;
+				controllerMenuFunction = &ControllerEditProgram;
+
+			} else if (controllerMenuFunction == &ControllerEditProgram) {
 				prevControllerMenuFunction = controllerMenuFunction;
 				controllerMenuFunction = &ControllerMenuProgram;
-			} else {
-				controllerMenuFunction = prevControllerMenuFunction;
-				prevControllerMenuFunction = &ControllerMenuProgram;
 			}
 			(*controllerMenuFunction)(BTN_NONE, 0);
 
@@ -343,18 +389,20 @@ void ControllerUpdate(void) {
 			(*controllerMenuFunction)(button, buttonState);
 		}
 
-		// Debug print to terminal
-		if (button == ENC_CW) {
-			encPosition++;
-			printf("enc pos: %d\r\n", encPosition);
+		if (!passthroughMode) {
+			// Debug print to terminal
+			if (button == ENC_CW) {
+				encPosition++;
+				printf("enc pos: %d\r\n", encPosition);
 
-		} else if (button == ENC_CCW) {
-			encPosition--;
-			printf("enc pos: %d\r\n", encPosition);
+			} else if (button == ENC_CCW) {
+				encPosition--;
+				printf("enc pos: %d\r\n", encPosition);
 
-		} else if (button != BTN_NONE) {
-			const char * s = (buttonState == BUTTON_PRESSED) ? "pressed" : "released";
-			printf("%s %s\r\n", buttonMap[button].btnName, s);
+			} else if (button != BTN_NONE) {
+				const char * s = (buttonState == BUTTON_PRESSED) ? "pressed" : "released";
+				printf("%s %s\r\n", buttonMap[button].btnName, s);
+			}
 		}
 
 	} else {

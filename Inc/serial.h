@@ -11,6 +11,7 @@
 #include "stm32f4xx_hal.h"
 #include "dmx512.h"
 #include "shell.h"
+#include "sys_public.h"
 
 #define RX_BUFFER_MAX 20
 #define TX_BUFFER_MAX 60
