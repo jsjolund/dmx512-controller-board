@@ -13,7 +13,7 @@ static volatile int encPosition;
 
 static volatile uint8_t selectedDmxProgram;
 static volatile int8_t mainMenuCursor;
-static volatile uint8_t mainMenuEditMode;
+static volatile uint8_t mainMenuEditLCDbacklightMode;
 static volatile uint8_t mainMenuProgramWasSaved;
 
 int ControllerPopCmd(enum buttonEnum *button, int *buttonState) {
@@ -215,11 +215,13 @@ void ControllerMenuProgram(enum buttonEnum button, int buttonState) {
 		switch (button) {
 		case BTN_ENC:
 			if (mainMenuCursor == MENU_ITEM_SAVE_PROGRAM) {
-				ControllerSaveDMXprogram(selectedDmxProgram);
+				if (selectedDmxProgram > 0) {
+					ControllerSaveDMXprogram(selectedDmxProgram);
+				}
 				mainMenuProgramWasSaved = 1;
 
 			} else if (mainMenuCursor == MENU_ITEM_LCD_BACKLIGHT) {
-				mainMenuEditMode = (mainMenuEditMode) ? 0 : 1;
+				mainMenuEditLCDbacklightMode = (mainMenuEditLCDbacklightMode) ? 0 : 1;
 
 			} else if (mainMenuCursor == MENU_ITEM_USART_PASSHTHROUGH) {
 				ControllerLockDMXinput();
@@ -230,7 +232,7 @@ void ControllerMenuProgram(enum buttonEnum button, int buttonState) {
 
 				LCDclear();
 				LCDcursorPos(0, 0);
-				LCDwrite("PC USB control:");
+				LCDwrite("   PC USB control   ");
 				LCDcursorPos(2, 0);
 				LCDwrite("Emulating:");
 				LCDcursorPos(3, 0);
@@ -245,7 +247,7 @@ void ControllerMenuProgram(enum buttonEnum button, int buttonState) {
 			}
 			break;
 		case ENC_CW:
-			if (mainMenuCursor == MENU_ITEM_LCD_BACKLIGHT && mainMenuEditMode == 1) {
+			if (mainMenuCursor == MENU_ITEM_LCD_BACKLIGHT && mainMenuEditLCDbacklightMode == 1) {
 				int16_t brightness = LCDgetBrightness() + 5;
 				if (brightness > 100)
 					brightness = 100;
@@ -257,7 +259,7 @@ void ControllerMenuProgram(enum buttonEnum button, int buttonState) {
 			}
 			break;
 		case ENC_CCW:
-			if (mainMenuCursor == 1 && mainMenuEditMode == 1) {
+			if (mainMenuCursor == 1 && mainMenuEditLCDbacklightMode == 1) {
 				int16_t brightness = LCDgetBrightness() - 5;
 				if (brightness < 0)
 					brightness = 0;
@@ -326,6 +328,8 @@ void ControllerMenuProgram(enum buttonEnum button, int buttonState) {
 	LCDsendChar((mainMenuCursor == MENU_ITEM_SAVE_PROGRAM) ? 126 : ' ');
 	if (mainMenuProgramWasSaved) {
 		snprintf(charBuffer, bufferLen, " Program %03d saved ", selectedDmxProgram);
+	} else if (selectedDmxProgram == 0) {
+		snprintf(charBuffer, bufferLen, " Cannot save to 000");
 	} else {
 		snprintf(charBuffer, bufferLen, " Save program   %03d  ", selectedDmxProgram);
 	}
@@ -378,6 +382,7 @@ void ControllerUpdate(void) {
 			} else if (controllerMenuFunction == &ControllerMenuProgram) {
 				prevControllerMenuFunction = controllerMenuFunction;
 				controllerMenuFunction = &ControllerEditProgram;
+				mainMenuEditLCDbacklightMode = 0;
 
 			} else if (controllerMenuFunction == &ControllerEditProgram) {
 				prevControllerMenuFunction = controllerMenuFunction;
