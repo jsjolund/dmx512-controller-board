@@ -1,5 +1,13 @@
-# dmx512-controller-board
-Controller board for DMX512 compatible devices, built around the STM32F4 processor
+# Sunshine DMX512 Controller Board
+Controller board for DMX512 compatible lighting fixtures, built around the ARM Cortex-M4 processor (STM32F411RET).
+
+On the hardware side, there are of four PCB:s, a main board containing the microcontroller as well as DMX512, USB USART and power circuitry. Other boards contain buttons, LCD, potentiometer sliders and similar. See the Kicad project files for details.
+
+The software is built using the STM32 hardware abstraction layer (HAL). Aside from hardware drivers for the various input devices, it contains DMX512 generation and a simple menu system for the LCD.
+
+![Enclosure](/Images/enclosure.jpg)
+
+![Main PCB](/Images/main_board_pcb.jpg)
 
 ## STM32F411 docs
 [Nucleo-64 board documentation](http://www.st.com/web/en/resource/technical/document/user_manual/DM00105823.pdf)
@@ -10,30 +18,4 @@ Controller board for DMX512 compatible devices, built around the STM32F4 process
 
 [STM32F411 Programming Manual](http://www.st.com/resource/en/programming_manual/dm00046982.pdf)
 
-[Using the STM32F4 Series DMA controller](http://www.st.com/resource/en/application_note/dm00046011.pdf)
-
-## Other docs
-[MCP23017 I/O Expander](http://ww1.microchip.com/downloads/en/DeviceDoc/21952b.pdf)
-
-[24AA1026 EEPROM](http://ww1.microchip.com/downloads/en/DeviceDoc/22270A.pdf)
-
-[MAX481CSA](http://datasheets.maximintegrated.com/en/ds/MAX1487-MAX491.pdf)
-
-## IDE
-[System Workbench for STM32 - IDE which works on Linux (unlike TrueStudio...)](http://www.openstm32.org/System+Workbench+for+STM32)
-
-[STM32Cube initialization code generator](http://www.st.com/en/development-tools/stm32cubemx.html)
-
-## Misc
-[Project BOM (Google Sheet)](https://docs.google.com/spreadsheets/d/1uzdcgw4f-ZZjT1LYJjgF0NQhJ87it6WEIzAiNTsZcQw/edit#gid=0)
-
-[Misc STM32F4 libraries](https://stm32f4-discovery.net/2014/05/all-stm32f429-libraries-at-one-place/)
-
-[LCD library (KS0108 driver)](http://en.radzio.dxp.pl/ks0108/)
-
-![Nucleo board](/Images/nucleo_f411re.png)
-
-![Nucleo board](/Images/nucleo_f411re_morpho.png)
-
-![Used pins](/Images/used_pins.png)
 
